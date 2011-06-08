@@ -53,7 +53,7 @@ describe MtGox::Client do
     it "should fetch trades" do
       trades = @client.trades
       a_get('/code/data/getTrades.php').should have_been_made
-      trades.last.date.should == Time.local(2011, 6, 8, 2, 51, 57)
+      trades.last.date.should == Time.utc(2011, 6, 8, 9, 51, 57)
       trades.last.price.should == 26.6099
       trades.last.amount.should == 1.37
       trades.last.tid.should == "129606"
