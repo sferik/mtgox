@@ -3,6 +3,13 @@ module MtGox
     def get(path, options={})
       request(:get, path, options)
     end
+    def post(path, body={})
+      response = connection.post(path) do |request|
+        request.body = body
+        request.url(path)
+      end
+      response.body
+    end
 
     private
 

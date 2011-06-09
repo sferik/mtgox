@@ -1,6 +1,16 @@
 require 'mtgox/client'
 
 module MtGox
+  ORDER_TYPES = {:buy=>2, :sell=>1}
+  STATUS_TYPES = {"1"=>:active, 2=>:not_enough_funds}
+  #class configure
+  class << self
+  	attr_accessor :name, :pass
+  	def configure
+  	  yield self
+  	end
+  end
+  
   # Alias for MtGox::Client.new
   #
   # @return [MtGox::Client]
