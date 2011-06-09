@@ -70,7 +70,49 @@ module MtGox
     #   MtGox.sells
     def sells
       post('/code/getOrders.php',pass_params).orders.select {|o| o.type == ORDER_TYPES[:sell]}.each {|o| o.status = STATUS_TYPES[o.status]}
-    end    
+    end
+
+    # places a buy request
+    # requires name and pass to be set
+    # TODO: usefully return something
+    #
+    # Array<Hashie::Rash>
+    # @example
+    #   MtGox.buy 1.0, 25.0 #buy one BTC for 25 usd
+    def buy(quantity,price)
+      post('/code/buyBTC.php',pass_params.merge({:amount=>quantity,:price=>price}))
+      #.orders.select {|o| o.type == ORDER_TYPES[:sell]}.each {|o| o.status = STATUS_TYPES[o.status]}
+    end
+
+    # places a sell request
+    # requires name and pass to be set
+    # TODO: usefully return something
+    #
+    # Array<Hashie::Rash>
+    # @example
+    #   MtGox.sell 0.7, 26.0 #sell 0.7 BTC for 26 usd
+    def sell(quantity,price)
+      post('/code/sellBTC.php',pass_params.merge({:amount=>quantity,:price=>price}))
+      #.orders.select {|o| o.type == ORDER_TYPES[:sell]}.each {|o| o.status = STATUS_TYPES[o.status]}
+    end
+    
+    # cancels an open order
+    # requires name and pass to be set
+    # accepts as parameters as a hash-like object with "type" and "oid"
+    # TODO: usefully return something
+    #
+    # Array<Hashie::Rash>
+    # @example
+    #   MtGox.cancel my_order
+    #   MtGox.cancel {"oid" => "123", "type" => 2}
+    def cancel(param)
+      order_params = param.select {|k,v| ["oid", "type"].include? k.to_s}
+      post('/code/cancelOrder.php',pass_params.merge(order_params))
+      #.orders.select {|o| o.type == ORDER_TYPES[:sell]}.each {|o| o.status = STATUS_TYPES[o.status]}
+    end
+
+    
+    
     
     private
     def pass_params
