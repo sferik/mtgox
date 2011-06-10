@@ -33,6 +33,16 @@ module MtGox
       get('/code/data/getDepth.php')['bids']
     end
 
+    # Fetch both bids & asks in one call, for network efficiency
+    #
+    # @return [Array<Numeric>]
+    # @example
+    #   MtGox.bids
+    def offers
+      get('/code/data/getDepth.php')
+    end
+
+
     # Fetch recent trades
     #
     # @return [Array<Hashie::Rash>]
@@ -71,6 +81,17 @@ module MtGox
     def sells
       post('/code/getOrders.php',pass_params).orders.select {|o| o.type == ORDER_TYPES[:sell]}.each {|o| o.status = STATUS_TYPES[o.status]}
     end
+
+    # Fetch your open orders, both buys and sells, for network efficiency.
+    # requires name and pass to be set
+    #
+    # [Array<Hashie::Rash>]
+    # @example
+    #   MtGox.orders
+    def orders
+      post('/code/getOrders.php',pass_params).orders.each {|o| o.status = STATUS_TYPES[o.status]; o.type=ORDER_TYPES.invert[o.type]}.group_by(&:type)
+    end
+
 
     # places a buy request
     # requires name and pass to be set
