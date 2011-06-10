@@ -120,6 +120,7 @@ module MtGox
     # cancels an open order
     # requires name and pass to be set
     # accepts as parameters as a hash-like object with "type" and "oid"
+    # type can either be a number (1,2) or a symbol (:buy,:sell)
     # TODO: usefully return something
     #
     # Array<Hashie::Rash>
@@ -128,6 +129,7 @@ module MtGox
     #   MtGox.cancel {"oid" => "123", "type" => 2}
     def cancel(param)
       order_params = param.select {|k,v| ["oid", "type"].include? k.to_s}
+      order_params["type"] = ORDER_TYPES[order_params["type"]]  || order_params["type"]
       post('/code/cancelOrder.php',pass_params.merge(order_params))
       #.orders.select {|o| o.type == ORDER_TYPES[:sell]}.each {|o| o.status = STATUS_TYPES[o.status]}
     end
