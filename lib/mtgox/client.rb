@@ -71,7 +71,7 @@ module MtGox
     # @example
     #   MtGox.buys[0,3] #=> [<#Hashie::Rash amount=0.73 dark="0" date="1307949196" oid="929284" price=2 status=:active type=2>, <#Hashie::Rash amount=0.36 dark="0" date="1307949201" oid="929288" price=4 status=:active type=2>, <#Hashie::Rash amount=0.24 dark="0" date="1307949212" oid="929292" price=6 status=:active type=2>]
     def buys
-      post('/code/getOrders.php',pass_params).orders.select {|o| o.type == ORDER_TYPES[:buy]}.each {|o| o.status = STATUS_TYPES[o.status]}
+      post('/code/getOrders.php',pass_params).orders.select {|o| o.type == ORDER_TYPES[:buy]}.each {|o| o.status = STATUS_TYPES.invert[o.status.to_i]}
     end
 
     # Fetch your open bitcoin sells
@@ -81,7 +81,7 @@ module MtGox
     # @example
     #   MtGox.sells[0,3] #=> [<#Hashie::Rash amount=0.1 dark="0" date="1307949384" oid="663465" price=24.92 status=nil type=1>, <#Hashie::Rash amount=0.12 dark="0" date="1307949391" oid="663468" price=25.65 status=nil type=1>, <#Hashie::Rash amount=0.15 dark="0" date="1307949396" oid="663470" price=26.38 status=nil type=1>]
     def sells
-      post('/code/getOrders.php',pass_params).orders.select {|o| o.type == ORDER_TYPES[:sell]}.each {|o| o.status = STATUS_TYPES[o.status]}
+      post('/code/getOrders.php',pass_params).orders.select {|o| o.type == ORDER_TYPES[:sell]}.each {|o| o.status = STATUS_TYPES.invert[o.status.to_i]}
     end
 
     # Fetch your open orders, both buys and sells, for network efficiency.
@@ -93,7 +93,7 @@ module MtGox
     #   o.buy[0,3]  #=> [<#Hashie::Rash amount=0.73 dark="0" date="1307949196" oid="929284" price=2 status=:active type=2>, <#Hashie::Rash amount=0.36 dark="0" date="1307949201" oid="929288" price=4 status=:active type=2>, <#Hashie::Rash amount=0.24 dark="0" date="1307949212" oid="929292" price=6 status=:active type=2>]
     #   o.sell[0,3] #=> [<#Hashie::Rash amount=0.1 dark="0" date="1307949384" oid="663465" price=24.92 status=nil type=1>, <#Hashie::Rash amount=0.12 dark="0" date="1307949391" oid="663468" price=25.65 status=nil type=1>, <#Hashie::Rash amount=0.15 dark="0" date="1307949396" oid="663470" price=26.38 status=nil type=1>]
     def orders
-      hash = post('/code/getOrders.php',pass_params).orders.each {|o| o.status = STATUS_TYPES[o.status]; o.type=ORDER_TYPES.invert[o.type]}.group_by(&:type)
+      hash = post('/code/getOrders.php',pass_params).orders.each {|o| o.status = STATUS_TYPES.invert[o.status.to_i]; o.type=ORDER_TYPES.invert[o.type]}.group_by(&:type)
       Hashie::Rash.new(hash)
     end
 
