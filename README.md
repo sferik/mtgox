@@ -62,16 +62,16 @@ Usage Examples
     end
 
     # Get your current balance
-    puts MtGox.balance [TODO]
+    puts MtGox.balance
 
     # Place an order to buy 1 BTC for 20 USD (returns a list of your open orders)
-    puts MtGox.buy 1.0, 20.0 [TODO]
+    puts MtGox.buy! 1.0, 20.0
 
     # Place an order to sell 1 BTC for 20 USD (returns a list of your open orders)
-    puts MtGox.sell 1.0, 20.0 [TODO]
+    puts MtGox.sell! 1.0, 20.0
 
     # Cancel order #1234567890
-    puts MtGox.cancel 1234567890 [TODO]
+    puts MtGox.cancel 1234567890
 
     # Send 1 BTC to the author of this gem
     puts MtGox.send 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L" [TODO]

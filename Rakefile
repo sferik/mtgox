@@ -13,6 +13,9 @@ require 'yard'
 namespace :doc do
   YARD::Rake::YardocTask.new do |task|
     task.files   = ['LICENSE.md', 'lib/**/*.rb']
-    task.options = ['--markup', 'markdown']
+    task.options = [
+      '--tag', 'authenticated:Requires Authentication',
+      '--markup', 'markdown',
+    ]
   end
 end
