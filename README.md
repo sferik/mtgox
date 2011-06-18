@@ -32,7 +32,7 @@ author, which you can do using the following script:
       config.pass = YOUR_MTGOX_PASSWORD
     end
 
-    MtGox.send 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"
+    MtGox.withdraw 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"
 
 Continuous Integration
 ----------------------
@@ -73,8 +73,8 @@ Usage Examples
     # Cancel order #1234567890
     puts MtGox.cancel 1234567890
 
-    # Send 1 BTC to the author of this gem
-    puts MtGox.send 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L" [TODO]
+    # Withdraw 1 BTC from your account
+    puts MtGox.withdraw 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L" [TODO]
 
 Contributing
 ------------
