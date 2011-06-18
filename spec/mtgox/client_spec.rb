@@ -120,6 +120,14 @@ describe MtGox::Client do
         sells.last.price.should == 29.3
       end
     end
+
+    describe "#orders" do
+      it "should fetch both buys and sells, with only one call" do
+        orders = @client.orders
+        a_post("/code/getOrders.php").should have_been_made.once
+        orders.last.price.should == 29.3
+      end
+    end
   end
 
   describe "#buy!" do
