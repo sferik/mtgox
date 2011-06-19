@@ -3,7 +3,10 @@ require 'helper'
 describe MtGox::Client do
   before do
     @client = MtGox::Client.new
-    MtGox.configure {|c| c.name="my_name"; c.pass="my_password"}
+    MtGox.configure do |config|
+      config.name = "my_name"
+      config.pass = "my_password"
+    end
   end
 
   describe '#ticker' do
