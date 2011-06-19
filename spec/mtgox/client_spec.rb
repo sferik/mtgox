@@ -54,7 +54,7 @@ describe MtGox::Client do
     end
 
     describe "#offers" do
-      it "should fetch both bids and asks, making only 1 network request" do
+      it "should fetch both bids and asks, with only one call" do
         offers = @client.offers
         a_get('/code/data/getDepth.php').should have_been_made.once
         offers.asks.last.should == [45, 593.28]

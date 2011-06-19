@@ -157,12 +157,12 @@ module MtGox
     #     MtGox.cancel {"oid" => "1234567890", "type" => 2}
     def cancel(args)
       if args.is_a?(Hash)
-        order = args.select{|k, v| ['oid', 'type'].include?(k)}
+        order = args.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
         post('/code/cancelOrder.php', pass_params.merge(order))
       else
         order = orders.select{|o| o['oid'] == args.to_s}.first
         if order
-          order.select!{|k, v| ['oid', 'type'].include?(k)}
+          order = order.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
           post('/code/cancelOrder.php', pass_params.merge(order))
         else
           raise Faraday::Error::ResourceNotFound, {:status => 404, :headers => {}, :body => "Order not found."}
