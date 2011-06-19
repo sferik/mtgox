@@ -6,17 +6,17 @@ describe MtGox do
       MtGox.new.should be_a MtGox::Client
     end
   end
-  
+
   describe ".configure" do
     it "should set 'name' and 'pass'" do
-      MtGox.configure do |c|
-        c.name="username"
-        c.pass="password"
+      MtGox.configure do |config|
+        config.name = "username"
+        config.pass = "password"
       end
-      
+
       MtGox.name.should == "username"
       MtGox.pass.should == "password"
     end
   end
-  
+
 end
