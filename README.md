@@ -56,7 +56,7 @@ Usage Examples
     puts MtGox.trades
 
     # Certain methods require authentication
-    MtGox.configure do |config| [TODO]
+    MtGox.configure do |config|
       config.name = YOUR_MTGOX_USERNAME
       config.pass = YOUR_MTGOX_PASSWORD
     end
@@ -74,7 +74,7 @@ Usage Examples
     puts MtGox.cancel 1234567890
 
     # Withdraw 1 BTC from your account
-    puts MtGox.withdraw 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L" [TODO]
+    puts MtGox.withdraw! 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"
 
 Contributing
 ------------

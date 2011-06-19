@@ -113,28 +113,28 @@ module MtGox
     #
     # @todo Return something useful
     # @authenticated true
-    # @param quantity [Numeric] the number of bitcoins to purchase
+    # @param amount [Numeric] the number of bitcoins to purchase
     # @param price [Numeric] the bid price in US dollars
     # @return [Array<Hashie::Rash>]
     # @example
     #   # Buy one BTC for $25
     #   MtGox.buy! 1.0, 25.0
-    def buy!(quantity, price)
-      post('/code/buyBTC.php', pass_params.merge({:amount => quantity, :price => price}))
+    def buy!(amount, price)
+      post('/code/buyBTC.php', pass_params.merge({:amount => amount, :price => price}))
     end
 
     # Place an order to sell
     #
     # @todo Return something useful
     # @authenticated true
-    # @param quantity [Numeric] the number of bitcoins to sell
+    # @param amount [Numeric] the number of bitcoins to sell
     # @param price [Numeric] the ask price in US dollars
     # @return [Array<Hashie::Rash>]
     # @example
     #   # Sell 0.7 BTC for $26
     #   MtGox.sell! 0.7, 26.0
-    def sell!(quantity, price)
-      post('/code/sellBTC.php', pass_params.merge({:amount => quantity, :price => price}))
+    def sell!(amount, price)
+      post('/code/sellBTC.php', pass_params.merge({:amount => amount, :price => price}))
     end
 
     # Cancel an open order
@@ -168,6 +168,20 @@ module MtGox
           raise Faraday::Error::ResourceNotFound, {:status => 404, :headers => {}, :body => "Order not found."}
         end
       end
+    end
+
+    # Transfer bitcoins from your Mt. Gox account into another account
+    #
+    # @todo Return something useful
+    # @authenticated true
+    # @param amount [Numeric] the number of bitcoins to withdraw
+    # @param btca [String] the bitcoin address to send to
+    # @return [Array<Hashie::Rash>]
+    # @example
+    #   # Withdraw 1 BTC from your account
+    #   MtGox.withdraw! 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"
+    def withdraw!(amount, btca)
+      post('/code/withdraw.php', pass_params.merge({:group1 => "BTC", :amount => amount, :btca => btca}))
     end
 
     private

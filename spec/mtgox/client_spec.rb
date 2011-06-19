@@ -194,4 +194,18 @@ describe MtGox::Client do
     end
   end
 
+  describe "#withdraw!" do
+    before do
+      stub_post('/code/withdraw.php').
+        to_return(:status => 200, :body => fixture('withdraw.json'))
+    end
+
+    it "should withdraw funds" do
+      @client.withdraw!(1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L")
+      a_post("/code/withdraw.php").
+        with(:body => {"name" => "my_name", "pass" => "my_password", "group1" => "BTC", "amount" => "1.0", "btca" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"}).
+        should have_been_made
+    end
+  end
+
 end
