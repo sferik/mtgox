@@ -111,7 +111,6 @@ module MtGox
 
     # Place a limit order to buy BTC
     #
-    # @todo Return something useful
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to purchase
     # @param price [Numeric] the bid price in US dollars
@@ -125,7 +124,6 @@ module MtGox
 
     # Place a limit order to sell BTC
     #
-    # @todo Return something useful
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to sell
     # @param price [Numeric] the ask price in US dollars
@@ -139,7 +137,6 @@ module MtGox
 
     # Cancel an open order
     #
-    # @todo Return something useful
     # @authenticated true
     # @overload cancel(oid)
     #   @param oid [String] an order ID
@@ -172,7 +169,6 @@ module MtGox
 
     # Transfer bitcoins from your Mt. Gox account into another account
     #
-    # @todo Return something useful
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to withdraw
     # @param btca [String] the bitcoin address to send to
