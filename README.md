@@ -64,10 +64,10 @@ Usage Examples
     # Get your current balance
     puts MtGox.balance
 
-    # Place a limit order to buy 1 BTC for $0.011
+    # Place a limit order to buy one bitcoin for $0.011
     MtGox.buy! 1.0, 0.011
 
-    # Place a limit order to sell 1 BTC for $100
+    # Place a limit order to sell one bitcoin for $100
     MtGox.sell! 1.0, 100.0
 
     # Cancel order #1234567890
