@@ -109,7 +109,7 @@ module MtGox
       end
     end
 
-    # Place an order to buy
+    # Place a limit order to buy BTC
     #
     # @todo Return something useful
     # @authenticated true
@@ -123,7 +123,7 @@ module MtGox
       post('/code/buyBTC.php', pass_params.merge({:amount => amount, :price => price}))
     end
 
-    # Place an order to sell
+    # Place a limit order to sell BTC
     #
     # @todo Return something useful
     # @authenticated true
