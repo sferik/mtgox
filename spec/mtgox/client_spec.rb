@@ -91,7 +91,7 @@ describe MtGox::Client do
   describe '#balance' do
     before do
       stub_post('/code/getFunds.php').
-        to_return(:status => 200, :body => fixture('funds.json'))
+        to_return(:status => 200, :body => fixture('balance.json'))
     end
 
     it "should fetch balance" do
