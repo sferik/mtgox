@@ -117,8 +117,8 @@ module MtGox
     # @param price [Numeric] the bid price in US dollars
     # @return [Array<Hashie::Rash>]
     # @example
-    #   # Buy one BTC for $25
-    #   MtGox.buy! 1.0, 25.0
+    #   # Buy one BTC for $0.011
+    #   MtGox.buy! 1.0, 0.011
     def buy!(amount, price)
       post('/code/buyBTC.php', pass_params.merge({:amount => amount, :price => price}))
     end
@@ -131,8 +131,8 @@ module MtGox
     # @param price [Numeric] the ask price in US dollars
     # @return [Array<Hashie::Rash>]
     # @example
-    #   # Sell 0.7 BTC for $26
-    #   MtGox.sell! 0.7, 26.0
+    #   # Sell 1.0 BTC for $100
+    #   MtGox.sell! 1.0, 100.0
     def sell!(amount, price)
       post('/code/sellBTC.php', pass_params.merge({:amount => amount, :price => price}))
     end
