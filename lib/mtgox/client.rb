@@ -82,7 +82,7 @@ module MtGox
     # @example
     #   MtGox.orders[0, 3]  #=> [<#Hashie::Rash amount=0.73 dark="0" date="1307949196" oid="929284" price=2 status=:active type=2>, <#Hashie::Rash amount=0.36 dark="0" date="1307949201" oid="929288" price=4 status=:active type=2>, <#Hashie::Rash amount=0.24 dark="0" date="1307949212" oid="929292" price=6 status=:active type=2>]
     def orders
-      hash = post('/code/getOrders.php', pass_params)['orders']
+      post('/code/getOrders.php', pass_params)['orders']
     end
 
     # Fetch your open buys
