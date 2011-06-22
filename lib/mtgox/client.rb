@@ -21,26 +21,6 @@ module MtGox
       get('/code/data/ticker.php')['ticker']
     end
 
-    # Fetch open asks
-    #
-    # @authenticated false
-    # @return [Array<Array<Numeric>>] in the form `[price, quantity]`, sorted in price ascending order
-    # @example
-    #   MtGox.asks[0, 3] #=> [[19.3898, 3.9], [19.4, 48.264], [19.409, 1]]
-    def asks
-      get('/code/data/getDepth.php')['asks']
-    end
-
-    # Fetch open bids
-    #
-    # @authenticated false
-    # @return [Array<Array<Numeric>>] in the form `[price, quantity]`, sorted in price descending order
-    # @example
-    #   MtGox.bids[0, 3] #=> [[19.3898, 77.42], [19.3, 3.02], [19.29, 82.378]]
-    def bids
-      get('/code/data/getDepth.php')['bids']
-    end
-
     # Fetch both bids and asks in one call, for network efficiency
     #
     # @authenticated false
@@ -51,6 +31,26 @@ module MtGox
     #   offers.bids[0, 3] #=> [[19.3898, 77.42], [19.3, 3.02], [19.29, 82.378]]
     def offers
       get('/code/data/getDepth.php')
+    end
+
+    # Fetch open asks
+    #
+    # @authenticated false
+    # @return [Array<Array<Numeric>>] in the form `[price, quantity]`, sorted in price ascending order
+    # @example
+    #   MtGox.asks[0, 3] #=> [[19.3898, 3.9], [19.4, 48.264], [19.409, 1]]
+    def asks
+      offers['asks']
+    end
+
+    # Fetch open bids
+    #
+    # @authenticated false
+    # @return [Array<Array<Numeric>>] in the form `[price, quantity]`, sorted in price descending order
+    # @example
+    #   MtGox.bids[0, 3] #=> [[19.3898, 77.42], [19.3, 3.02], [19.29, 82.378]]
+    def bids
+      offers['bids']
     end
 
     # Fetch recent trades
@@ -75,6 +75,16 @@ module MtGox
       post('/code/getFunds.php', pass_params)
     end
 
+    # Fetch your open orders, both buys and sells, for network efficiency
+    #
+    # @authenticated true
+    # @return [<Hashie::Rash>] with keys `buy` and `sell`, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Client#sells}
+    # @example
+    #   MtGox.orders[0, 3]  #=> [<#Hashie::Rash amount=0.73 dark="0" date="1307949196" oid="929284" price=2 status=:active type=2>, <#Hashie::Rash amount=0.36 dark="0" date="1307949201" oid="929288" price=4 status=:active type=2>, <#Hashie::Rash amount=0.24 dark="0" date="1307949212" oid="929292" price=6 status=:active type=2>]
+    def orders
+      hash = post('/code/getOrders.php', pass_params)['orders']
+    end
+
     # Fetch your open buys
     #
     # @authenticated true
@@ -97,16 +107,6 @@ module MtGox
       orders.select do |o|
         o['type'] == ORDER_TYPES[:sell]
       end
-    end
-
-    # Fetch your open orders, both buys and sells, for network efficiency
-    #
-    # @authenticated true
-    # @return [<Hashie::Rash>] with keys `buy` and `sell`, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Client#sells}
-    # @example
-    #   MtGox.orders[0, 3]  #=> [<#Hashie::Rash amount=0.73 dark="0" date="1307949196" oid="929284" price=2 status=:active type=2>, <#Hashie::Rash amount=0.36 dark="0" date="1307949201" oid="929288" price=4 status=:active type=2>, <#Hashie::Rash amount=0.24 dark="0" date="1307949212" oid="929292" price=6 status=:active type=2>]
-    def orders
-      hash = post('/code/getOrders.php', pass_params)['orders']
     end
 
     # Place an order to buy
@@ -189,6 +189,5 @@ module MtGox
     def pass_params
       {:name => MtGox.name, :pass => MtGox.pass}
     end
-
   end
 end
