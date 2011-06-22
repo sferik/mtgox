@@ -22,7 +22,6 @@ def stub_post(path)
   stub_request(:post, 'https://mtgox.com' + path)
 end
 
-
 def fixture_path
   File.expand_path('../fixtures', __FILE__)
 end

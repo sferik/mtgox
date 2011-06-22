@@ -91,12 +91,15 @@ describe MtGox::Client do
   describe '#balance' do
     before do
       stub_post('/code/getFunds.php').
+        with(:body => {"name" => "my_name", "pass" => "my_password"}).
         to_return(:status => 200, :body => fixture('balance.json'))
     end
 
     it "should fetch balance" do
       balance = @client.balance
-      a_post("/code/getFunds.php").should have_been_made
+      a_post("/code/getFunds.php").
+        with(:body => {"name" => "my_name", "pass" => "my_password"}).
+        should have_been_made
       balance.usds.should == 3.7
       balance.btcs.should == 22.0
     end
@@ -105,13 +108,16 @@ describe MtGox::Client do
   describe "order methods" do
     before :each do
       stub_post('/code/getOrders.php').
+        with(:body => {"name" => "my_name", "pass" => "my_password"}).
         to_return(:status => 200, :body => fixture('orders.json'))
     end
 
     describe "#buys" do
       it "should fetch orders" do
         buys = @client.buys
-        a_post("/code/getOrders.php").should have_been_made
+        a_post("/code/getOrders.php").
+          with(:body => {"name" => "my_name", "pass" => "my_password"}).
+          should have_been_made
         buys.last.price.should == 14
       end
     end
@@ -119,7 +125,9 @@ describe MtGox::Client do
     describe "#sells" do
       it "should fetch sells" do
         sells = @client.sells
-        a_post("/code/getOrders.php").should have_been_made
+        a_post("/code/getOrders.php").
+          with(:body => {"name" => "my_name", "pass" => "my_password"}).
+          should have_been_made
         sells.last.price.should == 29.3
       end
     end
@@ -127,7 +135,9 @@ describe MtGox::Client do
     describe "#orders" do
       it "should fetch both buys and sells, with only one call" do
         orders = @client.orders
-        a_post("/code/getOrders.php").should have_been_made.once
+        a_post("/code/getOrders.php").
+          with(:body => {"name" => "my_name", "pass" => "my_password"}).
+          should have_been_made
         orders.last.price.should == 29.3
       end
     end
@@ -136,6 +146,7 @@ describe MtGox::Client do
   describe "#buy!" do
     before do
       stub_post('/code/buyBTC.php').
+        with(:body => {"name" => "my_name", "pass" => "my_password", "amount" => "0.88", "price" => "0.89"}).
         to_return(:status => 200, :body => fixture('buy.json'))
     end
 
@@ -150,6 +161,7 @@ describe MtGox::Client do
   describe "#sell!" do
     before do
       stub_post('/code/sellBTC.php').
+        with(:body => {"name" => "my_name", "pass" => "my_password", "amount" => "0.88", "price" => "89.0"}).
         to_return(:status => 200, :body => fixture('sell.json'))
     end
 
@@ -164,15 +176,19 @@ describe MtGox::Client do
   describe "#cancel" do
     before do
       stub_post('/code/getOrders.php').
+        with(:body => {"name" => "my_name", "pass" => "my_password"}).
         to_return(:status => 200, :body => fixture('orders.json'))
       stub_post('/code/cancelOrder.php').
+        with(:body => {"name" => "my_name", "pass" => "my_password", "oid" => "929284", "type" => "2"}).
         to_return(:status => 200, :body => fixture('cancel.json'))
     end
 
     context "with a valid oid passed" do
       it "should cancel an order" do
         @client.cancel(929284)
-        a_post("/code/getOrders.php").should have_been_made.once
+        a_post("/code/getOrders.php").
+          with(:body => {"name" => "my_name", "pass" => "my_password"}).
+          should have_been_made.once
         a_post('/code/cancelOrder.php').
           with(:body => {"name" => "my_name", "pass" => "my_password", "oid" => "929284", "type" => "2"}).
           should have_been_made
@@ -200,6 +216,7 @@ describe MtGox::Client do
   describe "#withdraw!" do
     before do
       stub_post('/code/withdraw.php').
+        with(:body => {"name" => "my_name", "pass" => "my_password", "group1" => "BTC", "amount" => "1.0", "btca" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"}).
         to_return(:status => 200, :body => fixture('withdraw.json'))
     end
 
