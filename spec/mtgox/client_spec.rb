@@ -227,5 +227,4 @@ describe MtGox::Client do
         should have_been_made
     end
   end
-
 end
