@@ -8,6 +8,7 @@ module MtGox
       options = {
         :ssl => {:verify => false},
         :url => 'https://mtgox.com',
+        :headers  => {:user_agent => "MtGoxGem"}
       }
 
       Faraday.new(options) do |connection|
