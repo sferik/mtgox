@@ -8,6 +8,7 @@ module MtGox
     def connection
       options = {
         :headers  => {
+          :accept => 'application/json',
           :user_agent => "mtgox gem #{MtGox::VERSION}",
         },
         :ssl => {:verify => false},
