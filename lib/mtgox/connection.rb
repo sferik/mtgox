@@ -1,4 +1,5 @@
 require 'faraday_middleware'
+require 'mtgox/version'
 
 module MtGox
   module Connection
@@ -6,9 +7,11 @@ module MtGox
 
     def connection
       options = {
+        :headers  => {
+          :user_agent => "mtgox gem #{MtGox::VERSION}",
+        },
         :ssl => {:verify => false},
         :url => 'https://mtgox.com',
-        :headers  => {:user_agent => "MtGoxGem"}
       }
 
       Faraday.new(options) do |connection|
