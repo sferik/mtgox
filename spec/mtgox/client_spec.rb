@@ -7,6 +7,12 @@ describe MtGox::Client do
       config.name = "my_name"
       config.pass = "my_password"
     end
+    
+    @last_ask = [23.75,50]
+    @last_bid = [14.62101,5]
+    
+    @last_sell_price = 101
+    @last_buy_price  = 7
   end
 
   describe '#ticker' do
@@ -32,7 +38,7 @@ describe MtGox::Client do
       it "should fetch open asks" do
         asks = @client.asks
         a_get('/code/data/getDepth.php').should have_been_made
-        asks.last.should == [45, 593.28]
+        asks.last.should == @last_ask
       end
 
       it "should be sorted in price-ascending order" do
@@ -46,7 +52,7 @@ describe MtGox::Client do
       it "should fetch open bids" do
         bids = @client.bids
         a_get('/code/data/getDepth.php').should have_been_made
-        bids.last.should == [19.1, 1]
+        bids.last.should == @last_bid
       end
 
       it "should be sorted in price-descending order" do
@@ -60,8 +66,8 @@ describe MtGox::Client do
       it "should fetch both bids and asks, with only one call" do
         offers = @client.offers
         a_get('/code/data/getDepth.php').should have_been_made.once
-        offers.asks.last.should == [45, 593.28]
-        offers.bids.last.should == [19.1, 1]
+        offers.asks.last.should == @last_ask
+        offers.bids.last.should == @last_bid
       end
     end
 
@@ -76,10 +82,10 @@ describe MtGox::Client do
     it "should fetch trades" do
       trades = @client.trades
       a_get('/code/data/getTrades.php').should have_been_made
-      trades.last.date.should == Time.utc(2011, 6, 8, 9, 51, 57)
-      trades.last.price.should == 26.6099
-      trades.last.amount.should == 1.37
-      trades.last.tid.should == "129606"
+      trades.last.date.should == Time.utc(2011, 6, 27, 18, 28, 8)
+      trades.last.price.should == 17.00009
+      trades.last.amount.should == 0.5
+      trades.last.tid.should == "1309199288687054"
     end
 
     it "should be sorted in chronological order" do
@@ -118,7 +124,7 @@ describe MtGox::Client do
         a_post("/code/getOrders.php").
           with(:body => {"name" => "my_name", "pass" => "my_password"}).
           should have_been_made
-        buys.last.price.should == 14
+        buys.last.price.should == @last_buy_price
       end
     end
 
@@ -128,7 +134,7 @@ describe MtGox::Client do
         a_post("/code/getOrders.php").
           with(:body => {"name" => "my_name", "pass" => "my_password"}).
           should have_been_made
-        sells.last.price.should == 29.3
+        sells.last.price.should == @last_sell_price
       end
     end
 
@@ -138,7 +144,7 @@ describe MtGox::Client do
         a_post("/code/getOrders.php").
           with(:body => {"name" => "my_name", "pass" => "my_password"}).
           should have_been_made
-        orders.last.price.should == 29.3
+        orders.last.price.should == @last_sell_price
       end
     end
   end
@@ -179,18 +185,18 @@ describe MtGox::Client do
         with(:body => {"name" => "my_name", "pass" => "my_password"}).
         to_return(:status => 200, :body => fixture('orders.json'))
       stub_post('/code/cancelOrder.php').
-        with(:body => {"name" => "my_name", "pass" => "my_password", "oid" => "929284", "type" => "2"}).
+        with(:body => {"name" => "my_name", "pass" => "my_password", "oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"}).
         to_return(:status => 200, :body => fixture('cancel.json'))
     end
 
     context "with a valid oid passed" do
       it "should cancel an order" do
-        @client.cancel(929284)
+        @client.cancel("bddd042c-e837-4a88-a92e-3b7c05e483df")
         a_post("/code/getOrders.php").
           with(:body => {"name" => "my_name", "pass" => "my_password"}).
           should have_been_made.once
         a_post('/code/cancelOrder.php').
-          with(:body => {"name" => "my_name", "pass" => "my_password", "oid" => "929284", "type" => "2"}).
+          with(:body => {"name" => "my_name", "pass" => "my_password", "oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"}).
           should have_been_made
       end
     end
@@ -205,9 +211,9 @@ describe MtGox::Client do
 
     context "with an order passed" do
       it "should cancel an order" do
-        @client.cancel({'oid' => "929284", 'type' => 2})
+        @client.cancel({'oid' => "bddd042c-e837-4a88-a92e-3b7c05e483df", 'type' => 2})
         a_post('/code/cancelOrder.php').
-          with(:body => {"name" => "my_name", "pass" => "my_password", "oid" => "929284", "type" => "2"}).
+          with(:body => {"name" => "my_name", "pass" => "my_password", "oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"}).
           should have_been_made
       end
     end
