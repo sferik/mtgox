@@ -7,12 +7,6 @@ describe MtGox::Client do
       config.name = "my_name"
       config.pass = "my_password"
     end
-    
-    @last_ask = [23.75,50]
-    @last_bid = [14.62101,5]
-    
-    @last_sell_price = 101
-    @last_buy_price  = 7
   end
 
   describe '#ticker' do
@@ -38,7 +32,7 @@ describe MtGox::Client do
       it "should fetch open asks" do
         asks = @client.asks
         a_get('/code/data/getDepth.php').should have_been_made
-        asks.last.should == @last_ask
+        asks.last.should == [23.75, 50]
       end
 
       it "should be sorted in price-ascending order" do
@@ -52,7 +46,7 @@ describe MtGox::Client do
       it "should fetch open bids" do
         bids = @client.bids
         a_get('/code/data/getDepth.php').should have_been_made
-        bids.last.should == @last_bid
+        bids.last.should == [14.62101, 5]
       end
 
       it "should be sorted in price-descending order" do
@@ -66,8 +60,8 @@ describe MtGox::Client do
       it "should fetch both bids and asks, with only one call" do
         offers = @client.offers
         a_get('/code/data/getDepth.php').should have_been_made.once
-        offers.asks.last.should == @last_ask
-        offers.bids.last.should == @last_bid
+        offers.asks.last.should == [23.75, 50]
+        offers.bids.last.should == [14.62101, 5]
       end
     end
 
@@ -124,7 +118,8 @@ describe MtGox::Client do
         a_post("/code/getOrders.php").
           with(:body => {"name" => "my_name", "pass" => "my_password"}).
           should have_been_made
-        buys.last.price.should == @last_buy_price
+        buys.last.price.should == 7
+        buys.last.date.should == Time.utc(2011, 6, 27, 18, 20, 38)
       end
     end
 
@@ -134,7 +129,8 @@ describe MtGox::Client do
         a_post("/code/getOrders.php").
           with(:body => {"name" => "my_name", "pass" => "my_password"}).
           should have_been_made
-        sells.last.price.should == @last_sell_price
+        sells.last.price.should == 101
+        sells.last.date.should == Time.utc(2011, 6, 27, 18, 20, 7)
       end
     end
 
@@ -144,7 +140,8 @@ describe MtGox::Client do
         a_post("/code/getOrders.php").
           with(:body => {"name" => "my_name", "pass" => "my_password"}).
           should have_been_made
-        orders.last.price.should == @last_sell_price
+        orders.last.price.should == 101
+        orders.last.date.should == Time.utc(2011, 6, 27, 18, 20, 7)
       end
     end
   end

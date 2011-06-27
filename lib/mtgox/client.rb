@@ -30,10 +30,10 @@ module MtGox
     #   offers.asks[0, 3] #=> [[19.3898, 3.9], [19.4, 48.264], [19.409, 1]]
     #   offers.bids[0, 3] #=> [[19.3898, 77.42], [19.3, 3.02], [19.29, 82.378]]
     def offers
-      o = get('/code/data/getDepth.php')
-      o['asks'] = o['asks'].sort_by {|x| x[0]}
-      o['bids'] = o['bids'].sort_by {|x| x[0]}.reverse
-      o
+      offers = get('/code/data/getDepth.php')
+      offers['asks'] = offers['asks'].sort_by{|a| a[0]}
+      offers['bids'] = offers['bids'].sort_by{|b| b[0]}.reverse
+      offers
     end
 
     # Fetch open asks
@@ -63,8 +63,10 @@ module MtGox
     # @example
     #   MtGox.trades[0, 3] #=> [<#Hashie::Rash amount=41 date=2011-06-14 11:26:32 -0700 price=18.5 tid="183747">, <#Hashie::Rash amount=5 date=2011-06-14 11:26:44 -0700 price=18.5 tid="183748">, <#Hashie::Rash amount=5 date=2011-06-14 11:27:00 -0700 price=18.42 tid="183749">]
     def trades
-      get('/code/data/getTrades.php').each do |t|
-        t['date'] = Time.at(t['date'])
+      get('/code/data/getTrades.php').each do |trade|
+        trade['amount'] = trade['amount'].to_f
+        trade['date'] = Time.at(trade['date'])
+        trade['price'] = trade['price'].to_f
       end
     end
 
@@ -85,7 +87,9 @@ module MtGox
     # @example
     #   MtGox.orders[0, 3]  #=> [<#Hashie::Rash amount=0.73 dark="0" date="1307949196" oid="929284" price=2 status=:active type=2>, <#Hashie::Rash amount=0.36 dark="0" date="1307949201" oid="929288" price=4 status=:active type=2>, <#Hashie::Rash amount=0.24 dark="0" date="1307949212" oid="929292" price=6 status=:active type=2>]
     def orders
-      post('/code/getOrders.php', pass_params)['orders']
+      post('/code/getOrders.php', pass_params)['orders'].each do |order|
+        order['date'] = Time.at(order['date'])
+      end
     end
 
     # Fetch your open buys
