@@ -185,7 +185,7 @@ describe MtGox::Client do
         with(:body => {"name" => "my_name", "pass" => "my_password"}).
         to_return(:status => 200, :body => fixture('orders.json'))
       stub_post('/code/cancelOrder.php').
-        with(:body => {"name" => "my_name", "pass" => "my_password", "oid" => "929284", "type" => "2"}).
+        with(:body => {"name" => "my_name", "pass" => "my_password", "oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"}).
         to_return(:status => 200, :body => fixture('cancel.json'))
     end
 
@@ -211,9 +211,9 @@ describe MtGox::Client do
 
     context "with an order passed" do
       it "should cancel an order" do
-        @client.cancel({'oid' => "929284", 'type' => 2})
+        @client.cancel({'oid' => "bddd042c-e837-4a88-a92e-3b7c05e483df", 'type' => 2})
         a_post('/code/cancelOrder.php').
-          with(:body => {"name" => "my_name", "pass" => "my_password", "oid" => "929284", "type" => "2"}).
+          with(:body => {"name" => "my_name", "pass" => "my_password", "oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"}).
           should have_been_made
       end
     end
