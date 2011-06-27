@@ -30,7 +30,10 @@ module MtGox
     #   offers.asks[0, 3] #=> [[19.3898, 3.9], [19.4, 48.264], [19.409, 1]]
     #   offers.bids[0, 3] #=> [[19.3898, 77.42], [19.3, 3.02], [19.29, 82.378]]
     def offers
-      get('/code/data/getDepth.php')
+      o = get('/code/data/getDepth.php')
+      o['asks'] = o['asks'].sort_by {|x| x[0]}
+      o['bids'] = o['bids'].sort_by {|x| x[0]}.reverse
+      o
     end
 
     # Fetch open asks
