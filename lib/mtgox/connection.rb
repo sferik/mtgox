@@ -1,3 +1,5 @@
+require 'faraday'
+require 'faraday/response/raise_mtgox_error'
 require 'faraday_middleware'
 require 'mtgox/version'
 
@@ -20,6 +22,7 @@ module MtGox
         connection.use Faraday::Response::RaiseError
         connection.use Faraday::Response::Rashify
         connection.use Faraday::Response::ParseJson
+        connection.use Faraday::Response::RaiseMtGoxError
         connection.adapter(Faraday.default_adapter)
       end
     end

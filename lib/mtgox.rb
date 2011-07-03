@@ -1,4 +1,5 @@
 require 'mtgox/client'
+require 'mtgox/error'
 
 module MtGox
   class << self
