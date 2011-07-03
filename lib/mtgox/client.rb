@@ -126,7 +126,9 @@ module MtGox
     #   # Buy one bitcoin for $0.011
     #   MtGox.buy! 1.0, 0.011
     def buy!(amount, price)
-      post('/code/buyBTC.php', pass_params.merge({:amount => amount, :price => price}))
+      post('/code/buyBTC.php', pass_params.merge({:amount => amount, :price => price}))['orders'].each do |order|
+        order['date'] = Time.at(order['date'])
+      end
     end
 
     # Place a limit order to sell BTC
@@ -139,7 +141,9 @@ module MtGox
     #   # Sell one bitcoin for $100
     #   MtGox.sell! 1.0, 100.0
     def sell!(amount, price)
-      post('/code/sellBTC.php', pass_params.merge({:amount => amount, :price => price}))
+      post('/code/sellBTC.php', pass_params.merge({:amount => amount, :price => price}))['orders'].each do |order|
+        order['date'] = Time.at(order['date'])
+      end
     end
 
     # Cancel an open order
