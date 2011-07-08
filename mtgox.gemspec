@@ -3,7 +3,7 @@ require File.expand_path('../lib/mtgox/version', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.name        = 'mtgox'
-  gem.version     = MtGox::VERSION
+  gem.version     = MtGox::VERSION.dup
   gem.author      = "Erik Michaels-Ober"
   gem.email       = 'sferik@gmail.com'
   gem.homepage    = 'https://github.com/sferik/mtgox'
