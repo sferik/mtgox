@@ -85,7 +85,7 @@ module MtGox
     # @authenticated true
     # @return [<Hashie::Rash>] with keys `buy` and `sell`, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Client#sells}
     # @example
-    #   MtGox.orders[0, 3]  #=> [<#Hashie::Rash amount=0.73 dark="0" date="1307949196" oid="929284" price=2 status=:active type=2>, <#Hashie::Rash amount=0.36 dark="0" date="1307949201" oid="929288" price=4 status=:active type=2>, <#Hashie::Rash amount=0.24 dark="0" date="1307949212" oid="929292" price=6 status=:active type=2>]
+    #   MtGox.orders[0, 3] #=> [<#Hashie::Rash amount=0.73 dark="0" date=2011-06-13 00:13:16 -0700 oid="929284" price=2 status=:active type=2>, <#Hashie::Rash amount=0.36 dark="0" date=2011-06-13 00:13:21 -0700 oid="929288" price=4 status=:active type=2>, <#Hashie::Rash amount=0.24 dark="0" date=2011-06-13 00:13:32 -0700 oid="929292" price=6 status=:active type=2>]
     def orders
       post('/code/getOrders.php', pass_params)['orders'].each do |order|
         order['date'] = Time.at(order['date'])
@@ -97,7 +97,7 @@ module MtGox
     # @authenticated true
     # @return [Array<Hashie::Rash>] an array of your open bids, sorted in price ascending order with the keys `amount`, `dark`, `date`, `oid`, `price`, `status`, and `type`
     # @example
-    #   MtGox.buys[0, 3] #=> [<#Hashie::Rash amount=0.73 dark="0" date="1307949196" oid="929284" price=2 status=:active type=2>, <#Hashie::Rash amount=0.36 dark="0" date="1307949201" oid="929288" price=4 status=:active type=2>, <#Hashie::Rash amount=0.24 dark="0" date="1307949212" oid="929292" price=6 status=:active type=2>]
+    #   MtGox.buys[0, 3] #=> [<#Hashie::Rash amount=0.73 dark="0" date=2011-06-13 00:13:16 -0700 oid="929284" price=2 status=:active type=2>, <#Hashie::Rash amount=0.36 dark="0" date=2011-06-13 00:13:21 -0700 oid="929288" price=4 status=:active type=2>, <#Hashie::Rash amount=0.24 dark="0" date=2011-06-13 00:13:32 -0700 oid="929292" price=6 status=:active type=2>]
     def buys
       orders.select do |o|
         o['type'] == ORDER_TYPES[:buy]
@@ -109,7 +109,7 @@ module MtGox
     # @authenticated true
     # @return [Array<Hashie::Rash>] an array of your open asks, sorted in price ascending order with the keys `amount`, `dark`, `date`, `oid`, `price`, `status`, and `type`
     # @example
-    #   MtGox.sells[0, 3] #=> [<#Hashie::Rash amount=0.1 dark="0" date="1307949384" oid="663465" price=24.92 status=nil type=1>, <#Hashie::Rash amount=0.12 dark="0" date="1307949391" oid="663468" price=25.65 status=nil type=1>, <#Hashie::Rash amount=0.15 dark="0" date="1307949396" oid="663470" price=26.38 status=nil type=1>]
+    #   MtGox.sells[0, 3] #=> [<#Hashie::Rash amount=0.1 dark="0" date=2011-06-13 00:16:24 -0700 oid="663465" price=24.92 status=nil type=1>, <#Hashie::Rash amount=0.12 dark="0" date=2011-06-13 00:16:31 -0700 oid="663468" price=25.65 status=nil type=1>, <#Hashie::Rash amount=0.15 dark="0" date=2011-06-13 00:16:36 -0700 oid="663470" price=26.38 status=nil type=1>]
     def sells
       orders.select do |o|
         o['type'] == ORDER_TYPES[:sell]
