@@ -87,9 +87,7 @@ module MtGox
     # @example
     #   MtGox.orders[0, 3] #=> [<#Hashie::Rash amount=0.73 dark="0" date=2011-06-13 00:13:16 -0700 oid="929284" price=2 status=:active type=2>, <#Hashie::Rash amount=0.36 dark="0" date=2011-06-13 00:13:21 -0700 oid="929288" price=4 status=:active type=2>, <#Hashie::Rash amount=0.24 dark="0" date=2011-06-13 00:13:32 -0700 oid="929292" price=6 status=:active type=2>]
     def orders
-      post('/code/getOrders.php', pass_params)['orders'].each do |order|
-        order['date'] = Time.at(order['date'])
-      end
+      parse_orders(post('/code/getOrders.php', pass_params)['orders'])
     end
 
     # Fetch your open buys
@@ -126,9 +124,7 @@ module MtGox
     #   # Buy one bitcoin for $0.011
     #   MtGox.buy! 1.0, 0.011
     def buy!(amount, price)
-      post('/code/buyBTC.php', pass_params.merge({:amount => amount, :price => price}))['orders'].each do |order|
-        order['date'] = Time.at(order['date'])
-      end
+      parse_orders(post('/code/buyBTC.php', pass_params.merge({:amount => amount, :price => price}))['orders'])
     end
 
     # Place a limit order to sell BTC
@@ -141,9 +137,7 @@ module MtGox
     #   # Sell one bitcoin for $100
     #   MtGox.sell! 1.0, 100.0
     def sell!(amount, price)
-      post('/code/sellBTC.php', pass_params.merge({:amount => amount, :price => price}))['orders'].each do |order|
-        order['date'] = Time.at(order['date'])
-      end
+      parse_orders(post('/code/sellBTC.php', pass_params.merge({:amount => amount, :price => price}))['orders'])
     end
 
     # Cancel an open order
@@ -192,6 +186,12 @@ module MtGox
     end
 
     private
+
+    def parse_orders(orders)
+      orders.each do |order|
+        order['date'] = Time.at(order['date'])
+      end
+    end
 
     def pass_params
       {:name => MtGox.name, :pass => MtGox.pass}
