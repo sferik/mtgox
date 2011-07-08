@@ -1,13 +1,10 @@
 require 'mtgox/client'
+require 'mtgox/configuration'
 require 'mtgox/error'
 
 module MtGox
+  extend Configuration
   class << self
-    attr_accessor :name, :pass
-    def configure
-      yield self
-    end
-
     # Alias for MtGox::Client.new
     #
     # @return [MtGox::Client]
