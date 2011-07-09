@@ -189,7 +189,9 @@ module MtGox
 
     def parse_orders(orders)
       orders.each do |order|
-        order['date'] = Time.at(order['date'])
+        order['amount'] = order['amount'].to_f
+        order['date']   = Time.at(order['date'])
+        order['price']  = order['price'].to_f
       end
     end
 
