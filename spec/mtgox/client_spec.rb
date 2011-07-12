@@ -33,6 +33,7 @@ describe MtGox::Client do
         asks = @client.asks
         a_get('/code/data/getDepth.php').should have_been_made
         asks.last.price.should == 23.75
+        asks.last.eprice.should == 23.905385002516354
         asks.last.amount.should == 50
       end
 
@@ -48,6 +49,7 @@ describe MtGox::Client do
         bids = @client.bids
         a_get('/code/data/getDepth.php').should have_been_made
         bids.last.price.should == 14.62101
+        bids.last.eprice.should == 14.525973435000001
         bids.last.amount.should == 5
       end
 
@@ -62,8 +64,10 @@ describe MtGox::Client do
         offers = @client.offers
         a_get('/code/data/getDepth.php').should have_been_made.once
         offers.asks.last.price.should == 23.75
+        offers.asks.last.eprice.should == 23.905385002516354
         offers.asks.last.amount.should == 50
         offers.bids.last.price.should == 14.62101
+        offers.bids.last.eprice.should == 14.525973435000001
         offers.bids.last.amount.should == 5
       end
     end
@@ -73,6 +77,7 @@ describe MtGox::Client do
         min_ask = @client.min_ask
         a_get('/code/data/getDepth.php').should have_been_made.once
         min_ask.price.should == 17.00009
+        min_ask.eprice.should == 17.11131353799698
         min_ask.amount.should == 36.22894353
       end
     end
@@ -82,6 +87,7 @@ describe MtGox::Client do
         max_bid = @client.max_bid
         a_get('/code/data/getDepth.php').should have_been_made.once
         max_bid.price.should == 17.0
+        max_bid.eprice.should == 16.8895
         max_bid.amount.should == 82.53875035
       end
     end
