@@ -1,6 +1,6 @@
-require 'hashie'
 require 'faraday/error'
-require 'rash'
+require 'mtgox/ask'
+require 'mtgox/bid'
 require 'mtgox/connection'
 require 'mtgox/request'
 
@@ -27,21 +27,25 @@ module MtGox
     # @return [Hashie::Rash] a hash with keys :asks and :bids, which contain arrays as described in #asks and #bids.
     # @example
     #   offers = MtGox.offers
-    #   offers.asks[0, 3] #=> [[19.3898, 3.9], [19.4, 48.264], [19.409, 1]]
-    #   offers.bids[0, 3] #=> [[19.3898, 77.42], [19.3, 3.02], [19.29, 82.378]]
+    #   offers.asks[0, 3]
+    #   offers.bids[0, 3]
     def offers
       offers = get('/code/data/getDepth.php')
-      offers['asks'] = offers['asks'].sort_by{|a| a[0]}
-      offers['bids'] = offers['bids'].sort_by{|b| b[0]}.reverse
+      offers['asks'] = offers['asks'].sort_by{|ask| ask[0].to_f}.map do |ask|
+        Ask.new({:price => ask[0].to_f, :amount => ask[1].to_f})
+      end
+      offers['bids'] = offers['bids'].sort_by{|bid| bid[0].to_f}.reverse.map do |bid|
+        Bid.new({:price => bid[0].to_f, :amount => bid[1].to_f})
+      end
       offers
     end
 
     # Fetch open asks
     #
     # @authenticated false
-    # @return [Array<Array<Numeric>>] in the form `[price, quantity]`, sorted in price ascending order
+    # @return [Array<Ask>] in the form `[price, amount]`, sorted in price ascending order
     # @example
-    #   MtGox.asks[0, 3] #=> [[19.3898, 3.9], [19.4, 48.264], [19.409, 1]]
+    #   MtGox.asks[0, 3]
     def asks
       offers['asks']
     end
@@ -49,9 +53,9 @@ module MtGox
     # Fetch open bids
     #
     # @authenticated false
-    # @return [Array<Array<Numeric>>] in the form `[price, quantity]`, sorted in price descending order
+    # @return [Array<Bid>] in the form `[price, amount]`, sorted in price descending order
     # @example
-    #   MtGox.bids[0, 3] #=> [[19.3898, 77.42], [19.3, 3.02], [19.29, 82.378]]
+    #   MtGox.bids[0, 3]
     def bids
       offers['bids']
     end

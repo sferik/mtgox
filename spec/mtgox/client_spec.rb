@@ -32,12 +32,13 @@ describe MtGox::Client do
       it "should fetch open asks" do
         asks = @client.asks
         a_get('/code/data/getDepth.php').should have_been_made
-        asks.last.should == [23.75, 50]
+        asks.last.price.should == 23.75
+        asks.last.amount.should == 50
       end
 
       it "should be sorted in price-ascending order" do
         asks = @client.asks
-        asks.sort_by {|x| x[0]}.should == asks
+        asks.sort_by{|ask| ask.price}.should == asks
       end
 
     end
@@ -46,12 +47,13 @@ describe MtGox::Client do
       it "should fetch open bids" do
         bids = @client.bids
         a_get('/code/data/getDepth.php').should have_been_made
-        bids.last.should == [14.62101, 5]
+        bids.last.price.should == 14.62101
+        bids.last.amount.should == 5
       end
 
       it "should be sorted in price-descending order" do
         bids = @client.bids
-        bids.sort_by {|x| x[0]}.reverse.should == bids
+        bids.sort_by{|bid| bid.price}.reverse.should == bids
       end
 
     end
@@ -60,8 +62,10 @@ describe MtGox::Client do
       it "should fetch both bids and asks, with only one call" do
         offers = @client.offers
         a_get('/code/data/getDepth.php').should have_been_made.once
-        offers.asks.last.should == [23.75, 50]
-        offers.bids.last.should == [14.62101, 5]
+        offers.asks.last.price.should == 23.75
+        offers.asks.last.amount.should == 50
+        offers.bids.last.price.should == 14.62101
+        offers.bids.last.amount.should == 5
       end
     end
 
