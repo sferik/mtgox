@@ -2,6 +2,8 @@ require 'faraday/error'
 require 'mtgox/ask'
 require 'mtgox/bid'
 require 'mtgox/connection'
+require 'mtgox/max_bid'
+require 'mtgox/min_ask'
 require 'mtgox/request'
 
 module MtGox
@@ -58,6 +60,32 @@ module MtGox
     #   MtGox.bids[0, 3]
     def bids
       offers['bids']
+    end
+
+    # Fetch the lowest priced ask
+    #
+    # @authenticated false
+    # @return [MinAsk]
+    # @example
+    #   MtGox.min_ask
+    def min_ask
+      min_ask = asks.first
+      MinAsk.instance.price = min_ask.price
+      MinAsk.instance.amount = min_ask.amount
+      MinAsk.instance
+    end
+
+    # Fetch the highest priced bid
+    #
+    # @authenticated false
+    # @return [MinBin]
+    # @example
+    #   MtGox.max_bid
+    def max_bid
+      max_bid = bids.first
+      MaxBid.instance.price = max_bid.price
+      MaxBid.instance.amount = max_bid.amount
+      MaxBid.instance
     end
 
     # Fetch recent trades

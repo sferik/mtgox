@@ -55,7 +55,6 @@ describe MtGox::Client do
         bids = @client.bids
         bids.sort_by{|bid| bid.price}.reverse.should == bids
       end
-
     end
 
     describe "#offers" do
@@ -66,6 +65,24 @@ describe MtGox::Client do
         offers.asks.last.amount.should == 50
         offers.bids.last.price.should == 14.62101
         offers.bids.last.amount.should == 5
+      end
+    end
+
+    describe '#min_ask' do
+      it "should fetch the lowest priced ask" do
+        min_ask = @client.min_ask
+        a_get('/code/data/getDepth.php').should have_been_made.once
+        min_ask.price.should == 17.00009
+        min_ask.amount.should == 36.22894353
+      end
+    end
+
+    describe '#max_bid' do
+      it "should fetch the highest priced bid" do
+        max_bid = @client.max_bid
+        a_get('/code/data/getDepth.php').should have_been_made.once
+        max_bid.price.should == 17.0
+        max_bid.amount.should == 82.53875035
       end
     end
 
