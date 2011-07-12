@@ -12,15 +12,15 @@ module MtGox
     end
 
     def up?
-      price > previous_price.to_f
+      price.to_f > previous_price.to_f
     end
 
     def down?
-      price < previous_price.to_f
+      price.to_f < previous_price.to_f
     end
 
     def changed?
-      price != previous_price.to_f
+      price.to_f != previous_price.to_f
     end
 
     def unchanged?
