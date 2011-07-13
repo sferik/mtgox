@@ -63,12 +63,12 @@ describe MtGox::Client do
       it "should fetch both bids and asks, with only one call" do
         offers = @client.offers
         a_get('/code/data/getDepth.php').should have_been_made.once
-        offers.asks.last.price.should == 23.75
-        offers.asks.last.eprice.should == 23.905385002516354
-        offers.asks.last.amount.should == 50
-        offers.bids.last.price.should == 14.62101
-        offers.bids.last.eprice.should == 14.525973435000001
-        offers.bids.last.amount.should == 5
+        offers[:asks].last.price.should == 23.75
+        offers[:asks].last.eprice.should == 23.905385002516354
+        offers[:asks].last.amount.should == 50
+        offers[:bids].last.price.should == 14.62101
+        offers[:bids].last.eprice.should == 14.525973435000001
+        offers[:bids].last.amount.should == 5
       end
     end
 
@@ -156,8 +156,8 @@ describe MtGox::Client do
         a_post("/code/getOrders.php").
           with(:body => {"name" => "my_name", "pass" => "my_password"}).
           should have_been_made
-        sells.last.price.should == 101
-        sells.last.date.should == Time.utc(2011, 6, 27, 18, 20, 7)
+        sells.last.price.should == 99.0
+        sells.last.date.should == Time.utc(2011, 6, 27, 18, 20, 20)
       end
     end
 
@@ -167,8 +167,10 @@ describe MtGox::Client do
         a_post("/code/getOrders.php").
           with(:body => {"name" => "my_name", "pass" => "my_password"}).
           should have_been_made
-        orders.last.price.should == 101
-        orders.last.date.should == Time.utc(2011, 6, 27, 18, 20, 7)
+        orders[:buys].last.price.should == 7.0
+        orders[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 20, 38)
+        orders[:sells].last.price.should == 99.0
+        orders[:sells].last.date.should == Time.utc(2011, 6, 27, 18, 20, 20)
       end
     end
   end
@@ -181,10 +183,14 @@ describe MtGox::Client do
     end
 
     it "should place a bid" do
-      @client.buy!(0.88, 0.89)
+      buy = @client.buy!(0.88, 0.89)
       a_post("/code/buyBTC.php").
         with(:body => {"name" => "my_name", "pass" => "my_password", "amount" => "0.88", "price" => "0.89"}).
         should have_been_made
+      buy[:buys].last.price.should == 2.0
+      buy[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 26, 21)
+      buy[:sells].last.price.should == 99.0
+      buy[:sells].last.date.should == Time.utc(2011, 6, 27, 18, 20, 20)
     end
   end
 
@@ -196,10 +202,14 @@ describe MtGox::Client do
     end
 
     it "should place an ask" do
-      @client.sell!(0.88, 89.0)
+      sell = @client.sell!(0.88, 89.0)
       a_post("/code/sellBTC.php").
         with(:body => {"name" => "my_name", "pass" => "my_password", "amount" => "0.88", "price" => "89.0"}).
         should have_been_made
+      sell[:buys].last.price.should == 2.0
+      sell[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 26, 21)
+      sell[:sells].last.price.should == 200
+      sell[:sells].last.date.should == Time.utc(2011, 6, 27, 18, 27, 54)
     end
   end
 
@@ -215,13 +225,17 @@ describe MtGox::Client do
 
     context "with a valid oid passed" do
       it "should cancel an order" do
-        @client.cancel("bddd042c-e837-4a88-a92e-3b7c05e483df")
+        cancel = @client.cancel("bddd042c-e837-4a88-a92e-3b7c05e483df")
         a_post("/code/getOrders.php").
           with(:body => {"name" => "my_name", "pass" => "my_password"}).
           should have_been_made.once
         a_post('/code/cancelOrder.php').
           with(:body => {"name" => "my_name", "pass" => "my_password", "oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"}).
           should have_been_made
+        cancel[:buys].last.price.should == 7.0
+        cancel[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 20, 38)
+        cancel[:sells].last.price.should == 99.0
+        cancel[:sells].last.date.should == Time.utc(2011, 6, 27, 18, 20, 20)
       end
     end
 
@@ -235,10 +249,14 @@ describe MtGox::Client do
 
     context "with an order passed" do
       it "should cancel an order" do
-        @client.cancel({'oid' => "bddd042c-e837-4a88-a92e-3b7c05e483df", 'type' => 2})
+        cancel = @client.cancel({'oid' => "bddd042c-e837-4a88-a92e-3b7c05e483df", 'type' => 2})
         a_post('/code/cancelOrder.php').
           with(:body => {"name" => "my_name", "pass" => "my_password", "oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"}).
           should have_been_made
+        cancel[:buys].last.price.should == 7.0
+        cancel[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 20, 38)
+        cancel[:sells].last.price.should == 99.0
+        cancel[:sells].last.date.should == Time.utc(2011, 6, 27, 18, 20, 20)
       end
     end
   end

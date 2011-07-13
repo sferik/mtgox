@@ -61,7 +61,7 @@ Usage Examples
       config.pass = YOUR_MTGOX_PASSWORD
     end
 
-    # Get your current balance
+    # Fetch your current balance
     puts MtGox.balance
 
     # Place a limit order to buy one bitcoin for $0.011

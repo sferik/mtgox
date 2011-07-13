@@ -1,6 +1,8 @@
 require 'faraday/error'
 require 'mtgox/ask'
 require 'mtgox/bid'
+require 'mtgox/buy'
+require 'mtgox/sell'
 require 'mtgox/connection'
 require 'mtgox/max_bid'
 require 'mtgox/min_ask'
@@ -26,50 +28,48 @@ module MtGox
     # Fetch both bids and asks in one call, for network efficiency
     #
     # @authenticated false
-    # @return [Hashie::Rash] a hash with keys :asks and :bids, which contain arrays as described in #asks and #bids.
+    # @return [Hash] with keys :asks and :asks, which contain arrays as described in {MtGox::Client#asks} and {MtGox::Clients#bids}
     # @example
-    #   offers = MtGox.offers
-    #   offers.asks[0, 3]
-    #   offers.bids[0, 3]
+    #   MtGox.offers
     def offers
       offers = get('/code/data/getDepth.php')
-      offers['asks'] = offers['asks'].sort_by do |ask|
+      asks = offers['asks'].sort_by do |ask|
         ask[0].to_f
       end.map! do |ask|
         Ask.new(*ask)
       end
-      offers['bids'] = offers['bids'].sort_by do |bid|
+      bids = offers['bids'].sort_by do |bid|
         -bid[0].to_f
       end.map! do |bid|
         Bid.new(*bid)
       end
-      offers
+      {:asks => asks, :bids => bids}
     end
 
     # Fetch open asks
     #
     # @authenticated false
-    # @return [Array<Ask>] in the form `[price, amount]`, sorted in price ascending order
+    # @return [Array<MtGox::Ask>] an array of open asks, sorted in price ascending order
     # @example
-    #   MtGox.asks[0, 3]
+    #   MtGox.asks
     def asks
-      offers['asks']
+      offers[:asks]
     end
 
     # Fetch open bids
     #
     # @authenticated false
-    # @return [Array<Bid>] in the form `[price, amount]`, sorted in price descending order
+    # @return [Array<MtGox::Bid>] an array of open bids, sorted in price descending order
     # @example
-    #   MtGox.bids[0, 3]
+    #   MtGox.bids
     def bids
-      offers['bids']
+      offers[:bids]
     end
 
     # Fetch the lowest priced ask
     #
     # @authenticated false
-    # @return [MinAsk]
+    # @return [MtGox::MinAsk]
     # @example
     #   MtGox.min_ask
     def min_ask
@@ -82,7 +82,7 @@ module MtGox
     # Fetch the highest priced bid
     #
     # @authenticated false
-    # @return [MinBid]
+    # @return [MtGox::MinBid]
     # @example
     #   MtGox.max_bid
     def max_bid
@@ -106,7 +106,7 @@ module MtGox
       end
     end
 
-    # Fetch your balance
+    # Fetch your current balance
     #
     # @authenticated true
     # @return [Hashie::Rash] with keys `btcs` - amount of bitcoins in your account and `usds` - amount of US dollars in your account
@@ -119,9 +119,9 @@ module MtGox
     # Fetch your open orders, both buys and sells, for network efficiency
     #
     # @authenticated true
-    # @return [<Hashie::Rash>] with keys `buy` and `sell`, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Client#sells}
+    # @return [Hash] with keys :buys and :sells, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Clients#sells}
     # @example
-    #   MtGox.orders[0, 3] #=> [<#Hashie::Rash amount=0.73 dark="0" date=2011-06-13 00:13:16 -0700 oid="929284" price=2 status=:active type=2>, <#Hashie::Rash amount=0.36 dark="0" date=2011-06-13 00:13:21 -0700 oid="929288" price=4 status=:active type=2>, <#Hashie::Rash amount=0.24 dark="0" date=2011-06-13 00:13:32 -0700 oid="929292" price=6 status=:active type=2>]
+    #   MtGox.orders
     def orders
       parse_orders(post('/code/getOrders.php', pass_params)['orders'])
     end
@@ -129,25 +129,21 @@ module MtGox
     # Fetch your open buys
     #
     # @authenticated true
-    # @return [Array<Hashie::Rash>] an array of your open bids, sorted in price ascending order with the keys `amount`, `dark`, `date`, `oid`, `price`, `status`, and `type`
+    # @return [Array<MtGox::Buy>] an array of your open bids, sorted by date
     # @example
-    #   MtGox.buys[0, 3] #=> [<#Hashie::Rash amount=0.73 dark="0" date=2011-06-13 00:13:16 -0700 oid="929284" price=2 status=:active type=2>, <#Hashie::Rash amount=0.36 dark="0" date=2011-06-13 00:13:21 -0700 oid="929288" price=4 status=:active type=2>, <#Hashie::Rash amount=0.24 dark="0" date=2011-06-13 00:13:32 -0700 oid="929292" price=6 status=:active type=2>]
+    #   MtGox.buys
     def buys
-      orders.select do |o|
-        o['type'] == ORDER_TYPES[:buy]
-      end
+      orders[:buys]
     end
 
     # Fetch your open sells
     #
     # @authenticated true
-    # @return [Array<Hashie::Rash>] an array of your open asks, sorted in price ascending order with the keys `amount`, `dark`, `date`, `oid`, `price`, `status`, and `type`
+    # @return [Array<MtGox::Sell>] an array of your open asks, sorted by date
     # @example
-    #   MtGox.sells[0, 3] #=> [<#Hashie::Rash amount=0.1 dark="0" date=2011-06-13 00:16:24 -0700 oid="663465" price=24.92 status=nil type=1>, <#Hashie::Rash amount=0.12 dark="0" date=2011-06-13 00:16:31 -0700 oid="663468" price=25.65 status=nil type=1>, <#Hashie::Rash amount=0.15 dark="0" date=2011-06-13 00:16:36 -0700 oid="663470" price=26.38 status=nil type=1>]
+    #   MtGox.sells
     def sells
-      orders.select do |o|
-        o['type'] == ORDER_TYPES[:sell]
-      end
+      orders[:sells]
     end
 
     # Place a limit order to buy BTC
@@ -155,7 +151,7 @@ module MtGox
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to purchase
     # @param price [Numeric] the bid price in US dollars
-    # @return [Array<Hashie::Rash>]
+    # @return [Hash] with keys :buys and :sells, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Clients#sells}
     # @example
     #   # Buy one bitcoin for $0.011
     #   MtGox.buy! 1.0, 0.011
@@ -168,7 +164,7 @@ module MtGox
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to sell
     # @param price [Numeric] the ask price in US dollars
-    # @return [Array<Hashie::Rash>]
+    # @return [Hash] with keys :buys and :sells, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Clients#sells}
     # @example
     #   # Sell one bitcoin for $100
     #   MtGox.sell! 1.0, 100.0
@@ -181,14 +177,14 @@ module MtGox
     # @authenticated true
     # @overload cancel(oid)
     #   @param oid [String] an order ID
-    #   @return Array<Hashie::Rash>
+    #   @return [Hash] with keys :buys and :sells, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Clients#sells}
     #   @example
     #     my_order = MtGox.orders.first
     #     MtGox.cancel my_order.oid
     #     MtGox.cancel 1234567890
     # @overload cancel(order)
     #   @param order [Hash] a hash-like object, with keys `oid` - the order ID of the transaction to cancel and `type` - the type of order to cancel (`1` for sell or `2` for buy)
-    #   @return Array<Hashie::Rash>
+    #   @return [Hash] with keys :buys and :sells, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Clients#sells}
     #   @example
     #     my_order = MtGox.orders.first
     #     MtGox.cancel my_order
@@ -196,12 +192,13 @@ module MtGox
     def cancel(args)
       if args.is_a?(Hash)
         order = args.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
-        post('/code/cancelOrder.php', pass_params.merge(order))
+        parse_orders(post('/code/cancelOrder.php', pass_params.merge(order))['orders'])
       else
-        order = orders.select{|o| o['oid'] == args.to_s}.first
+        orders = post('/code/getOrders.php', pass_params)['orders']
+        order = orders.find{|order| order['oid'] == args.to_s}
         if order
           order = order.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
-          post('/code/cancelOrder.php', pass_params.merge(order))
+          parse_orders(post('/code/cancelOrder.php', pass_params.merge(order))['orders'])
         else
           raise Faraday::Error::ResourceNotFound, {:status => 404, :headers => {}, :body => "Order not found."}
         end
@@ -224,11 +221,17 @@ module MtGox
     private
 
     def parse_orders(orders)
-      orders.each do |order|
-        order['amount'] = order['amount'].to_f
-        order['date']   = Time.at(order['date'])
-        order['price']  = order['price'].to_f
+      buys = []
+      sells = []
+      orders.sort_by{|order| order['date']}.each do |order|
+        case order['type']
+        when ORDER_TYPES[:sell]
+          sells << Sell.new(order)
+        when ORDER_TYPES[:buy]
+          buys << Buy.new(order)
+        end
       end
+      {:buys => buys, :sells => sells}
     end
 
     def pass_params
