@@ -232,7 +232,7 @@ module MtGox
     end
 
     def pass_params
-      {:name => MtGox.name, :pass => MtGox.pass}
+      {:name => MtGox.username, :pass => MtGox.password}
     end
   end
 end

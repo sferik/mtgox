@@ -4,8 +4,8 @@ describe MtGox::Client do
   before do
     @client = MtGox::Client.new
     MtGox.configure do |config|
-      config.name = "my_name"
-      config.pass = "my_password"
+      config.username = "my_name"
+      config.password = "my_password"
     end
   end
 

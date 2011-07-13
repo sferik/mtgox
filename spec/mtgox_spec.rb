@@ -8,14 +8,14 @@ describe MtGox do
   end
 
   describe ".configure" do
-    it "should set 'name' and 'pass'" do
+    it "should set 'username' and 'password'" do
       MtGox.configure do |config|
-        config.name = "username"
-        config.pass = "password"
+        config.username = "username"
+        config.password = "password"
       end
 
-      MtGox.name.should == "username"
-      MtGox.pass.should == "password"
+      MtGox.username.should == "username"
+      MtGox.password.should == "password"
     end
   end
 
