@@ -1,3 +1,3 @@
 module MtGox
-  VERSION = "0.6.0".freeze unless defined? ::MtGox::VERSION
+  VERSION = "0.7.0".freeze unless defined? ::MtGox::VERSION
 end
