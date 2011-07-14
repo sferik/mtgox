@@ -139,8 +139,10 @@ describe MtGox::Client do
       a_post("/code/getFunds.php").
         with(:body => {"name" => "my_name", "pass" => "my_password"}).
         should have_been_made
-      balance.usds.should == 3.7
-      balance.btcs.should == 22.0
+      balance.first.currency.should == "BTC"
+      balance.first.amount.should == 22.0
+      balance.last.currency.should == "USD"
+      balance.last.amount.should == 3.7
     end
   end
 
@@ -281,10 +283,14 @@ describe MtGox::Client do
     end
 
     it "should withdraw funds" do
-      @client.withdraw!(1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L")
+      withdraw = @client.withdraw!(1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L")
       a_post("/code/withdraw.php").
         with(:body => {"name" => "my_name", "pass" => "my_password", "group1" => "BTC", "amount" => "1.0", "btca" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"}).
         should have_been_made
+      withdraw.first.currency.should == "BTC"
+      withdraw.first.amount.should == 9.0
+      withdraw.last.currency.should == "USD"
+      withdraw.last.amount.should == 64.59
     end
   end
 end

@@ -1,14 +1,15 @@
 require 'faraday/error'
 require 'mtgox/ask'
+require 'mtgox/balance'
 require 'mtgox/bid'
 require 'mtgox/buy'
-require 'mtgox/sell'
-require 'mtgox/ticker'
-require 'mtgox/trade'
 require 'mtgox/connection'
 require 'mtgox/max_bid'
 require 'mtgox/min_ask'
 require 'mtgox/request'
+require 'mtgox/sell'
+require 'mtgox/ticker'
+require 'mtgox/trade'
 
 module MtGox
   class Client
@@ -116,11 +117,11 @@ module MtGox
     # Fetch your current balance
     #
     # @authenticated true
-    # @return [Hashie::Rash] with keys `btcs` - amount of bitcoins in your account and `usds` - amount of US dollars in your account
+    # @return [Array<MtGox::Balance>]
     # @example
-    #   MtGox.balance #=> <#Hashie::Rash btcs=3.7 usds=12>
+    #   MtGox.balance
     def balance
-      post('/code/getFunds.php', pass_params)
+      parse_balance(post('/code/getFunds.php', pass_params))
     end
 
     # Fetch your open orders, both buys and sells, for network efficiency
@@ -195,7 +196,7 @@ module MtGox
     #   @example
     #     my_order = MtGox.orders.first
     #     MtGox.cancel my_order
-    #     MtGox.cancel {"oid" => "1234567890", "type" => 2}
+    #     MtGox.cancel {'oid' => '1234567890', 'type' => 2}
     def cancel(args)
       if args.is_a?(Hash)
         order = args.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
@@ -207,7 +208,7 @@ module MtGox
           order = order.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
           parse_orders(post('/code/cancelOrder.php', pass_params.merge(order))['orders'])
         else
-          raise Faraday::Error::ResourceNotFound, {:status => 404, :headers => {}, :body => "Order not found."}
+          raise Faraday::Error::ResourceNotFound, {:status => 404, :headers => {}, :body => 'Order not found.'}
         end
       end
     end
@@ -217,15 +218,22 @@ module MtGox
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to withdraw
     # @param btca [String] the bitcoin address to send to
-    # @return [Array<Hashie::Rash>]
+    # @return [Array<MtGox::Balance>]
     # @example
     #   # Withdraw 1 BTC from your account
-    #   MtGox.withdraw! 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"
+    #   MtGox.withdraw! 1.0, '1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L'
     def withdraw!(amount, btca)
-      post('/code/withdraw.php', pass_params.merge({:group1 => "BTC", :amount => amount, :btca => btca}))
+      parse_balance(post('/code/withdraw.php', pass_params.merge({:group1 => 'BTC', :amount => amount, :btca => btca})))
     end
 
     private
+
+    def parse_balance(balance)
+      balances = []
+      balances << Balance.new('BTC', balance['btcs'])
+      balances << Balance.new('USD', balance['usds'])
+      balances
+    end
 
     def parse_orders(orders)
       buys = []
