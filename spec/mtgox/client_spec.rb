@@ -17,8 +17,14 @@ describe MtGox::Client do
 
     it "should fetch the ticker" do
       ticker = @client.ticker
-      a_get('/code/data/ticker.php').should have_been_made
-      ticker.last.should == 26.5
+      a_get('/code/data/ticker.php').
+        should have_been_made
+      ticker.buy.should  == 26.4
+      ticker.sell.should == 26.6099
+      ticker.high.should == 28.678
+      ticker.low.should  == 18.4
+      ticker.price.should == 26.5
+      ticker.volume.should  == 80531.0
     end
   end
 
@@ -31,7 +37,8 @@ describe MtGox::Client do
     describe '#asks' do
       it "should fetch open asks" do
         asks = @client.asks
-        a_get('/code/data/getDepth.php').should have_been_made
+        a_get('/code/data/getDepth.php').
+          should have_been_made
         asks.last.price.should == 23.75
         asks.last.eprice.should == 23.905385002516354
         asks.last.amount.should == 50
@@ -47,7 +54,8 @@ describe MtGox::Client do
     describe "#bids" do
       it "should fetch open bids" do
         bids = @client.bids
-        a_get('/code/data/getDepth.php').should have_been_made
+        a_get('/code/data/getDepth.php').
+          should have_been_made
         bids.last.price.should == 14.62101
         bids.last.eprice.should == 14.525973435000001
         bids.last.amount.should == 5
@@ -62,7 +70,8 @@ describe MtGox::Client do
     describe "#offers" do
       it "should fetch both bids and asks, with only one call" do
         offers = @client.offers
-        a_get('/code/data/getDepth.php').should have_been_made.once
+        a_get('/code/data/getDepth.php').
+          should have_been_made.once
         offers[:asks].last.price.should == 23.75
         offers[:asks].last.eprice.should == 23.905385002516354
         offers[:asks].last.amount.should == 50
@@ -75,7 +84,8 @@ describe MtGox::Client do
     describe '#min_ask' do
       it "should fetch the lowest priced ask" do
         min_ask = @client.min_ask
-        a_get('/code/data/getDepth.php').should have_been_made.once
+        a_get('/code/data/getDepth.php').
+          should have_been_made.once
         min_ask.price.should == 17.00009
         min_ask.eprice.should == 17.11131353799698
         min_ask.amount.should == 36.22894353
@@ -85,7 +95,8 @@ describe MtGox::Client do
     describe '#max_bid' do
       it "should fetch the highest priced bid" do
         max_bid = @client.max_bid
-        a_get('/code/data/getDepth.php').should have_been_made.once
+        a_get('/code/data/getDepth.php').
+          should have_been_made.once
         max_bid.price.should == 17.0
         max_bid.eprice.should == 16.8895
         max_bid.amount.should == 82.53875035
@@ -102,7 +113,8 @@ describe MtGox::Client do
 
     it "should fetch trades" do
       trades = @client.trades
-      a_get('/code/data/getTrades.php').should have_been_made
+      a_get('/code/data/getTrades.php').
+        should have_been_made
       trades.last.date.should == Time.utc(2011, 6, 27, 18, 28, 8)
       trades.last.price.should == 17.00009
       trades.last.amount.should == 0.5

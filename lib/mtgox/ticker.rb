@@ -1,10 +1,10 @@
-require 'mtgox/bid'
 require 'mtgox/price_ticker'
 require 'singleton'
 
 module MtGox
-  class MaxBid < Bid
+  class Ticker
     include Singleton
     include PriceTicker
+    attr_accessor :buy, :sell, :high, :low, :volume
   end
 end

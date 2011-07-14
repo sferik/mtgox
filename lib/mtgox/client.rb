@@ -3,6 +3,7 @@ require 'mtgox/ask'
 require 'mtgox/bid'
 require 'mtgox/buy'
 require 'mtgox/sell'
+require 'mtgox/ticker'
 require 'mtgox/trade'
 require 'mtgox/connection'
 require 'mtgox/max_bid'
@@ -19,11 +20,18 @@ module MtGox
     # Fetch the latest ticker data
     #
     # @authenticated false
-    # @return [Hashie::Rash] with keys `buy` - current highest bid price, `sell` - current lowest ask price, `high` - highest price trade for the day, `low` - lowest price trade for the day, `last` - price of most recent trade, and `vol`
+    # @return [MtGox::Ticker]
     # @example
-    #   MtGox.ticker #=> <#Hashie::Rash buy=19.29 high=19.96 last=19.36 low=19.01 sell=19.375 vol=29470>
+    #   MtGox.ticker
     def ticker
-      get('/code/data/ticker.php')['ticker']
+      ticker = get('/code/data/ticker.php')['ticker']
+      Ticker.instance.buy    = ticker['buy'].to_f
+      Ticker.instance.high   = ticker['high'].to_f
+      Ticker.instance.price  = ticker['last'].to_f
+      Ticker.instance.low    = ticker['low'].to_f
+      Ticker.instance.sell   = ticker['sell'].to_f
+      Ticker.instance.volume = ticker['vol'].to_f
+      Ticker.instance
     end
 
     # Fetch both bids and asks in one call, for network efficiency
