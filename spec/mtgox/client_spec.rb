@@ -106,7 +106,7 @@ describe MtGox::Client do
       trades.last.date.should == Time.utc(2011, 6, 27, 18, 28, 8)
       trades.last.price.should == 17.00009
       trades.last.amount.should == 0.5
-      trades.last.tid.should == "1309199288687054"
+      trades.last.id.should == 1309199288687054
     end
 
     it "should be sorted in chronological order" do

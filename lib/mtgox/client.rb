@@ -3,6 +3,7 @@ require 'mtgox/ask'
 require 'mtgox/bid'
 require 'mtgox/buy'
 require 'mtgox/sell'
+require 'mtgox/trade'
 require 'mtgox/connection'
 require 'mtgox/max_bid'
 require 'mtgox/min_ask'
@@ -95,14 +96,12 @@ module MtGox
     # Fetch recent trades
     #
     # @authenticated false
-    # @return [Array<Hashie::Rash>] an array of trades, sorted in chronological order. Each trade is a `Hashie::Rash` with keys `amount` - number of bitcoins traded, `price` - price they were traded at in US dollars, `date` - time and date of the trade (a `Time` object), and `tid` - the trade ID.
+    # @return [Array<MtGox::Trade>] an array of trades, sorted in chronological order
     # @example
-    #   MtGox.trades[0, 3] #=> [<#Hashie::Rash amount=41 date=2011-06-14 11:26:32 -0700 price=18.5 tid="183747">, <#Hashie::Rash amount=5 date=2011-06-14 11:26:44 -0700 price=18.5 tid="183748">, <#Hashie::Rash amount=5 date=2011-06-14 11:27:00 -0700 price=18.42 tid="183749">]
+    #   MtGox.trades
     def trades
-      get('/code/data/getTrades.php').each do |trade|
-        trade['amount'] = trade['amount'].to_f
-        trade['date'] = Time.at(trade['date'])
-        trade['price'] = trade['price'].to_f
+      get('/code/data/getTrades.php').sort_by{|trade| trade['date']}.map do |trade|
+        Trade.new(trade)
       end
     end
 
