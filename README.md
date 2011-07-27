@@ -36,7 +36,7 @@ author, which you can do using the following script:
 
 Continuous Integration
 ----------------------
-[![Build Status](http://travis-ci.org/sferik/mtgox.png)](http://travis-ci.org/sferik/mtgox)
+[![Build Status](https://secure.travis-ci.org/sferik/mtgox.png)](http://travis-ci.org/sferik/mtgox)
 
 Usage Examples
 --------------
