@@ -23,7 +23,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'webmock', '~> 1.6'
   gem.add_development_dependency 'yard', '~> 0.7'
 
-  gem.add_runtime_dependency 'faraday', '~> 0.6.1'
-  gem.add_runtime_dependency 'faraday_middleware', '~> 0.6.3'
+  gem.add_runtime_dependency 'faraday', '~> 0.7.4'
+  gem.add_runtime_dependency 'faraday_middleware', '~> 0.7.0'
   gem.add_runtime_dependency 'multi_json', '~> 1.0.3'
 end
