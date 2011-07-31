@@ -28,8 +28,8 @@ author, which you can do using the following script:
 
     # Certain methods require authentication
     MtGox.configure do |config|
-      config.name = YOUR_MTGOX_USERNAME
-      config.pass = YOUR_MTGOX_PASSWORD
+      config.username = YOUR_MTGOX_USERNAME
+      config.password = YOUR_MTGOX_PASSWORD
     end
 
     MtGox.withdraw 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"
@@ -57,8 +57,8 @@ Usage Examples
 
     # Certain methods require authentication
     MtGox.configure do |config|
-      config.name = YOUR_MTGOX_USERNAME
-      config.pass = YOUR_MTGOX_PASSWORD
+      config.username = YOUR_MTGOX_USERNAME
+      config.password = YOUR_MTGOX_PASSWORD
     end
 
     # Fetch your current balance
