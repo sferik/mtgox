@@ -120,11 +120,6 @@ describe MtGox::Client do
       trades.last.amount.should == 0.5
       trades.last.id.should == 1309199288687054
     end
-
-    it "should be sorted in chronological order" do
-      trades = @client.trades
-      trades.sort_by(&:date).should == trades
-    end
   end
 
   describe '#balance' do
