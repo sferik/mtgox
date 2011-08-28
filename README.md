@@ -9,7 +9,7 @@ US Dollars.
 After installing the gem, you can get the current price for 1 BTC in USD by
 typing `btc` in your bash shell simply by setting the following alias:
 
-    alias btc='ruby -r rubygems -r mtgox -e "puts MtGox.ticker.last"'
+    alias btc='ruby -r rubygems -r mtgox -e "puts MtGox.ticker.sell"'
 
 ## <a name="documentation">Documentation</a>
 [http://rdoc.info/gems/mtgox](http://rdoc.info/gems/mtgox)
@@ -37,7 +37,7 @@ author, which you can do using the following script:
     require 'mtgox'
 
     # Fetch the latest price for 1 BTC in USD
-    puts MtGox.ticker.last
+    puts MtGox.ticker.sell
 
     # Fetch open asks
     puts MtGox.asks
