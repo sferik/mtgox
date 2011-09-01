@@ -30,7 +30,7 @@ author, which you can do using the following script:
     MtGox.withdraw 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"
 
 ## <a name="ci">Continuous Integration</a>
-[![Build Status](https://secure.travis-ci.org/sferik/mtgox.png)](http://travis-ci.org/sferik/mtgox)
+[![Build Status](https://travis-ci.org/sferik/mtgox.png)](http://travis-ci.org/sferik/mtgox)
 
 ## <a name="examples">Usage Examples</a>
     require 'rubygems'
