@@ -25,7 +25,7 @@ module MtGox
     # @example
     #   MtGox.ticker
     def ticker
-      ticker = get('/code/data/ticker.php')['ticker']
+      ticker = get('/api/0/data/ticker.php')['ticker']
       Ticker.instance.buy    = ticker['buy'].to_f
       Ticker.instance.high   = ticker['high'].to_f
       Ticker.instance.price  = ticker['last'].to_f
@@ -42,7 +42,7 @@ module MtGox
     # @example
     #   MtGox.offers
     def offers
-      offers = get('/code/data/getDepth.php')
+      offers = get('/api/0/data/getDepth.php')
       asks = offers['asks'].sort_by do |ask|
         ask[0].to_f
       end.map! do |ask|
@@ -109,7 +109,7 @@ module MtGox
     # @example
     #   MtGox.trades
     def trades
-      get('/code/data/getTrades.php').sort_by{|trade| trade['date']}.map do |trade|
+      get('/api/0/data/getTrades.php').sort_by{|trade| trade['date']}.map do |trade|
         Trade.new(trade)
       end
     end
@@ -121,7 +121,7 @@ module MtGox
     # @example
     #   MtGox.balance
     def balance
-      parse_balance(post('/code/getFunds.php', pass_params))
+      parse_balance(post('/api/0/getFunds.php', pass_params))
     end
 
     # Fetch your open orders, both buys and sells, for network efficiency
@@ -131,7 +131,7 @@ module MtGox
     # @example
     #   MtGox.orders
     def orders
-      parse_orders(post('/code/getOrders.php', pass_params)['orders'])
+      parse_orders(post('/api/0/getOrders.php', pass_params)['orders'])
     end
 
     # Fetch your open buys
@@ -164,7 +164,7 @@ module MtGox
     #   # Buy one bitcoin for $0.011
     #   MtGox.buy! 1.0, 0.011
     def buy!(amount, price)
-      parse_orders(post('/code/buyBTC.php', pass_params.merge({:amount => amount, :price => price}))['orders'])
+      parse_orders(post('/api/0/buyBTC.php', pass_params.merge({:amount => amount, :price => price}))['orders'])
     end
 
     # Place a limit order to sell BTC
@@ -177,7 +177,7 @@ module MtGox
     #   # Sell one bitcoin for $100
     #   MtGox.sell! 1.0, 100.0
     def sell!(amount, price)
-      parse_orders(post('/code/sellBTC.php', pass_params.merge({:amount => amount, :price => price}))['orders'])
+      parse_orders(post('/api/0/sellBTC.php', pass_params.merge({:amount => amount, :price => price}))['orders'])
     end
 
     # Cancel an open order
@@ -200,13 +200,13 @@ module MtGox
     def cancel(args)
       if args.is_a?(Hash)
         order = args.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
-        parse_orders(post('/code/cancelOrder.php', pass_params.merge(order))['orders'])
+        parse_orders(post('/api/0/cancelOrder.php', pass_params.merge(order))['orders'])
       else
-        orders = post('/code/getOrders.php', pass_params)['orders']
+        orders = post('/api/0/getOrders.php', pass_params)['orders']
         order = orders.find{|order| order['oid'] == args.to_s}
         if order
           order = order.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
-          parse_orders(post('/code/cancelOrder.php', pass_params.merge(order))['orders'])
+          parse_orders(post('/api/0/cancelOrder.php', pass_params.merge(order))['orders'])
         else
           raise Faraday::Error::ResourceNotFound, {:status => 404, :headers => {}, :body => 'Order not found.'}
         end
@@ -223,7 +223,7 @@ module MtGox
     #   # Withdraw 1 BTC from your account
     #   MtGox.withdraw! 1.0, '1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L'
     def withdraw!(amount, btca)
-      parse_balance(post('/code/withdraw.php', pass_params.merge({:group1 => 'BTC', :amount => amount, :btca => btca})))
+      parse_balance(post('/api/0/withdraw.php', pass_params.merge({:group1 => 'BTC', :amount => amount, :btca => btca})))
     end
 
     private
