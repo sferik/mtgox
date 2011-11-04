@@ -2,16 +2,16 @@
 require File.expand_path('../lib/mtgox/version', __FILE__)
 
 Gem::Specification.new do |gem|
-  gem.add_dependency 'faraday', '~> 0.7.4'
-  gem.add_dependency 'faraday_middleware', '~> 0.7.0'
-  gem.add_dependency 'multi_json', '~> 1.0.3'
-  gem.add_development_dependency 'json', '~> 1.5'
-  gem.add_development_dependency 'rake', '~> 0.9'
-  gem.add_development_dependency 'rdiscount', '~> 1.6'
-  gem.add_development_dependency 'rspec', '~> 2.6'
-  gem.add_development_dependency 'simplecov', '~> 0.4'
-  gem.add_development_dependency 'webmock', '~> 1.7'
-  gem.add_development_dependency 'yard', '~> 0.7'
+  gem.add_dependency 'faraday', '~> 0.7'
+  gem.add_dependency 'faraday_middleware', '~> 0.7'
+  gem.add_dependency 'multi_json', '~> 1.0'
+  gem.add_development_dependency 'json'
+  gem.add_development_dependency 'rake'
+  gem.add_development_dependency 'rdiscount'
+  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'simplecov'
+  gem.add_development_dependency 'webmock'
+  gem.add_development_dependency 'yard'
   gem.author      = "Erik Michaels-Ober"
   gem.description = %q{Ruby wrapper for the Mt. Gox Trade API. Mt. Gox allows you to trade US Dollars (USD) for Bitcoins (BTC) or Bitcoins for US Dollars.}
   gem.email       = 'sferik@gmail.com'
