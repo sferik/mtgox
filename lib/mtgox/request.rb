@@ -16,6 +16,7 @@ module MtGox
         when :get
           request.url(path, options)
         when :post
+          options.merge!({:nonce => (Time.now.to_f*1000000).to_i})
           request.path = path
           request.body = options unless options.empty?
           request.headers = headers(request.body)
