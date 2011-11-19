@@ -26,8 +26,8 @@ module MtGox
     end
 
     def headers(request)
-      signature = OpenSSL::HMAC.hexdigest('sha512',Base64.decode64(MtGox.secret),request.to_param)
-      {'Rest-Key' => MtGox.key, 'Rest-Sign' => Base64.encode64(signature)}
+      signature = OpenSSL::HMAC.hexdigest('sha512',MtGox.secret,request.to_param)
+      {'Rest-Key' => MtGox.key, 'Rest-Sign' => signature}
     end
   end
 end
