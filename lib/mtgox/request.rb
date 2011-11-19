@@ -18,7 +18,7 @@ module MtGox
         when :post
           options.merge!({:nonce => (Time.now.to_f*1000000).to_i})
           request.path = path
-          request.body = options unless options.empty?
+          request.body = options.to_param unless options.empty?
           request.headers = headers(request.body)
         end
       end
@@ -26,7 +26,7 @@ module MtGox
     end
 
     def headers(request)
-      signature = OpenSSL::HMAC.hexdigest('sha512',MtGox.secret,request.to_param)
+      signature = OpenSSL::HMAC.hexdigest('sha512',MtGox.secret,request)
       {'Rest-Key' => MtGox.key, 'Rest-Sign' => signature}
     end
   end
