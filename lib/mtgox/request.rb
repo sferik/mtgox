@@ -18,9 +18,15 @@ module MtGox
         when :post
           request.path = path
           request.body = options unless options.empty?
+          request.headers = headers(request.body)
         end
       end
       response.body
+    end
+
+    def headers(request)
+      signature = OpenSSL::HMAC.hexdigest('sha512',MtGox.secret,request)
+      {'Rest-Key' => MtGox.key, 'Rest-Sign' => signature}
     end
   end
 end

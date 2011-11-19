@@ -5,8 +5,8 @@ module MtGox
     # An array of valid keys in the options hash when configuring a {MtGox::Client}
     VALID_OPTIONS_KEYS = [
       :commission,
-      :password,
-      :username,
+      :key,
+      :secret,
     ]
 
     DEFAULT_COMMISSION = 0.0065.freeze
@@ -33,8 +33,8 @@ module MtGox
     # Reset all configuration options to defaults
     def reset
       self.commission = DEFAULT_COMMISSION
-      self.password   = nil
-      self.username   = nil
+      self.key   = nil
+      self.secret   = nil
       self
     end
   end
