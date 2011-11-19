@@ -88,6 +88,8 @@ Here are some ways *you* can contribute:
 * by reviewing patches
 * by financially (please send bitcoin donations to
   1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L)
+* donations can go to 171dH9Uum6wWLSwH2g8g2yto6SG7NEGyXG if you appreciate the
+  new authentication support
 
 ## <a name="issues">Submitting an Issue</a>
 We use the [GitHub issue tracker](https://github.com/sferik/mtgox/issues) to
