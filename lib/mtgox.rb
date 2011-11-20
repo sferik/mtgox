@@ -1,4 +1,3 @@
-MTGOX_ENV ||= :production
 require 'mtgox/client'
 require 'mtgox/configuration'
 require 'mtgox/error'
