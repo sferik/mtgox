@@ -2,9 +2,6 @@ $:.unshift File.expand_path('..', __FILE__)
 $:.unshift File.expand_path('../../lib', __FILE__)
 require 'simplecov'
 SimpleCov.start
-
-MTGOX_ENV = :test
-
 require 'mtgox'
 require 'rspec'
 require 'webmock/rspec'
@@ -32,3 +29,32 @@ end
 def fixture(file)
   File.new(fixture_path + '/' + file)
 end
+
+module MtGox
+  module Request
+    private
+    def add_nonce(options)
+      options.merge!({:nonce => 1321745961249676})
+    end
+  end
+end
+
+def test_headers(body=test_body)
+  signed_headers(body).merge!({'Accept'=>'application/json',
+                                'Content-Type'=>'application/x-www-form-urlencoded',
+                                'User-Agent'=>'mtgox gem 0.7.1'})
+end
+
+def signed_headers(body)
+  signature = Base64.strict_encode64(OpenSSL::HMAC.digest 'sha512',
+                                     Base64.decode64(MtGox.secret),
+                                     body)
+  {'Rest-Key' => MtGox.key, 'Rest-Sign' => signature}
+end
+
+def test_body(options={})
+  options.merge!({:nonce => 1321745961249676}).collect do |k,v|
+    "#{k}=#{v}"
+  end * '&'
+end
+
