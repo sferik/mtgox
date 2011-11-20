@@ -19,6 +19,7 @@ Gem::Specification.new do |gem|
   gem.homepage    = 'https://github.com/sferik/mtgox'
   gem.name        = 'mtgox'
   gem.require_paths = ['lib']
+  gem.required_ruby_version = '>= 1.9.2'
   gem.summary     = %q{Ruby wrapper for the Mt. Gox Trade API}
   gem.test_files  = `git ls-files -- {test,spec,features}/*`.split("\n")
   gem.version     = MtGox::Version.to_s
