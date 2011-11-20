@@ -1,3 +1,4 @@
+before_script: gem install bundler --pre
 rvm:
   - 1.9.2
   - 1.9.3
