@@ -131,7 +131,7 @@ module MtGox
     # @example
     #   MtGox.orders
     def orders
-      parse_orders(post('/api/0/getOrders.php', pass_params)['orders'])
+      parse_orders(post('/api/0/getOrders.php', {})['orders'])
     end
 
     # Fetch your open buys
@@ -202,7 +202,7 @@ module MtGox
         order = args.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
         parse_orders(post('/api/0/cancelOrder.php', order)['orders'])
       else
-        orders = post('/api/0/getOrders.php', pass_params)['orders']
+        orders = post('/api/0/getOrders.php', {})['orders']
         order = orders.find{|order| order['oid'] == args.to_s}
         if order
           order = order.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
