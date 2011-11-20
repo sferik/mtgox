@@ -17,10 +17,28 @@ module MtGox
           request.url(path, options)
         when :post
           request.path = path
-          request.body = options unless options.empty?
+          request.body = body_from_options(options)
+          request.headers = headers(request.body)
         end
       end
       response.body
+    end
+
+    def headers(request)
+      signature = Base64.strict_encode64(OpenSSL::HMAC.digest 'sha512',
+                                         Base64.decode64(MtGox.secret),
+                                         request)
+      {'Rest-Key' => MtGox.key, 'Rest-Sign' => signature}
+    end
+
+    def body_from_options(options)
+      add_nonce(options).collect do |k,v|
+        "#{k}=#{v}"
+      end * '&'
+    end
+
+    def add_nonce(options)
+      options.merge!({:nonce => (Time.now.to_f*1000000).to_i})
     end
   end
 end
