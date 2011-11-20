@@ -42,7 +42,7 @@ end
 def test_headers(body=test_body)
   signed_headers(body).merge!({'Accept'=>'application/json',
                                 'Content-Type'=>'application/x-www-form-urlencoded',
-                                'User-Agent'=>'mtgox gem 0.7.1'})
+                                'User-Agent'=>"mtgox gem #{MtGox::Version}"})
 end
 
 def signed_headers(body)
