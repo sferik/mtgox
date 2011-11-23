@@ -2,37 +2,22 @@
 Mt. Gox allows you to trade US Dollars (USD) for Bitcoins (BTC) or Bitcoins for
 US Dollars.
 
-## <a name="installation">Installation</a>
+## <a name="installation"></a>Installation
     gem install mtgox
 
-## <a name="alias">Alias</a>
+## <a name="alias"></a>Alias
 After installing the gem, you can get the current price for 1 BTC in USD by
 typing `btc` in your bash shell simply by setting the following alias:
 
     alias btc='ruby -r rubygems -r mtgox -e "puts MtGox.ticker.sell"'
 
-## <a name="documentation">Documentation</a>
+## <a name="documentation"></a>Documentation
 [http://rdoc.info/gems/mtgox](http://rdoc.info/gems/mtgox)
 
-## <a name="donate">Donate</a>
-If you find this library useful, please consider sending a donation to the
-author, which you can do using the following script:
-
-    require 'rubygems'
-    require 'mtgox'
-
-    # Certain methods require authentication
-    MtGox.configure do |config|
-      config.key = YOUR_MTGOX_KEY
-      config.secret = YOUR_MTGOX_SECRET
-    end
-
-    MtGox.withdraw 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"
-
-## <a name="ci">Continuous Integration</a>
+## <a name="ci"></a>Continuous Integration
 [![Build Status](https://secure.travis-ci.org/sferik/mtgox.png)](http://travis-ci.org/sferik/mtgox)
 
-## <a name="examples">Usage Examples</a>
+## <a name="examples"></a>Usage Examples
     require 'rubygems'
     require 'mtgox'
 
@@ -69,7 +54,7 @@ author, which you can do using the following script:
     # Withdraw 1 BTC from your account
     MtGox.withdraw! 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"
 
-## <a name="contributing">Contributing</a>
+## <a name="contributing"></a>Contributing
 In the spirit of [free
 software](http://www.fsf.org/licensing/essays/free-sw.html), **everyone** is
 encouraged to help improve this project.
@@ -86,12 +71,8 @@ Here are some ways *you* can contribute:
 * by refactoring code
 * by closing [issues](https://github.com/sferik/mtgox/issues)
 * by reviewing patches
-* by financially (please send bitcoin donations to
-  1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L)
-* donations can go to 171dH9Uum6wWLSwH2g8g2yto6SG7NEGyXG if you appreciate the
-  new authentication support
 
-## <a name="issues">Submitting an Issue</a>
+## <a name="issues"></a>Submitting an Issue
 We use the [GitHub issue tracker](https://github.com/sferik/mtgox/issues) to
 track bugs and features. Before submitting a bug report or feature request,
 check to make sure it hasn't already been submitted. You can indicate support
@@ -101,7 +82,7 @@ details that may be necessary to reproduce the bug, including your gem version,
 Ruby version, and operating system. Ideally, a bug report should include a pull
 request with failing specs.
 
-## <a name="pulls">Submitting a Pull Request</a>
+## <a name="pulls"></a>Submitting a Pull Request
 1. Fork the project.
 2. Create a topic branch.
 3. Implement your feature or bug fix.
@@ -116,7 +97,7 @@ request with failing specs.
    version, or history file. (If you want to create your own version for some
    reason, please do so in a separate commit.)
 
-## <a name="rubies">Supported Rubies</a>
+## <a name="versions"></a>Supported Ruby Versions
 This library aims to support and is [tested
 against](http://travis-ci.org/sferik/mtgox) the following Ruby implementations:
 
@@ -141,6 +122,6 @@ implementation, you will be personally responsible for providing patches in a
 timely fashion. If critical issues for a particular implementation exist at the
 time of a major release, support for that Ruby version may be dropped.
 
-## <a name="copyright">Copyright</a>
+## <a name="copyright"></a>Copyright
 Copyright (c) 2011 Erik Michaels-Ober.
 See [LICENSE](https://github.com/sferik/mtgox/blob/master/LICENSE.md) for details.
