@@ -109,16 +109,11 @@ bug report should include a pull request with failing specs.
 This library aims to support and is [tested against][ci] the following Ruby
 implementations:
 
-* Ruby 1.8.7
-* Ruby 1.9.1
 * Ruby 1.9.2
-* [JRuby][]
+* Ruby 1.9.3
 * [Rubinius][]
-* [Ruby Enterprise Edition][ree]
 
-[jruby]: http://www.jruby.org/
 [rubinius]: http://rubini.us/
-[ree]: http://www.rubyenterpriseedition.com/
 
 If something doesn't work on one of these interpreters, it should be considered
 a bug.
