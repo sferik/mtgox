@@ -18,6 +18,16 @@ module MtGox
 
     ORDER_TYPES = {:sell => 1, :buy => 2}
 
+    # Fetch a deposit address
+    # @authenticated true
+    # @return [String]
+    # @example
+    #   MtGox.address
+    def address
+      post('/api/0/btcAddress.php')['addr']
+    end
+
+
     # Fetch the latest ticker data
     #
     # @authenticated false

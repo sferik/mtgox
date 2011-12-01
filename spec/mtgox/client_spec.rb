@@ -9,6 +9,20 @@ describe MtGox::Client do
     end
   end
 
+  describe '#address' do
+    before do
+      stub_post('/api/0/btcAddress.php').
+        to_return(:status => 200, :body => fixture('address.json'))
+    end
+
+    it "should fetch a deposit address" do
+      address = @client.address
+      a_post('/api/0/btcAddress.php').
+        should have_been_made
+      address.should == '171dH9Uum6wWLSwH2g8g2yto6SG7NEGyXG'
+    end
+  end
+  
   describe '#ticker' do
     before do
       stub_get('/api/0/data/ticker.php').
