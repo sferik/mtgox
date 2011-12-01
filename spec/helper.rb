@@ -1,7 +1,9 @@
 $:.unshift File.expand_path('..', __FILE__)
 $:.unshift File.expand_path('../../lib', __FILE__)
-require 'simplecov'
-SimpleCov.start
+if !defined?(RUBY_ENGINE) || RUBY_ENGINE == "ruby"
+  require 'simplecov'
+  SimpleCov.start
+end
 require 'base64'
 require 'mtgox'
 require 'rspec'

@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
-platforms :jruby do
-  gem 'jruby-openssl', '~> 0.7'
+platforms :mri do
+  gem 'simplecov'
 end
 
 gemspec
