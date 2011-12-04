@@ -22,7 +22,7 @@ typing `btc` in your bash shell simply by setting the following alias:
 [ci]: http://travis-ci.org/sferik/mtgox
 
 ## <a name="dependencies"></a>Dependency Status
-[![Dependency Status](https://gemnasium.com/sferik/mtgox.png)][gemnasium]
+[![Dependency Status](https://gemnasium.com/sferik/mtgox.png?travis)][gemnasium]
 
 [gemnasium]: https://gemnasium.com/sferik/mtgox
 
