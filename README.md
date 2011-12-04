@@ -16,10 +16,10 @@ typing `btc` in your bash shell simply by setting the following alias:
 
 [documentation]: http://rdoc.info/gems/mtgox
 
-## <a name="ci"></a>Continuous Integration
-[![Build Status](https://secure.travis-ci.org/sferik/mtgox.png)][ci]
+## <a name="build"></a>Build Status
+[![Build Status](https://secure.travis-ci.org/sferik/mtgox.png?branch=master)][travis]
 
-[ci]: http://travis-ci.org/sferik/mtgox
+[travis]: http://travis-ci.org/sferik/mtgox
 
 ## <a name="dependencies"></a>Dependency Status
 [![Dependency Status](https://gemnasium.com/sferik/mtgox.png?travis)][gemnasium]
@@ -111,7 +111,7 @@ bug report should include a pull request with failing specs.
    reason, please do so in a separate commit.)
 
 ## <a name="versions"></a>Supported Ruby Versions
-This library aims to support and is [tested against][ci] the following Ruby
+This library aims to support and is [tested against][travis] the following Ruby
 implementations:
 
 * Ruby 1.9.2
