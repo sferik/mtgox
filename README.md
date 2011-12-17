@@ -1,6 +1,9 @@
-# Ruby wrapper for the Mt. Gox Trade API
+# Ruby wrapper for the Mt. Gox Trade API [![Build Status](https://secure.travis-ci.org/sferik/mtgox.png?branch=master)][travis] [![Dependency Status](https://gemnasium.com/sferik/mtgox.png?travis)][gemnasium]
 Mt. Gox allows you to trade US Dollars (USD) for Bitcoins (BTC) or Bitcoins for
 US Dollars.
+
+[travis]: http://travis-ci.org/sferik/mtgox
+[gemnasium]: https://gemnasium.com/sferik/mtgox
 
 ## <a name="installation"></a>Installation
     gem install mtgox
@@ -15,16 +18,6 @@ typing `btc` in your bash shell simply by setting the following alias:
 [http://rdoc.info/gems/mtgox][documentation]
 
 [documentation]: http://rdoc.info/gems/mtgox
-
-## <a name="build"></a>Build Status
-[![Build Status](https://secure.travis-ci.org/sferik/mtgox.png?branch=master)][travis]
-
-[travis]: http://travis-ci.org/sferik/mtgox
-
-## <a name="dependencies"></a>Dependency Status
-[![Dependency Status](https://gemnasium.com/sferik/mtgox.png?travis)][gemnasium]
-
-[gemnasium]: https://gemnasium.com/sferik/mtgox
 
 ## <a name="examples"></a>Usage Examples
     require 'rubygems'
