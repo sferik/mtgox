@@ -42,6 +42,7 @@ module MtGox
       Ticker.instance.low    = ticker['low'].to_f
       Ticker.instance.sell   = ticker['sell'].to_f
       Ticker.instance.volume = ticker['vol'].to_f
+      Ticker.instance.vwap   = ticker['vwap'].to_f
       Ticker.instance
     end
 

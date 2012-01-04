@@ -39,6 +39,7 @@ describe MtGox::Client do
       ticker.low.should  == 18.4
       ticker.price.should == 26.5
       ticker.volume.should  == 80531.0
+      ticker.vwap.should == 3.81561
     end
   end
 
