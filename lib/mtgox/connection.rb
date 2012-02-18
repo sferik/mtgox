@@ -3,6 +3,7 @@ require 'faraday/request/url_encoded'
 require 'faraday/response/raise_error'
 require 'faraday/response/raise_mtgox_error'
 require 'faraday_middleware'
+require 'faraday_middleware/response/parse_json'
 require 'mtgox/version'
 
 module MtGox
