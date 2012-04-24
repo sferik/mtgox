@@ -22,7 +22,7 @@ describe MtGox::Client do
       address.should == '171dH9Uum6wWLSwH2g8g2yto6SG7NEGyXG'
     end
   end
-  
+
   describe '#ticker' do
     before do
       stub_get('/api/0/data/ticker.php').

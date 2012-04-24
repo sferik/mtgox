@@ -21,7 +21,7 @@ module MtGox
       }
 
       Faraday.new(options) do |connection|
-        connection.use Faraday::Request::UrlEncoded
+        connection.request :url_encoded
         connection.use Faraday::Response::RaiseError
         connection.use FaradayMiddleware::ParseJson
         connection.use Faraday::Response::RaiseMtGoxError

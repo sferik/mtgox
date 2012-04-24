@@ -41,16 +41,6 @@ module MtGox
 end
 
 def test_headers(body=test_body)
-  signed_headers(body).merge!(
-    {
-      'Accept' => 'application/json',
-      'Content-Type' => 'application/x-www-form-urlencoded',
-      'User-Agent' => "mtgox gem #{MtGox::Version}",
-    }
-  )
-end
-
-def signed_headers(body)
   signature = Base64.strict_encode64(
     OpenSSL::HMAC.digest 'sha512',
     Base64.decode64(MtGox.secret),
