@@ -8,12 +8,12 @@ module MtGox
 
     # @return [Integer]
     def self.minor
-      7
+      8
     end
 
     # @return [Integer]
     def self.patch
-      5
+      0
     end
 
     # @return [String, NilClass]
