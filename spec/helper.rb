@@ -37,7 +37,7 @@ module MtGox
   module Request
     private
     def add_nonce(options)
-      options.merge!({:nonce => 1321745961249676})
+      options.merge!({nonce: 1321745961249676})
     end
   end
 end
@@ -52,5 +52,5 @@ def test_headers(body=test_body)
 end
 
 def test_body(options={})
-  options.merge!({:nonce => 1321745961249676}).collect{|k, v| "#{k}=#{v}"} * '&'
+  options.merge!({nonce: 1321745961249676}).collect{|k, v| "#{k}=#{v}"} * '&'
 end

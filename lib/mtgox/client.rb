@@ -16,7 +16,7 @@ module MtGox
     include MtGox::Connection
     include MtGox::Request
 
-    ORDER_TYPES = {:sell => 1, :buy => 2}
+    ORDER_TYPES = {sell: 1, buy: 2}
 
     # Fetch a deposit address
     # @authenticated true
@@ -64,7 +64,7 @@ module MtGox
       end.map! do |bid|
         Bid.new(*bid)
       end
-      {:asks => asks, :bids => bids}
+      {asks: asks, bids: bids}
     end
 
     # Fetch open asks
@@ -175,7 +175,7 @@ module MtGox
     #   # Buy one bitcoin for $0.011
     #   MtGox.buy! 1.0, 0.011
     def buy!(amount, price)
-      parse_orders(post('/api/0/buyBTC.php', {:amount => amount, :price => price})['orders'])
+      parse_orders(post('/api/0/buyBTC.php', {amount: amount, price: price})['orders'])
     end
 
     # Place a limit order to sell BTC
@@ -188,7 +188,7 @@ module MtGox
     #   # Sell one bitcoin for $100
     #   MtGox.sell! 1.0, 100.0
     def sell!(amount, price)
-      parse_orders(post('/api/0/sellBTC.php', {:amount => amount, :price => price})['orders'])
+      parse_orders(post('/api/0/sellBTC.php', {amount: amount, price: price})['orders'])
     end
 
     # Cancel an open order
@@ -219,7 +219,7 @@ module MtGox
           order = order.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
           parse_orders(post('/api/0/cancelOrder.php', order)['orders'])
         else
-          raise Faraday::Error::ResourceNotFound, {:status => 404, :headers => {}, :body => 'Order not found.'}
+          raise Faraday::Error::ResourceNotFound, {status: 404, headers: {}, body: 'Order not found.'}
         end
       end
     end
@@ -234,7 +234,7 @@ module MtGox
     #   # Withdraw 1 BTC from your account
     #   MtGox.withdraw! 1.0, '1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L'
     def withdraw!(amount, btca)
-      parse_balance(post('/api/0/withdraw.php', {:group1 => 'BTC', :amount => amount, :btca => btca}))
+      parse_balance(post('/api/0/withdraw.php', {group1: 'BTC', amount: amount, btca: btca}))
     end
 
     private
@@ -257,7 +257,7 @@ module MtGox
           buys << Buy.new(order)
         end
       end
-      {:buys => buys, :sells => sells}
+      {buys: buys, sells: sells}
     end
   end
 end

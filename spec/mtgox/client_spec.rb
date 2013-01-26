@@ -12,7 +12,7 @@ describe MtGox::Client do
   describe '#address' do
     before do
       stub_post('/api/0/btcAddress.php').
-        to_return(:status => 200, :body => fixture('address.json'))
+        to_return(status: 200, body: fixture('address.json'))
     end
 
     it "should fetch a deposit address" do
@@ -26,7 +26,7 @@ describe MtGox::Client do
   describe '#ticker' do
     before do
       stub_get('/api/0/data/ticker.php').
-        to_return(:status => 200, :body => fixture('ticker.json'))
+        to_return(status: 200, body: fixture('ticker.json'))
     end
 
     it "should fetch the ticker" do
@@ -46,7 +46,7 @@ describe MtGox::Client do
   describe 'depth methods' do
     before :each do
       stub_get('/api/0/data/getDepth.php').
-        to_return(:status => 200, :body => fixture('depth.json'))
+        to_return(status: 200, body: fixture('depth.json'))
     end
 
     describe '#asks' do
@@ -123,7 +123,7 @@ describe MtGox::Client do
   describe '#trades' do
     before do
       stub_get('/api/0/data/getTrades.php').
-        to_return(:status => 200, :body => fixture('trades.json'))
+        to_return(status: 200, body: fixture('trades.json'))
     end
 
     it "should fetch trades" do
@@ -140,14 +140,14 @@ describe MtGox::Client do
   describe '#balance' do
     before do
       stub_post('/api/0/getFunds.php').
-        with(:body => test_body, :headers => test_headers).
-        to_return(:status => 200, :body => fixture('balance.json'))
+        with(body: test_body, headers: test_headers).
+        to_return(status: 200, body: fixture('balance.json'))
     end
 
     it "should fetch balance" do
       balance = @client.balance
       a_post("/api/0/getFunds.php").
-        with(:body => test_body, :headers => test_headers).
+        with(body: test_body, headers: test_headers).
         should have_been_made
       balance.first.currency.should == "BTC"
       balance.first.amount.should == 22.0
@@ -159,15 +159,15 @@ describe MtGox::Client do
   describe "order methods" do
     before :each do
       stub_post('/api/0/getOrders.php').
-        with(:body => test_body, :headers => test_headers).
-        to_return(:status => 200, :body => fixture('orders.json'))
+        with(body: test_body, headers: test_headers).
+        to_return(status: 200, body: fixture('orders.json'))
     end
 
     describe "#buys" do
       it "should fetch orders" do
         buys = @client.buys
         a_post("/api/0/getOrders.php").
-          with(:body => test_body, :headers => test_headers).
+          with(body: test_body, headers: test_headers).
           should have_been_made
         buys.last.price.should == 7
         buys.last.date.should == Time.utc(2011, 6, 27, 18, 20, 38)
@@ -178,7 +178,7 @@ describe MtGox::Client do
       it "should fetch sells" do
         sells = @client.sells
         a_post("/api/0/getOrders.php").
-          with(:body => test_body, :headers => test_headers).
+          with(body: test_body, headers: test_headers).
           should have_been_made
         sells.last.price.should == 99.0
         sells.last.date.should == Time.utc(2011, 6, 27, 18, 20, 20)
@@ -189,7 +189,7 @@ describe MtGox::Client do
       it "should fetch both buys and sells, with only one call" do
         orders = @client.orders
         a_post("/api/0/getOrders.php").
-          with(:body => test_body, :headers => test_headers).
+          with(body: test_body, headers: test_headers).
           should have_been_made
         orders[:buys].last.price.should == 7.0
         orders[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 20, 38)
@@ -203,15 +203,15 @@ describe MtGox::Client do
     before do
       body = test_body({"amount" => "0.88", "price" => "0.89"})
       stub_post('/api/0/buyBTC.php').
-        with(:body => body, :headers => test_headers(body)).
-        to_return(:status => 200, :body => fixture('buy.json'))
+        with(body: body, headers: test_headers(body)).
+        to_return(status: 200, body: fixture('buy.json'))
     end
 
     it "should place a bid" do
       buy = @client.buy!(0.88, 0.89)
       body = test_body({"amount" => "0.88", "price" => "0.89"})
       a_post("/api/0/buyBTC.php").
-        with(:body => body, :headers => test_headers(body)).
+        with(body: body, headers: test_headers(body)).
         should have_been_made
       buy[:buys].last.price.should == 2.0
       buy[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 26, 21)
@@ -224,15 +224,15 @@ describe MtGox::Client do
     before do
       body = test_body({"amount" => "0.88", "price" => "89.0"})
       stub_post('/api/0/sellBTC.php').
-        with(:body => body, :headers => test_headers(body)).
-        to_return(:status => 200, :body => fixture('sell.json'))
+        with(body: body, headers: test_headers(body)).
+        to_return(status: 200, body: fixture('sell.json'))
     end
 
     it "should place an ask" do
       body = test_body({"amount" => "0.88", "price" => "89.0"})
       sell = @client.sell!(0.88, 89.0)
       a_post("/api/0/sellBTC.php").
-        with(:body => body, :headers => test_headers(body)).
+        with(body: body, headers: test_headers(body)).
         should have_been_made
       sell[:buys].last.price.should == 2.0
       sell[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 26, 21)
@@ -245,11 +245,11 @@ describe MtGox::Client do
     before do
       cancel_body = test_body({"oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"})
       stub_post('/api/0/getOrders.php').
-        with(:body => test_body, :headers => test_headers).
-        to_return(:status => 200, :body => fixture('orders.json'))
+        with(body: test_body, headers: test_headers).
+        to_return(status: 200, body: fixture('orders.json'))
       stub_post('/api/0/cancelOrder.php').
-        with(:body => cancel_body, :headers => test_headers(cancel_body)).
-        to_return(:status => 200, :body => fixture('cancel.json'))
+        with(body: cancel_body, headers: test_headers(cancel_body)).
+        to_return(status: 200, body: fixture('cancel.json'))
     end
 
     context "with a valid oid passed" do
@@ -257,10 +257,10 @@ describe MtGox::Client do
         cancel = @client.cancel("bddd042c-e837-4a88-a92e-3b7c05e483df")
         cancel_body = test_body({"oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"})
         a_post("/api/0/getOrders.php").
-          with(:body => test_body, :headers => test_headers).
+          with(body: test_body, headers: test_headers).
           should have_been_made.once
         a_post('/api/0/cancelOrder.php').
-          with(:body => cancel_body, :headers => test_headers(cancel_body)).
+          with(body: cancel_body, headers: test_headers(cancel_body)).
           should have_been_made
         cancel[:buys].last.price.should == 7.0
         cancel[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 20, 38)
@@ -282,7 +282,7 @@ describe MtGox::Client do
         cancel = @client.cancel({'oid' => "bddd042c-e837-4a88-a92e-3b7c05e483df", 'type' => 2})
         body = test_body({"oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"})
         a_post('/api/0/cancelOrder.php').
-          with(:body => body, :headers => test_headers(body)).
+          with(body: body, headers: test_headers(body)).
           should have_been_made
         cancel[:buys].last.price.should == 7.0
         cancel[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 20, 38)
@@ -296,15 +296,15 @@ describe MtGox::Client do
     before do
       body = test_body({"group1" => "BTC", "amount" => "1.0", "btca" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"})
       stub_post('/api/0/withdraw.php').
-        with(:body => body, :headers => test_headers(body)).
-        to_return(:status => 200, :body => fixture('withdraw.json'))
+        with(body: body, headers: test_headers(body)).
+        to_return(status: 200, body: fixture('withdraw.json'))
     end
 
     it "should withdraw funds" do
       withdraw = @client.withdraw!(1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L")
       body = test_body({"group1" => "BTC", "amount" => "1.0", "btca" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"})
       a_post("/api/0/withdraw.php").
-        with(:body => body, :headers => test_headers(body)).
+        with(body: body, headers: test_headers(body)).
         should have_been_made
       withdraw.first.currency.should == "BTC"
       withdraw.first.amount.should == 9.0
