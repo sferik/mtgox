@@ -16,7 +16,6 @@ module MtGox
           accept: 'application/json',
           user_agent: "mtgox gem #{MtGox::Version}",
         },
-        ssl: {verify: false},
         url: 'https://mtgox.com',
       }
 
