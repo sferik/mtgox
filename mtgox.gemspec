@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.name        = 'mtgox'
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 1.9.2'
+  spec.required_rubygems_version = '>= 1.3.6'
   spec.summary     = %q{Ruby wrapper for the Mt. Gox Trade API}
   spec.test_files  = Dir.glob("spec/**/*")
   spec.version     = MtGox::Version.to_s
