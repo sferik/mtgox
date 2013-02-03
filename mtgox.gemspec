@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 1.9.2'
   spec.required_rubygems_version = '>= 1.3.6'
-  spec.signing_key = '/Users/sferik/.gem/private_key.pem'
+  spec.signing_key = File.expand_path("~/.gem/private_key.pem") if $0 =~ /gem\z/
   spec.summary     = %q{Ruby wrapper for the Mt. Gox Trade API}
   spec.test_files  = Dir.glob("spec/**/*")
   spec.version     = MtGox::Version.to_s
