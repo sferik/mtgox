@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.description = %q{Ruby wrapper for the Mt. Gox Trade API. Mt. Gox allows you to trade US Dollars (USD) for Bitcoins (BTC) or Bitcoins for US Dollars.}
   spec.email       = 'sferik@gmail.com'
   spec.files       = `git ls-files`.split("\n")
-  spec.files       = %w(.yardopts CHANGELOG.md CONTRIBUTING.md LICENSE.md README.md Rakefile mtgox.gemspec)
+  spec.files       = %w(.yardopts CONTRIBUTING.md LICENSE.md README.md Rakefile mtgox.gemspec)
   spec.files      += Dir.glob("lib/**/*.rb")
   spec.files      += Dir.glob("spec/**/*")
   spec.homepage    = 'https://github.com/sferik/mtgox'
