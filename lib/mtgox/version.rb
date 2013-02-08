@@ -13,7 +13,7 @@ module MtGox
 
     # @return [Integer]
     def self.patch
-      0
+      1
     end
 
     # @return [String, NilClass]
