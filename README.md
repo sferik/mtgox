@@ -116,4 +116,4 @@ of a major release, support for that Ruby version may be dropped.
 ## Copyright
 Copyright (c) 2011 Erik Michaels-Ober. See [LICENSE][] for details.
 
-[license]: https://github.com/sferik/mtgox/blob/master/LICENSE.md
+[license]: LICENSE.md
