@@ -1,4 +1,4 @@
-source 'https://rubygems.org'
+source :rubygems
 
 gem 'jruby-openssl', :platforms => :jruby
 gem 'rake'
