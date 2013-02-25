@@ -1,13 +1,18 @@
-unless ENV['CI']
-  require 'simplecov'
-  SimpleCov.start do
-    add_filter 'spec'
-  end
-end
+require 'simplecov'
+require 'coveralls'
+
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+  SimpleCov::Formatter::HTMLFormatter,
+  Coveralls::SimpleCov::Formatter
+]
+SimpleCov.start
+
 require 'base64'
 require 'mtgox'
 require 'rspec'
 require 'webmock/rspec'
+
+WebMock.disable_net_connect!(:allow => 'coveralls.io')
 
 def a_get(path)
   a_request(:get, 'https://mtgox.com' + path)
