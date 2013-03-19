@@ -28,11 +28,13 @@ Then, install the gem with the high security trust policy:
 
     gem install mtgox -P HighSecurity
 
-## Alias
+## Executable
 After installing the gem, you can get the current price for 1 BTC in USD by
-typing `btc` in your bash shell simply by setting the following alias:
+typing `btc` in your bash shell:
 
-    alias btc='ruby -r rubygems -r mtgox -e "puts MtGox.ticker.sell"'
+    $ btc
+    50.00
+
 
 ## Documentation
 [http://rdoc.info/gems/mtgox][documentation]
