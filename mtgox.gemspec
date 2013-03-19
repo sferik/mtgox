@@ -11,6 +11,7 @@ Gem::Specification.new do |spec|
   spec.cert_chain  = ['certs/sferik.pem']
   spec.description = %q{Ruby wrapper for the Mt. Gox Trade API. Mt. Gox allows you to trade US Dollars (USD) for Bitcoins (BTC) or Bitcoins for US Dollars.}
   spec.email       = 'sferik@gmail.com'
+  spec.executable  = 'btc'
   spec.files       = `git ls-files`.split("\n")
   spec.files       = %w(.yardopts CONTRIBUTING.md LICENSE.md README.md Rakefile mtgox.gemspec)
   spec.files      += Dir.glob("lib/**/*.rb")
