@@ -17,6 +17,7 @@ module MtGox
     include MtGox::Request
 
     ORDER_TYPES = {sell: 1, buy: 2}
+    INT_MULTIPLIERS = {btc: 100000000, usd: 100000, jpy: 1000}
 
     # Fetch a deposit address
     # @authenticated true
@@ -229,12 +230,12 @@ module MtGox
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to withdraw
     # @param btca [String] the bitcoin address to send to
-    # @return [Array<MtGox::Balance>]
+    # @return [String] completed transaction ID
     # @example
     #   # Withdraw 1 BTC from your account
     #   MtGox.withdraw! 1.0, '1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L'
-    def withdraw!(amount, btca)
-      parse_balance(post('/api/0/withdraw.php', {group1: 'BTC', amount: amount, btca: btca}))
+    def withdraw!(amount, address)
+      post('/api/1/generic/bitcoin/send_simple', {amount_int: intify(amount, :btc), address: address})['return']['trx']
     end
 
     private
@@ -258,6 +259,10 @@ module MtGox
         end
       end
       {buys: buys, sells: sells}
+    end
+
+    def intify(float, currency)
+     (float * INT_MULTIPLIERS[currency]).to_i
     end
   end
 end
