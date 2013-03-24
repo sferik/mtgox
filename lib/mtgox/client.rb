@@ -132,7 +132,7 @@ module MtGox
     # @example
     #   MtGox.balance
     def balance
-      parse_balance(post('/api/0/getFunds.php', {}))
+      parse_balance(post('/api/1/generic/private/info', {})['return'])
     end
 
     # Fetch your open orders, both buys and sells, for network efficiency
@@ -241,8 +241,8 @@ module MtGox
 
     def parse_balance(balance)
       balances = []
-      balances << Balance.new('BTC', balance['btcs'])
-      balances << Balance.new('USD', balance['usds'])
+      balances << Balance.new('BTC', balance['Wallets']['BTC']['Balance']['value'])
+      balances << Balance.new('USD', balance['Wallets']['USD']['Balance']['value'])
       balances
     end
 

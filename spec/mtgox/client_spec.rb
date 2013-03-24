@@ -139,14 +139,14 @@ describe MtGox::Client do
 
   describe '#balance' do
     before do
-      stub_post('/api/0/getFunds.php').
+      stub_post('/api/1/generic/private/info').
         with(body: test_body, headers: test_headers).
-        to_return(status: 200, body: fixture('balance.json'))
+        to_return(status: 200, body: fixture('info.json'))
     end
 
     it "should fetch balance" do
       balance = @client.balance
-      a_post("/api/0/getFunds.php").
+      a_post("/api/1/generic/private/info").
         with(body: test_body, headers: test_headers).
         should have_been_made
       balance.first.currency.should == "BTC"
