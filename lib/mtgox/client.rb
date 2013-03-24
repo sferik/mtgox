@@ -16,7 +16,7 @@ module MtGox
     include MtGox::Connection
     include MtGox::Request
 
-    ORDER_TYPES = {sell: 1, buy: 2}
+    ORDER_TYPES = {sell: "ask", buy: "bid"}
     INT_MULTIPLIERS = {btc: 100000000, usd: 100000, jpy: 1000}
 
     # Fetch a deposit address
@@ -143,7 +143,7 @@ module MtGox
     # @example
     #   MtGox.orders
     def orders
-      parse_orders(post('/api/0/getOrders.php', {})['orders'])
+      parse_orders(post('/api/1/generic/private/orders', {})['return'])
     end
 
     # Fetch your open buys

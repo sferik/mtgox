@@ -158,7 +158,7 @@ describe MtGox::Client do
 
   describe "order methods" do
     before :each do
-      stub_post('/api/0/getOrders.php').
+      stub_post('/api/1/generic/private/orders').
         with(body: test_body, headers: test_headers).
         to_return(status: 200, body: fixture('orders.json'))
     end
@@ -166,7 +166,7 @@ describe MtGox::Client do
     describe "#buys" do
       it "should fetch orders" do
         buys = @client.buys
-        a_post("/api/0/getOrders.php").
+        a_post("/api/1/generic/private/orders").
           with(body: test_body, headers: test_headers).
           should have_been_made
         buys.last.price.should == 7
@@ -177,7 +177,7 @@ describe MtGox::Client do
     describe "#sells" do
       it "should fetch sells" do
         sells = @client.sells
-        a_post("/api/0/getOrders.php").
+        a_post("/api/1/generic/private/orders").
           with(body: test_body, headers: test_headers).
           should have_been_made
         sells.last.price.should == 99.0
@@ -188,7 +188,7 @@ describe MtGox::Client do
     describe "#orders" do
       it "should fetch both buys and sells, with only one call" do
         orders = @client.orders
-        a_post("/api/0/getOrders.php").
+        a_post("/api/1/generic/private/orders").
           with(body: test_body, headers: test_headers).
           should have_been_made
         orders[:buys].last.price.should == 7.0
