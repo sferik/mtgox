@@ -135,7 +135,7 @@ module MtGox
     # @example
     #   MtGox.balance
     def balance
-      parse_balance(post('/api/0/getFunds.php', {}))
+      parse_balance(post('/api/1/generic/info', {}))
     end
 
     # Fetch your open orders, both buys and sells, for network efficiency
@@ -231,21 +231,28 @@ module MtGox
     #
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to withdraw
-    # @param btca [String] the bitcoin address to send to
-    # @return [Array<MtGox::Balance>]
+    # @param address [String] the bitcoin address to send to
+    # @return [String] Completed Transaction ID
     # @example
     #   # Withdraw 1 BTC from your account
     #   MtGox.withdraw! 1.0, '1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L'
-    def withdraw!(amount, btca)
-      parse_balance(post('/api/0/withdraw.php', {group1: 'BTC', amount: amount, btca: btca}))
+    def withdraw!(amount, address)
+      if amount >= 1000
+        raise FilthyRichError,
+        "#withdraw! take bitcoin amount as parameter (you are trying to withdraw #{amount} BTC"
+      else
+        post('/api/1/generic/bitcoin/send_simple', {amount_int: intify(amount, :btc), address: address})['trx']
+      end
     end
 
     private
 
-    def parse_balance(balance)
+    def parse_balance(info)
       balances = []
-      balances << Balance.new('BTC', balance['btcs'])
-      balances << Balance.new('USD', balance['usds'])
+      info['Wallets'].each do |currency, wallet|
+        value = currency == "BTC" ? value_bitcoin(wallet['Balance']) : value_currency(wallet['Balance'])
+        balances << Balance.new(currency, value)
+      end
       balances
     end
 

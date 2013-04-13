@@ -4,19 +4,25 @@
 # fixed-decimal, so you have to move the decimal point yourself
 # (divide). The exponent differs based on the kind of the value.
 
-#
-# Conversion table :
-# - BTC : 1e8
-# - USD : 1e5
-#
 module MtGox
   module Value
+    # We assume here that any other currency than :jpy uses :usd
+    INT_MULTIPLIERS = {btc: 100000000, usd: 100000, jpy: 1000}
 
     def value_currency(value, key = 'value_int')
-      value[key].to_i / 100000.0
+      floatify(value[key].to_i, :usd)
     end
+
     def value_bitcoin(value, key = 'value_int')
-      value[key].to_i / 100000000.0
+      floatify(value[key], :btc)
+    end
+
+    def intify(float, currency)
+      (float * INT_MULTIPLIERS[currency]).to_i
+    end
+
+    def floatify(int, currency)
+      (int.to_f / INT_MULTIPLIERS[currency])
     end
   end
 end

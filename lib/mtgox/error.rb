@@ -3,5 +3,6 @@ module MtGox
   class Error < StandardError; end
   class MysqlError < Error; end
   class UnauthorizedError < Error; end
+  class FilthyRichError < Error; end
 end
 

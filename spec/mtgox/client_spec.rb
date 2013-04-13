@@ -140,20 +140,20 @@ describe MtGox::Client do
 
   describe '#balance' do
     before do
-      stub_post('/api/0/getFunds.php').
+      stub_post('/api/1/generic/info').
         with(body: test_body, headers: test_headers).
-        to_return(status: 200, body: fixture('balance.json'))
+        to_return(status: 200, body: fixture('info.json'))
     end
 
     it "should fetch balance" do
       balance = @client.balance
-      a_post("/api/0/getFunds.php").
+      a_post("/api/1/generic/info").
         with(body: test_body, headers: test_headers).
         should have_been_made
       balance.first.currency.should == "BTC"
-      balance.first.amount.should == 22.0
-      balance.last.currency.should == "USD"
-      balance.last.amount.should == 3.7
+      balance.first.amount.should == 42.0
+      balance.last.currency.should == "EUR"
+      balance.last.amount.should == 23.0
     end
   end
 
@@ -295,22 +295,24 @@ describe MtGox::Client do
 
   describe "#withdraw!" do
     before do
-      body = test_body({"group1" => "BTC", "amount" => "1.0", "btca" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"})
-      stub_post('/api/0/withdraw.php').
+      body = test_body({"amount_int" => "100000000", "address" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"})
+      stub_post('/api/1/generic/bitcoin/send_simple').
         with(body: body, headers: test_headers(body)).
         to_return(status: 200, body: fixture('withdraw.json'))
     end
 
     it "should withdraw funds" do
       withdraw = @client.withdraw!(1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L")
-      body = test_body({"group1" => "BTC", "amount" => "1.0", "btca" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"})
-      a_post("/api/0/withdraw.php").
+      body = test_body({"amount_int" => "100000000", "address" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"})
+      a_post("/api/1/generic/bitcoin/send_simple").
         with(body: body, headers: test_headers(body)).
         should have_been_made
-      withdraw.first.currency.should == "BTC"
-      withdraw.first.amount.should == 9.0
-      withdraw.last.currency.should == "USD"
-      withdraw.last.amount.should == 64.59
+      withdraw.should == "311295deadbeef390a13c038e2b8ba77feebdaed2c1a59e6e0bdf001656e1314"
+    end
+
+    it "pays attention to too big withdrawals" do
+      lambda { @client.withdraw!(10000, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L") }.
+        should raise_error(MtGox::FilthyRichError)
     end
   end
 end
