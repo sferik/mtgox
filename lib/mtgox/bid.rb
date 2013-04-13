@@ -1,11 +1,16 @@
 require 'mtgox/offer'
+require 'mtgox/value'
 
 module MtGox
   class Bid < Offer
+    include MtGox::Value
 
-    def initialize(price=nil, amount=nil)
-      self.price = price.to_f
-      self.amount = amount.to_f
+    def initialize(hash = nil)
+      if hash
+        self.price = value_currency hash, 'price_int'
+        self.amount = value_bitcoin hash, 'amount_int'
+        self.timestamp = hash['stamp']
+      end
     end
 
     def eprice

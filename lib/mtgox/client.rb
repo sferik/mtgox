@@ -26,7 +26,7 @@ module MtGox
     # @example
     #   MtGox.address
     def address
-      post('/api/1/generic/bitcoin/address')['return']['addr']
+      post('/api/1/generic/bitcoin/address')['addr']
     end
 
 
@@ -37,7 +37,7 @@ module MtGox
     # @example
     #   MtGox.ticker
     def ticker
-      ticker = get('/api/1/BTCUSD/ticker')['return']
+      ticker = get('/api/1/BTCUSD/ticker')
       Ticker.instance.buy    = value_currency ticker['buy']
       Ticker.instance.high   = value_currency ticker['high']
       Ticker.instance.price  = value_currency ticker['last_all']
@@ -56,16 +56,16 @@ module MtGox
     # @example
     #   MtGox.offers
     def offers
-      offers = get('/api/0/data/getDepth.php')
+      offers = get('/api/1/BTCUSD/depth/fetch')
       asks = offers['asks'].sort_by do |ask|
-        ask[0].to_f
+        ask['price_int'].to_i
       end.map! do |ask|
-        Ask.new(*ask)
+        Ask.new(ask)
       end
       bids = offers['bids'].sort_by do |bid|
-        -bid[0].to_f
+        -bid['price_int'].to_i
       end.map! do |bid|
-        Bid.new(*bid)
+        Bid.new(bid)
       end
       {asks: asks, bids: bids}
     end
@@ -123,7 +123,7 @@ module MtGox
     # @example
     #   MtGox.trades
     def trades
-      get('/api/0/data/getTrades.php').sort_by{|trade| trade['date']}.map do |trade|
+      get('/api/1/BTCUSD/trades/fetch').sort_by{|trade| trade['date']}.map do |trade|
         Trade.new(trade)
       end
     end

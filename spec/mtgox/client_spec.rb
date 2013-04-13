@@ -46,18 +46,18 @@ describe MtGox::Client do
 
   describe 'depth methods' do
     before :each do
-      stub_get('/api/0/data/getDepth.php').
+      stub_get('/api/1/BTCUSD/depth/fetch').
         to_return(status: 200, body: fixture('depth.json'))
     end
 
     describe '#asks' do
       it "should fetch open asks" do
         asks = @client.asks
-        a_get('/api/0/data/getDepth.php').
+        a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made
-        asks.last.price.should == 23.75
-        asks.last.eprice.should == 23.905385002516354
-        asks.last.amount.should == 50
+        asks.first.price.should == 114
+        asks.first.eprice.should == 114.74584801207851
+        asks.first.amount.should == 0.43936758
       end
 
       it "should be sorted in price-ascending order" do
@@ -70,11 +70,11 @@ describe MtGox::Client do
     describe "#bids" do
       it "should fetch open bids" do
         bids = @client.bids
-        a_get('/api/0/data/getDepth.php').
+        a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made
-        bids.last.price.should == 14.62101
-        bids.last.eprice.should == 14.525973435000001
-        bids.last.amount.should == 5
+        bids.first.price.should == 113.0
+        bids.first.eprice.should == 112.2655
+        bids.first.amount.should == 124.69802063
       end
 
       it "should be sorted in price-descending order" do
@@ -86,36 +86,36 @@ describe MtGox::Client do
     describe "#offers" do
       it "should fetch both bids and asks, with only one call" do
         offers = @client.offers
-        a_get('/api/0/data/getDepth.php').
+        a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made.once
-        offers[:asks].last.price.should == 23.75
-        offers[:asks].last.eprice.should == 23.905385002516354
-        offers[:asks].last.amount.should == 50
-        offers[:bids].last.price.should == 14.62101
-        offers[:bids].last.eprice.should == 14.525973435000001
-        offers[:bids].last.amount.should == 5
+        offers[:asks].first.price.should == 114
+        offers[:asks].first.eprice.should == 114.74584801207851
+        offers[:asks].first.amount.should == 0.43936758
+        offers[:bids].first.price.should == 113.0
+        offers[:bids].first.eprice.should == 112.2655
+        offers[:bids].first.amount.should == 124.69802063
       end
     end
 
     describe '#min_ask' do
       it "should fetch the lowest priced ask" do
         min_ask = @client.min_ask
-        a_get('/api/0/data/getDepth.php').
+        a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made.once
-        min_ask.price.should == 17.00009
-        min_ask.eprice.should == 17.11131353799698
-        min_ask.amount.should == 36.22894353
+        min_ask.price.should == 114
+        min_ask.eprice.should == 114.74584801207851
+        min_ask.amount.should == 0.43936758
       end
     end
 
     describe '#max_bid' do
       it "should fetch the highest priced bid" do
         max_bid = @client.max_bid
-        a_get('/api/0/data/getDepth.php').
+        a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made.once
-        max_bid.price.should == 17.0
-        max_bid.eprice.should == 16.8895
-        max_bid.amount.should == 82.53875035
+        max_bid.price.should == 113
+        max_bid.eprice.should == 112.2655
+        max_bid.amount.should == 124.69802063
       end
     end
 
@@ -123,18 +123,18 @@ describe MtGox::Client do
 
   describe '#trades' do
     before do
-      stub_get('/api/0/data/getTrades.php').
+      stub_get('/api/1/BTCUSD/trades/fetch').
         to_return(status: 200, body: fixture('trades.json'))
     end
 
     it "should fetch trades" do
       trades = @client.trades
-      a_get('/api/0/data/getTrades.php').
+      a_get('/api/1/BTCUSD/trades/fetch').
         should have_been_made
-      trades.last.date.should == Time.utc(2011, 6, 27, 18, 28, 8)
-      trades.last.price.should == 17.00009
-      trades.last.amount.should == 0.5
-      trades.last.id.should == 1309199288687054
+      trades.last.date.should == Time.utc(2013, 4, 12, 15, 20, 3)
+      trades.last.price.should == 73.19258
+      trades.last.amount.should == 0.94043572
+      trades.last.id.should == 1365780003374123
     end
   end
 

@@ -12,11 +12,11 @@
 module MtGox
   module Value
 
-    def value_currency(value)
-      value['value_int'].to_i / 100000.0
+    def value_currency(value, key = 'value_int')
+      value[key].to_i / 100000.0
     end
-    def value_bitcoin(value)
-      value['value_int'].to_i / 100000000.0
+    def value_bitcoin(value, key = 'value_int')
+      value[key].to_i / 100000000.0
     end
   end
 end

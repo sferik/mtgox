@@ -1,1 +1,5 @@
-{"error":"Not logged in."}
+{
+    "result":"error",
+    "error":"Identification required to access private API",
+    "token":"login_error_missing_rest_key"
+}
