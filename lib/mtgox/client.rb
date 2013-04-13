@@ -24,7 +24,7 @@ module MtGox
     # @example
     #   MtGox.address
     def address
-      post('/api/0/btcAddress.php')['addr']
+      post('/api/1/generic/bitcoin/address')['return']['addr']
     end
 
 
