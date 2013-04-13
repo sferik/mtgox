@@ -10,11 +10,13 @@ require 'mtgox/request'
 require 'mtgox/sell'
 require 'mtgox/ticker'
 require 'mtgox/trade'
+require 'mtgox/value'
 
 module MtGox
   class Client
     include MtGox::Connection
     include MtGox::Request
+    include MtGox::Value
 
     ORDER_TYPES = {sell: 1, buy: 2}
 
@@ -35,14 +37,15 @@ module MtGox
     # @example
     #   MtGox.ticker
     def ticker
-      ticker = get('/api/0/data/ticker.php')['ticker']
-      Ticker.instance.buy    = ticker['buy'].to_f
-      Ticker.instance.high   = ticker['high'].to_f
-      Ticker.instance.price  = ticker['last'].to_f
-      Ticker.instance.low    = ticker['low'].to_f
-      Ticker.instance.sell   = ticker['sell'].to_f
-      Ticker.instance.volume = ticker['vol'].to_f
-      Ticker.instance.vwap   = ticker['vwap'].to_f
+      ticker = get('/api/1/BTCUSD/ticker')['return']
+      Ticker.instance.buy    = value_currency ticker['buy']
+      Ticker.instance.high   = value_currency ticker['high']
+      Ticker.instance.price  = value_currency ticker['last_all']
+      Ticker.instance.low    = value_currency ticker['low']
+      Ticker.instance.sell   = value_currency ticker['sell']
+      Ticker.instance.volume = value_bitcoin ticker['vol']
+      Ticker.instance.vwap   = value_currency ticker['vwap']
+      Ticker.instance.avg   = value_currency ticker['avg']
       Ticker.instance
     end
 
