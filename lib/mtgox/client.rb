@@ -146,7 +146,7 @@ module MtGox
     # @example
     #   MtGox.orders
     def orders
-      parse_orders(post('/api/1/generic/orders', {}))
+      parse_orders post('/api/1/generic/orders', {})
     end
 
     # Fetch your open buys
@@ -220,25 +220,25 @@ module MtGox
     #     MtGox.cancel my_order.oid
     #     MtGox.cancel 1234567890
     # @overload cancel(order)
-    #   @param order [Hash] a hash-like object, with keys `oid` - the order ID of the transaction to cancel and `type` - the type of order to cancel (`1` for sell or `2` for buy)
+    #   @param order [Hash] a hash-like object, containing at least a key `oid` - the order ID of the transaction to cancel
     #   @return [Hash] with keys :buys and :sells, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Clients#sells}
     #   @example
     #     my_order = MtGox.orders.first
     #     MtGox.cancel my_order
-    #     MtGox.cancel {'oid' => '1234567890', 'type' => 2}
+    #     MtGox.cancel {'oid' => '1234567890'}
     def cancel(args)
       if args.is_a?(Hash)
-        order = args.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
-        parse_orders(post('/api/0/cancelOrder.php', order)['orders'])
+        args = args['oid']
+      end
+
+      orders = post('/api/1/generic/orders', {})
+      order = orders.find{|order| order['oid'] == args.to_s}
+      if order
+        res = post('/api/1/BTCUSD/order/cancel', {oid: order['oid']})
+        orders.delete_if { |o| o['oid'] == res['oid'] }
+        parse_orders(orders)
       else
-        orders = post('/api/0/getOrders.php', {})['orders']
-        order = orders.find{|order| order['oid'] == args.to_s}
-        if order
-          order = order.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
-          parse_orders(post('/api/0/cancelOrder.php', order)['orders'])
-        else
-          raise Faraday::Error::ResourceNotFound, {status: 404, headers: {}, body: 'Order not found.'}
-        end
+        raise Faraday::Error::ResourceNotFound, {status: 404, headers: {}, body: 'Order not found.'}
       end
     end
 

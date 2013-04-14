@@ -238,49 +238,43 @@ describe MtGox::Client do
 
   describe "#cancel" do
     before do
-      cancel_body = test_body({"oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"})
-      stub_post('/api/0/getOrders.php').
+      cancel_body = test_body({"oid" => "fda8917a-63d3-4415-b827-758408013690"})
+      stub_post('/api/1/generic/orders').
         with(body: test_body, headers: test_headers).
         to_return(status: 200, body: fixture('orders.json'))
-      stub_post('/api/0/cancelOrder.php').
+      stub_post('/api/1/BTCUSD/order/cancel').
         with(body: cancel_body, headers: test_headers(cancel_body)).
         to_return(status: 200, body: fixture('cancel.json'))
     end
 
     context "with a valid oid passed" do
       it "should cancel an order" do
-        cancel = @client.cancel("bddd042c-e837-4a88-a92e-3b7c05e483df")
-        cancel_body = test_body({"oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"})
-        a_post("/api/0/getOrders.php").
+        cancel = @client.cancel("fda8917a-63d3-4415-b827-758408013690")
+        cancel_body = test_body({"oid" => "fda8917a-63d3-4415-b827-758408013690"})
+        a_post("/api/1/generic/orders").
           with(body: test_body, headers: test_headers).
           should have_been_made.once
-        a_post('/api/0/cancelOrder.php').
+        a_post('/api/1/BTCUSD/order/cancel').
           with(body: cancel_body, headers: test_headers(cancel_body)).
           should have_been_made
-        cancel[:buys].last.price.should == 7.0
-        cancel[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 20, 38)
-        cancel[:sells].last.price.should == 99.0
-        cancel[:sells].last.date.should == Time.utc(2011, 6, 27, 18, 20, 20)
+        cancel[:buys].length.should == 0
       end
     end
 
     context "with an invalid oid passed" do
       it "should raise an error" do
-        lambda do
-          @client.cancel(1234567890)
-        end.should raise_error(Faraday::Error::ResourceNotFound)
+        expect { @client.cancel(1234567890) }.to raise_error(Faraday::Error::ResourceNotFound)
       end
     end
 
     context "with an order passed" do
       it "should cancel an order" do
-        cancel = @client.cancel({'oid' => "bddd042c-e837-4a88-a92e-3b7c05e483df", 'type' => 2})
-        body = test_body({"oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"})
-        a_post('/api/0/cancelOrder.php').
+        cancel = @client.cancel({'oid' => "fda8917a-63d3-4415-b827-758408013690", 'type' => 2})
+        body = test_body({"oid" => "fda8917a-63d3-4415-b827-758408013690"})
+        a_post('/api/1/BTCUSD/order/cancel').
           with(body: body, headers: test_headers(body)).
           should have_been_made
-        cancel[:buys].last.price.should == 7.0
-        cancel[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 20, 38)
+        cancel[:buys].length.should == 0
         cancel[:sells].last.price.should == 99.0
         cancel[:sells].last.date.should == Time.utc(2011, 6, 27, 18, 20, 20)
       end
