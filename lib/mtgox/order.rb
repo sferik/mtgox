@@ -7,8 +7,8 @@ module MtGox
     def initialize(order={})
       self.id     = order['oid']
       self.date   = Time.at(order['date'].to_i)
-      self.amount = order['amount'].to_f
-      self.price  = order['price'].to_f
+      self.amount = order['amount']['value'].to_f
+      self.price  = order['price']['value'].to_f
     end
   end
 end

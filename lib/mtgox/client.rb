@@ -18,7 +18,8 @@ module MtGox
     include MtGox::Request
     include MtGox::Value
 
-    ORDER_TYPES = {sell: 1, buy: 2}
+    ORDER_TYPES = {sell: "ask", buy: "bid"}
+    INT_MULTIPLIERS = {btc: 100000000, usd: 100000, jpy: 1000}
 
     # Fetch a deposit address
     # @authenticated true
@@ -145,7 +146,7 @@ module MtGox
     # @example
     #   MtGox.orders
     def orders
-      parse_orders(post('/api/0/getOrders.php', {})['orders'])
+      parse_orders(post('/api/1/generic/orders', {}))
     end
 
     # Fetch your open buys
@@ -173,12 +174,12 @@ module MtGox
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to purchase
     # @param price [Numeric] the bid price in US dollars
-    # @return [Hash] with keys :buys and :sells, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Clients#sells}
+    # @return [String] order ID for the buy, can be inspected using order_result
     # @example
     #   # Buy one bitcoin for $0.011
     #   MtGox.buy! 1.0, 0.011
     def buy!(amount, price)
-      parse_orders(post('/api/0/buyBTC.php', {amount: amount, price: price})['orders'])
+      addorder!(:buy, amount, price)
     end
 
     # Place a limit order to sell BTC
@@ -186,12 +187,26 @@ module MtGox
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to sell
     # @param price [Numeric] the ask price in US dollars
-    # @return [Hash] with keys :buys and :sells, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Clients#sells}
+    # @return [String] order ID for the sell, can be inspected using order_result
     # @example
     #   # Sell one bitcoin for $100
     #   MtGox.sell! 1.0, 100.0
     def sell!(amount, price)
-      parse_orders(post('/api/0/sellBTC.php', {amount: amount, price: price})['orders'])
+      addorder!(:sell, amount, price)
+    end
+
+    # Create a new order
+    #
+    # @authenticated true
+    # @param type [String] the type of order to create, either "buy" or "sell"
+    # @param amount [Numberic] the number of bitcoins to buy/sell
+    # @param price [Numeric] the bid/ask price in USD
+    # @return [String] order ID for the order, can be inspected using order_result
+    # @example
+    #   # Sell one bitcoin for $123
+    #   MtGox.addorder! :sell, 1.0, 123.0
+    def addorder!(type, amount, price)
+      post('/api/1/BTCUSD/order/add', {type: order_type(type), amount_int: intify(amount,:btc), price_int: intify(price, :usd)})
     end
 
     # Cancel an open order
@@ -268,6 +283,18 @@ module MtGox
         end
       end
       {buys: buys, sells: sells}
+    end
+
+    def intify(float, currency)
+     (float * INT_MULTIPLIERS[currency]).to_i
+    end
+
+    def order_type(type)
+      unless ["bid", "ask"].include?(type.to_s)
+        ORDER_TYPES[type.downcase.to_sym]
+      else
+        type
+      end
     end
   end
 end
