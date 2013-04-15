@@ -23,7 +23,7 @@ describe MtGox::Client do
     end
   end
 
-  describe '#address' do
+  describe '#idkey' do
     before do
       stub_post('/api/1/generic/idkey').
         to_return(status: 200, body: fixture('idkey.json'))
