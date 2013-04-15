@@ -284,10 +284,6 @@ module MtGox
       {buys: buys, sells: sells}
     end
 
-    def intify(float, currency)
-     (float * INT_MULTIPLIERS[currency]).to_i
-    end
-
     def order_type(type)
       unless ["bid", "ask"].include?(type.to_s)
         ORDER_TYPES[type.downcase.to_sym]

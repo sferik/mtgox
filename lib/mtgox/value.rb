@@ -21,8 +21,9 @@ module MtGox
       (float * INT_MULTIPLIERS[currency]).to_i
     end
 
-    def floatify(int, currency)
-      (int.to_f / INT_MULTIPLIERS[currency])
-    end
+    # Unused yet
+    # def floatify(int, currency)
+    #   (int.to_f / INT_MULTIPLIERS[currency])
+    # end
   end
 end
