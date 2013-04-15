@@ -29,7 +29,7 @@ describe MtGox::Client do
         to_return(status: 200, body: fixture('idkey.json'))
     end
 
-    it "should fetch a deposit address" do
+    it "should fetch an idkey suitable to WS Api usage" do
       key = @client.idkey
       a_post('/api/1/generic/idkey').
         should have_been_made
