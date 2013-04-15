@@ -23,7 +23,11 @@ module MtGox
           request.headers = headers(request.body)
         end
       end
-      response.body
+      if response.body['result'] && response.body['result'] == 'success'
+        response.body['return']
+      else
+        response.body
+      end
     end
 
     def headers(request)

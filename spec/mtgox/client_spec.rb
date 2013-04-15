@@ -11,52 +11,53 @@ describe MtGox::Client do
 
   describe '#address' do
     before do
-      stub_post('/api/0/btcAddress.php').
+      stub_post('/api/1/generic/bitcoin/address').
         to_return(status: 200, body: fixture('address.json'))
     end
 
     it "should fetch a deposit address" do
       address = @client.address
-      a_post('/api/0/btcAddress.php').
+      a_post('/api/1/generic/bitcoin/address').
         should have_been_made
-      address.should == '171dH9Uum6wWLSwH2g8g2yto6SG7NEGyXG'
+      address.should == '17A1vbzQ39o8cGNnpqx8UvXNrhqwAEP8wY'
     end
   end
 
   describe '#ticker' do
     before do
-      stub_get('/api/0/data/ticker.php').
+      stub_get('/api/1/BTCUSD/ticker').
         to_return(status: 200, body: fixture('ticker.json'))
     end
 
     it "should fetch the ticker" do
       ticker = @client.ticker
-      a_get('/api/0/data/ticker.php').
+      a_get('/api/1/BTCUSD/ticker').
         should have_been_made
-      ticker.buy.should  == 26.4
-      ticker.sell.should == 26.6099
-      ticker.high.should == 28.678
-      ticker.low.should  == 18.4
-      ticker.price.should == 26.5
-      ticker.volume.should  == 80531.0
-      ticker.vwap.should == 3.81561
+      ticker.buy.should  == 5.53587
+      ticker.sell.should == 5.56031
+      ticker.high.should == 5.70653
+      ticker.low.should == 5.4145
+      ticker.price.should == 5.5594
+      ticker.volume.should  == 55829.58960346
+      ticker.vwap.should == 5.61048
+      ticker.avg.should == 5.56112
     end
   end
 
   describe 'depth methods' do
     before :each do
-      stub_get('/api/0/data/getDepth.php').
+      stub_get('/api/1/BTCUSD/depth/fetch').
         to_return(status: 200, body: fixture('depth.json'))
     end
 
     describe '#asks' do
       it "should fetch open asks" do
         asks = @client.asks
-        a_get('/api/0/data/getDepth.php').
+        a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made
-        asks.last.price.should == 23.75
-        asks.last.eprice.should == 23.905385002516354
-        asks.last.amount.should == 50
+        asks.first.price.should == 114
+        asks.first.eprice.should == 114.74584801207851
+        asks.first.amount.should == 0.43936758
       end
 
       it "should be sorted in price-ascending order" do
@@ -69,11 +70,11 @@ describe MtGox::Client do
     describe "#bids" do
       it "should fetch open bids" do
         bids = @client.bids
-        a_get('/api/0/data/getDepth.php').
+        a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made
-        bids.last.price.should == 14.62101
-        bids.last.eprice.should == 14.525973435000001
-        bids.last.amount.should == 5
+        bids.first.price.should == 113.0
+        bids.first.eprice.should == 112.2655
+        bids.first.amount.should == 124.69802063
       end
 
       it "should be sorted in price-descending order" do
@@ -85,36 +86,36 @@ describe MtGox::Client do
     describe "#offers" do
       it "should fetch both bids and asks, with only one call" do
         offers = @client.offers
-        a_get('/api/0/data/getDepth.php').
+        a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made.once
-        offers[:asks].last.price.should == 23.75
-        offers[:asks].last.eprice.should == 23.905385002516354
-        offers[:asks].last.amount.should == 50
-        offers[:bids].last.price.should == 14.62101
-        offers[:bids].last.eprice.should == 14.525973435000001
-        offers[:bids].last.amount.should == 5
+        offers[:asks].first.price.should == 114
+        offers[:asks].first.eprice.should == 114.74584801207851
+        offers[:asks].first.amount.should == 0.43936758
+        offers[:bids].first.price.should == 113.0
+        offers[:bids].first.eprice.should == 112.2655
+        offers[:bids].first.amount.should == 124.69802063
       end
     end
 
     describe '#min_ask' do
       it "should fetch the lowest priced ask" do
         min_ask = @client.min_ask
-        a_get('/api/0/data/getDepth.php').
+        a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made.once
-        min_ask.price.should == 17.00009
-        min_ask.eprice.should == 17.11131353799698
-        min_ask.amount.should == 36.22894353
+        min_ask.price.should == 114
+        min_ask.eprice.should == 114.74584801207851
+        min_ask.amount.should == 0.43936758
       end
     end
 
     describe '#max_bid' do
       it "should fetch the highest priced bid" do
         max_bid = @client.max_bid
-        a_get('/api/0/data/getDepth.php').
+        a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made.once
-        max_bid.price.should == 17.0
-        max_bid.eprice.should == 16.8895
-        max_bid.amount.should == 82.53875035
+        max_bid.price.should == 113
+        max_bid.eprice.should == 112.2655
+        max_bid.amount.should == 124.69802063
       end
     end
 
@@ -122,43 +123,43 @@ describe MtGox::Client do
 
   describe '#trades' do
     before do
-      stub_get('/api/0/data/getTrades.php').
+      stub_get('/api/1/BTCUSD/trades/fetch').
         to_return(status: 200, body: fixture('trades.json'))
     end
 
     it "should fetch trades" do
       trades = @client.trades
-      a_get('/api/0/data/getTrades.php').
+      a_get('/api/1/BTCUSD/trades/fetch').
         should have_been_made
-      trades.last.date.should == Time.utc(2011, 6, 27, 18, 28, 8)
-      trades.last.price.should == 17.00009
-      trades.last.amount.should == 0.5
-      trades.last.id.should == 1309199288687054
+      trades.last.date.should == Time.utc(2013, 4, 12, 15, 20, 3)
+      trades.last.price.should == 73.19258
+      trades.last.amount.should == 0.94043572
+      trades.last.id.should == 1365780003374123
     end
   end
 
   describe '#balance' do
     before do
-      stub_post('/api/0/getFunds.php').
+      stub_post('/api/1/generic/info').
         with(body: test_body, headers: test_headers).
-        to_return(status: 200, body: fixture('balance.json'))
+        to_return(status: 200, body: fixture('info.json'))
     end
 
     it "should fetch balance" do
       balance = @client.balance
-      a_post("/api/0/getFunds.php").
+      a_post("/api/1/generic/info").
         with(body: test_body, headers: test_headers).
         should have_been_made
       balance.first.currency.should == "BTC"
-      balance.first.amount.should == 22.0
-      balance.last.currency.should == "USD"
-      balance.last.amount.should == 3.7
+      balance.first.amount.should == 42.0
+      balance.last.currency.should == "EUR"
+      balance.last.amount.should == 23.0
     end
   end
 
   describe "order methods" do
     before :each do
-      stub_post('/api/0/getOrders.php').
+      stub_post('/api/1/generic/orders').
         with(body: test_body, headers: test_headers).
         to_return(status: 200, body: fixture('orders.json'))
     end
@@ -166,7 +167,7 @@ describe MtGox::Client do
     describe "#buys" do
       it "should fetch orders" do
         buys = @client.buys
-        a_post("/api/0/getOrders.php").
+        a_post("/api/1/generic/orders").
           with(body: test_body, headers: test_headers).
           should have_been_made
         buys.last.price.should == 7
@@ -177,7 +178,7 @@ describe MtGox::Client do
     describe "#sells" do
       it "should fetch sells" do
         sells = @client.sells
-        a_post("/api/0/getOrders.php").
+        a_post("/api/1/generic/orders").
           with(body: test_body, headers: test_headers).
           should have_been_made
         sells.last.price.should == 99.0
@@ -188,7 +189,7 @@ describe MtGox::Client do
     describe "#orders" do
       it "should fetch both buys and sells, with only one call" do
         orders = @client.orders
-        a_post("/api/0/getOrders.php").
+        a_post("/api/1/generic/orders").
           with(body: test_body, headers: test_headers).
           should have_been_made
         orders[:buys].last.price.should == 7.0
@@ -201,91 +202,79 @@ describe MtGox::Client do
 
   describe "#buy!" do
     before do
-      body = test_body({"amount" => "0.88", "price" => "0.89"})
-      stub_post('/api/0/buyBTC.php').
+      body = test_body({"type" => "bid", "amount_int" => "88000000", "price_int" => "89000"})
+      stub_post('/api/1/BTCUSD/order/add').
         with(body: body, headers: test_headers(body)).
         to_return(status: 200, body: fixture('buy.json'))
     end
 
     it "should place a bid" do
       buy = @client.buy!(0.88, 0.89)
-      body = test_body({"amount" => "0.88", "price" => "0.89"})
-      a_post("/api/0/buyBTC.php").
+      body = test_body({"type" => "bid", "amount_int" => "88000000", "price_int" => "89000"})
+      a_post("/api/1/BTCUSD/order/add").
         with(body: body, headers: test_headers(body)).
         should have_been_made
-      buy[:buys].last.price.should == 2.0
-      buy[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 26, 21)
-      buy[:sells].last.price.should == 99.0
-      buy[:sells].last.date.should == Time.utc(2011, 6, 27, 18, 20, 20)
+      buy.should == "490a214f-9a30-449f-acb8-780f9046502f"
     end
   end
 
   describe "#sell!" do
     before do
-      body = test_body({"amount" => "0.88", "price" => "89.0"})
-      stub_post('/api/0/sellBTC.php').
+      body = test_body({"type" => "ask", "amount_int" => "88000000", "price_int" => "8900000"})
+      stub_post('/api/1/BTCUSD/order/add').
         with(body: body, headers: test_headers(body)).
         to_return(status: 200, body: fixture('sell.json'))
     end
 
     it "should place an ask" do
-      body = test_body({"amount" => "0.88", "price" => "89.0"})
+      body = test_body({"type" => "ask", "amount_int" => "88000000", "price_int" => "8900000"})
       sell = @client.sell!(0.88, 89.0)
-      a_post("/api/0/sellBTC.php").
+      a_post("/api/1/BTCUSD/order/add").
         with(body: body, headers: test_headers(body)).
         should have_been_made
-      sell[:buys].last.price.should == 2.0
-      sell[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 26, 21)
-      sell[:sells].last.price.should == 200
-      sell[:sells].last.date.should == Time.utc(2011, 6, 27, 18, 27, 54)
+      sell.should == "a20329fe-c0d5-4378-b204-79a7800d41e7"
     end
   end
 
   describe "#cancel" do
     before do
-      cancel_body = test_body({"oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"})
-      stub_post('/api/0/getOrders.php').
+      cancel_body = test_body({"oid" => "fda8917a-63d3-4415-b827-758408013690"})
+      stub_post('/api/1/generic/orders').
         with(body: test_body, headers: test_headers).
         to_return(status: 200, body: fixture('orders.json'))
-      stub_post('/api/0/cancelOrder.php').
+      stub_post('/api/1/BTCUSD/order/cancel').
         with(body: cancel_body, headers: test_headers(cancel_body)).
         to_return(status: 200, body: fixture('cancel.json'))
     end
 
     context "with a valid oid passed" do
       it "should cancel an order" do
-        cancel = @client.cancel("bddd042c-e837-4a88-a92e-3b7c05e483df")
-        cancel_body = test_body({"oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"})
-        a_post("/api/0/getOrders.php").
+        cancel = @client.cancel("fda8917a-63d3-4415-b827-758408013690")
+        cancel_body = test_body({"oid" => "fda8917a-63d3-4415-b827-758408013690"})
+        a_post("/api/1/generic/orders").
           with(body: test_body, headers: test_headers).
           should have_been_made.once
-        a_post('/api/0/cancelOrder.php').
+        a_post('/api/1/BTCUSD/order/cancel').
           with(body: cancel_body, headers: test_headers(cancel_body)).
           should have_been_made
-        cancel[:buys].last.price.should == 7.0
-        cancel[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 20, 38)
-        cancel[:sells].last.price.should == 99.0
-        cancel[:sells].last.date.should == Time.utc(2011, 6, 27, 18, 20, 20)
+        cancel[:buys].length.should == 0
       end
     end
 
     context "with an invalid oid passed" do
       it "should raise an error" do
-        lambda do
-          @client.cancel(1234567890)
-        end.should raise_error(Faraday::Error::ResourceNotFound)
+        expect { @client.cancel(1234567890) }.to raise_error(Faraday::Error::ResourceNotFound)
       end
     end
 
     context "with an order passed" do
       it "should cancel an order" do
-        cancel = @client.cancel({'oid' => "bddd042c-e837-4a88-a92e-3b7c05e483df", 'type' => 2})
-        body = test_body({"oid" => "bddd042c-e837-4a88-a92e-3b7c05e483df", "type" => "2"})
-        a_post('/api/0/cancelOrder.php').
+        cancel = @client.cancel({'oid' => "fda8917a-63d3-4415-b827-758408013690", 'type' => 2})
+        body = test_body({"oid" => "fda8917a-63d3-4415-b827-758408013690"})
+        a_post('/api/1/BTCUSD/order/cancel').
           with(body: body, headers: test_headers(body)).
           should have_been_made
-        cancel[:buys].last.price.should == 7.0
-        cancel[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 20, 38)
+        cancel[:buys].length.should == 0
         cancel[:sells].last.price.should == 99.0
         cancel[:sells].last.date.should == Time.utc(2011, 6, 27, 18, 20, 20)
       end
@@ -294,22 +283,24 @@ describe MtGox::Client do
 
   describe "#withdraw!" do
     before do
-      body = test_body({"group1" => "BTC", "amount" => "1.0", "btca" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"})
-      stub_post('/api/0/withdraw.php').
+      body = test_body({"amount_int" => "100000000", "address" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"})
+      stub_post('/api/1/generic/bitcoin/send_simple').
         with(body: body, headers: test_headers(body)).
         to_return(status: 200, body: fixture('withdraw.json'))
     end
 
     it "should withdraw funds" do
       withdraw = @client.withdraw!(1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L")
-      body = test_body({"group1" => "BTC", "amount" => "1.0", "btca" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"})
-      a_post("/api/0/withdraw.php").
+      body = test_body({"amount_int" => "100000000", "address" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"})
+      a_post("/api/1/generic/bitcoin/send_simple").
         with(body: body, headers: test_headers(body)).
         should have_been_made
-      withdraw.first.currency.should == "BTC"
-      withdraw.first.amount.should == 9.0
-      withdraw.last.currency.should == "USD"
-      withdraw.last.amount.should == 64.59
+      withdraw.should == "311295deadbeef390a13c038e2b8ba77feebdaed2c1a59e6e0bdf001656e1314"
+    end
+
+    it "pays attention to too big withdrawals" do
+      lambda { @client.withdraw!(10000, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L") }.
+        should raise_error(MtGox::FilthyRichError)
     end
   end
 end

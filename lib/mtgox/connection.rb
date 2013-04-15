@@ -15,7 +15,7 @@ module MtGox
           accept: 'application/json',
           user_agent: "mtgox gem #{MtGox::Version}",
         },
-        url: 'https://mtgox.com',
+        url: 'https://data.mtgox.com',
       }
 
       Faraday.new(options) do |connection|

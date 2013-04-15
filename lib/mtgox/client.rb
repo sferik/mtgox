@@ -10,13 +10,15 @@ require 'mtgox/request'
 require 'mtgox/sell'
 require 'mtgox/ticker'
 require 'mtgox/trade'
+require 'mtgox/value'
 
 module MtGox
   class Client
     include MtGox::Connection
     include MtGox::Request
+    include MtGox::Value
 
-    ORDER_TYPES = {sell: 1, buy: 2}
+    ORDER_TYPES = {sell: "ask", buy: "bid"}
 
     # Fetch a deposit address
     # @authenticated true
@@ -24,7 +26,7 @@ module MtGox
     # @example
     #   MtGox.address
     def address
-      post('/api/0/btcAddress.php')['addr']
+      post('/api/1/generic/bitcoin/address')['addr']
     end
 
 
@@ -35,14 +37,15 @@ module MtGox
     # @example
     #   MtGox.ticker
     def ticker
-      ticker = get('/api/0/data/ticker.php')['ticker']
-      Ticker.instance.buy    = ticker['buy'].to_f
-      Ticker.instance.high   = ticker['high'].to_f
-      Ticker.instance.price  = ticker['last'].to_f
-      Ticker.instance.low    = ticker['low'].to_f
-      Ticker.instance.sell   = ticker['sell'].to_f
-      Ticker.instance.volume = ticker['vol'].to_f
-      Ticker.instance.vwap   = ticker['vwap'].to_f
+      ticker = get('/api/1/BTCUSD/ticker')
+      Ticker.instance.buy    = value_currency ticker['buy']
+      Ticker.instance.high   = value_currency ticker['high']
+      Ticker.instance.price  = value_currency ticker['last_all']
+      Ticker.instance.low    = value_currency ticker['low']
+      Ticker.instance.sell   = value_currency ticker['sell']
+      Ticker.instance.volume = value_bitcoin ticker['vol']
+      Ticker.instance.vwap   = value_currency ticker['vwap']
+      Ticker.instance.avg   = value_currency ticker['avg']
       Ticker.instance
     end
 
@@ -53,16 +56,16 @@ module MtGox
     # @example
     #   MtGox.offers
     def offers
-      offers = get('/api/0/data/getDepth.php')
+      offers = get('/api/1/BTCUSD/depth/fetch')
       asks = offers['asks'].sort_by do |ask|
-        ask[0].to_f
+        ask['price_int'].to_i
       end.map! do |ask|
-        Ask.new(*ask)
+        Ask.new(ask)
       end
       bids = offers['bids'].sort_by do |bid|
-        -bid[0].to_f
+        -bid['price_int'].to_i
       end.map! do |bid|
-        Bid.new(*bid)
+        Bid.new(bid)
       end
       {asks: asks, bids: bids}
     end
@@ -120,7 +123,7 @@ module MtGox
     # @example
     #   MtGox.trades
     def trades
-      get('/api/0/data/getTrades.php').sort_by{|trade| trade['date']}.map do |trade|
+      get('/api/1/BTCUSD/trades/fetch').sort_by{|trade| trade['date']}.map do |trade|
         Trade.new(trade)
       end
     end
@@ -132,7 +135,7 @@ module MtGox
     # @example
     #   MtGox.balance
     def balance
-      parse_balance(post('/api/0/getFunds.php', {}))
+      parse_balance(post('/api/1/generic/info', {}))
     end
 
     # Fetch your open orders, both buys and sells, for network efficiency
@@ -142,7 +145,7 @@ module MtGox
     # @example
     #   MtGox.orders
     def orders
-      parse_orders(post('/api/0/getOrders.php', {})['orders'])
+      parse_orders post('/api/1/generic/orders', {})
     end
 
     # Fetch your open buys
@@ -170,12 +173,12 @@ module MtGox
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to purchase
     # @param price [Numeric] the bid price in US dollars
-    # @return [Hash] with keys :buys and :sells, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Clients#sells}
+    # @return [String] order ID for the buy, can be inspected using order_result
     # @example
     #   # Buy one bitcoin for $0.011
     #   MtGox.buy! 1.0, 0.011
     def buy!(amount, price)
-      parse_orders(post('/api/0/buyBTC.php', {amount: amount, price: price})['orders'])
+      addorder!(:buy, amount, price)
     end
 
     # Place a limit order to sell BTC
@@ -183,12 +186,26 @@ module MtGox
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to sell
     # @param price [Numeric] the ask price in US dollars
-    # @return [Hash] with keys :buys and :sells, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Clients#sells}
+    # @return [String] order ID for the sell, can be inspected using order_result
     # @example
     #   # Sell one bitcoin for $100
     #   MtGox.sell! 1.0, 100.0
     def sell!(amount, price)
-      parse_orders(post('/api/0/sellBTC.php', {amount: amount, price: price})['orders'])
+      addorder!(:sell, amount, price)
+    end
+
+    # Create a new order
+    #
+    # @authenticated true
+    # @param type [String] the type of order to create, either "buy" or "sell"
+    # @param amount [Numberic] the number of bitcoins to buy/sell
+    # @param price [Numeric] the bid/ask price in USD
+    # @return [String] order ID for the order, can be inspected using order_result
+    # @example
+    #   # Sell one bitcoin for $123
+    #   MtGox.addorder! :sell, 1.0, 123.0
+    def addorder!(type, amount, price)
+      post('/api/1/BTCUSD/order/add', {type: order_type(type), amount_int: intify(amount,:btc), price_int: intify(price, :usd)})
     end
 
     # Cancel an open order
@@ -202,25 +219,25 @@ module MtGox
     #     MtGox.cancel my_order.oid
     #     MtGox.cancel 1234567890
     # @overload cancel(order)
-    #   @param order [Hash] a hash-like object, with keys `oid` - the order ID of the transaction to cancel and `type` - the type of order to cancel (`1` for sell or `2` for buy)
+    #   @param order [Hash] a hash-like object, containing at least a key `oid` - the order ID of the transaction to cancel
     #   @return [Hash] with keys :buys and :sells, which contain arrays as described in {MtGox::Client#buys} and {MtGox::Clients#sells}
     #   @example
     #     my_order = MtGox.orders.first
     #     MtGox.cancel my_order
-    #     MtGox.cancel {'oid' => '1234567890', 'type' => 2}
+    #     MtGox.cancel {'oid' => '1234567890'}
     def cancel(args)
       if args.is_a?(Hash)
-        order = args.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
-        parse_orders(post('/api/0/cancelOrder.php', order)['orders'])
+        args = args['oid']
+      end
+
+      orders = post('/api/1/generic/orders', {})
+      order = orders.find{|order| order['oid'] == args.to_s}
+      if order
+        res = post('/api/1/BTCUSD/order/cancel', {oid: order['oid']})
+        orders.delete_if { |o| o['oid'] == res['oid'] }
+        parse_orders(orders)
       else
-        orders = post('/api/0/getOrders.php', {})['orders']
-        order = orders.find{|order| order['oid'] == args.to_s}
-        if order
-          order = order.delete_if{|k, v| !['oid', 'type'].include?(k.to_s)}
-          parse_orders(post('/api/0/cancelOrder.php', order)['orders'])
-        else
-          raise Faraday::Error::ResourceNotFound, {status: 404, headers: {}, body: 'Order not found.'}
-        end
+        raise Faraday::Error::ResourceNotFound, {status: 404, headers: {}, body: 'Order not found.'}
       end
     end
 
@@ -228,21 +245,28 @@ module MtGox
     #
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to withdraw
-    # @param btca [String] the bitcoin address to send to
-    # @return [Array<MtGox::Balance>]
+    # @param address [String] the bitcoin address to send to
+    # @return [String] Completed Transaction ID
     # @example
     #   # Withdraw 1 BTC from your account
     #   MtGox.withdraw! 1.0, '1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L'
-    def withdraw!(amount, btca)
-      parse_balance(post('/api/0/withdraw.php', {group1: 'BTC', amount: amount, btca: btca}))
+    def withdraw!(amount, address)
+      if amount >= 1000
+        raise FilthyRichError,
+        "#withdraw! take bitcoin amount as parameter (you are trying to withdraw #{amount} BTC"
+      else
+        post('/api/1/generic/bitcoin/send_simple', {amount_int: intify(amount, :btc), address: address})['trx']
+      end
     end
 
     private
 
-    def parse_balance(balance)
+    def parse_balance(info)
       balances = []
-      balances << Balance.new('BTC', balance['btcs'])
-      balances << Balance.new('USD', balance['usds'])
+      info['Wallets'].each do |currency, wallet|
+        value = currency == "BTC" ? value_bitcoin(wallet['Balance']) : value_currency(wallet['Balance'])
+        balances << Balance.new(currency, value)
+      end
       balances
     end
 
@@ -258,6 +282,14 @@ module MtGox
         end
       end
       {buys: buys, sells: sells}
+    end
+
+    def order_type(type)
+      unless ["bid", "ask"].include?(type.to_s)
+        ORDER_TYPES[type.downcase.to_sym]
+      else
+        type
+      end
     end
   end
 end

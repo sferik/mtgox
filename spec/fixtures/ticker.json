@@ -1,1 +1,23 @@
-{"ticker":{"high":28.678,"low":18.4,"vol":80531,"buy":26.4,"sell":26.6099,"last":26.5,"vwap":3.81561}}
+{
+    "result":"success",
+    "return":
+    {
+        "high": {"value":"5.70653","value_int":"570653","display":"$5.70653","currency":"USD"},
+        "low": {"value":"5.4145","value_int":"541450","display":"$5.41450","currency":"USD"},
+        "avg": {"value":"5.561119626","value_int":"556112","display":"$5.56112","currency":"USD"},
+        "vwap": {"value":"5.610480461","value_int":"561048","display":"$5.61048","currency":"USD"},
+        "vol":
+        {
+            "value":"55829.58960346",
+            "value_int":"5582958960346",
+            "display":"55,829.58960346\u00a0BTC",
+            "currency":"BTC"
+        },
+        "last_all":{"value":"5.5594","value_int":"555940","display":"$5.55940","currency":"USD"},
+        "last_local":{"value":"5.5594","value_int":"555940","display":"$5.55940","currency":"USD"},
+        "last_orig":{"value":"5.5594","value_int":"555940","display":"$5.55940","currency":"USD"},
+        "last":{"value":"5.5594","value_int":"555940","display":"$5.55940","currency":"USD"},
+        "buy":{"value":"5.53587","value_int":"553587","display":"$5.53587","currency":"USD"},
+        "sell":{"value":"5.56031","value_int":"556031","display":"$5.56031","currency":"USD"}
+    }
+}
