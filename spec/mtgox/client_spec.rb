@@ -23,6 +23,20 @@ describe MtGox::Client do
     end
   end
 
+  describe '#idkey' do
+    before do
+      stub_post('/api/1/generic/idkey').
+        to_return(status: 200, body: fixture('idkey.json'))
+    end
+
+    it "should fetch an idkey suitable to WS Api usage" do
+      key = @client.idkey
+      a_post('/api/1/generic/idkey').
+        should have_been_made
+      key.should == 'YCKvmyU4QsaHEqM/AvKlqAAAAABRbR5y0vCn1roteQx/Ux/lyLF27X8Em1e4AN/2etPECzIT6dU'
+    end
+  end
+
   describe '#ticker' do
     before do
       stub_get('/api/1/BTCUSD/ticker').
