@@ -29,6 +29,14 @@ module MtGox
       post('/api/1/generic/bitcoin/address')['addr']
     end
 
+    # Get an idKey for subscribing to private channels in WebSocket API
+    # @authenticated true
+    # @return [String] the idKey to use in your WebSocket client
+    # @example
+    #   MtGox.idkey
+    def idkey
+      post('/api/1/generic/idkey')
+    end
 
     # Fetch the latest ticker data
     #
