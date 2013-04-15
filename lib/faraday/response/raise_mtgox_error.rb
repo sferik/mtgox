@@ -1,5 +1,4 @@
 require 'faraday'
-require 'json'
 
 module Faraday
   class Response::RaiseMtGoxError < Response::Middleware

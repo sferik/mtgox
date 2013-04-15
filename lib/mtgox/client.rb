@@ -19,7 +19,6 @@ module MtGox
     include MtGox::Value
 
     ORDER_TYPES = {sell: "ask", buy: "bid"}
-    INT_MULTIPLIERS = {btc: 100000000, usd: 100000, jpy: 1000}
 
     # Fetch a deposit address
     # @authenticated true
