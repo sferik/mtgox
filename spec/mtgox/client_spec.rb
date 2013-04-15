@@ -42,6 +42,17 @@ describe MtGox::Client do
       ticker.vwap.should == 5.61048
       ticker.avg.should == 5.56112
     end
+
+    it "should fetch the ticker and keep previous price" do
+      ticker = @client.ticker
+      ticker = @client.ticker
+      a_get('/api/1/BTCUSD/ticker').
+        should have_been_made.twice
+      ticker.up?.should == false
+      ticker.down?.should == false
+      ticker.changed?.should == false
+      ticker.unchanged?.should == true
+    end
   end
 
   describe 'depth methods' do
