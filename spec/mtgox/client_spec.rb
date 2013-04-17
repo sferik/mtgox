@@ -69,6 +69,23 @@ describe MtGox::Client do
     end
   end
 
+  describe '#lag' do
+    before do
+      stub_get('/api/1/generic/order/lag').
+        to_return(status:200, body: fixture('lag.json'))
+    end
+
+    it "should fetch the lag" do
+      lag = @client.lag
+      a_get('/api/1/generic/order/lag').
+        should have_been_made
+      lag.microseconds.should == 535998
+      lag.seconds.should == 0.535998
+      lag.text.should == "0.535998 seconds"
+      lag.length.should == 3
+    end
+  end
+
   describe 'depth methods' do
     before :each do
       stub_get('/api/1/BTCUSD/depth/fetch').
