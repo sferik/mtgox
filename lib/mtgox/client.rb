@@ -11,6 +11,7 @@ require 'mtgox/sell'
 require 'mtgox/ticker'
 require 'mtgox/trade'
 require 'mtgox/value'
+require 'mtgox/lag'
 
 module MtGox
   class Client
@@ -55,6 +56,17 @@ module MtGox
       Ticker.instance.vwap   = value_currency ticker['vwap']
       Ticker.instance.avg   = value_currency ticker['avg']
       Ticker.instance
+    end
+
+    # Fetch the latest lag data
+    #
+    # @authenticated false
+    # @return [MtGox::Lag]
+    # @example
+    #   MtGox.lag
+    def lag
+      lag = get('/api/1/generic/order/lag')
+      Lag.new(lag['lag'], lag['lag_secs'], lag['lag_text'], lag['length'])
     end
 
     # Fetch both bids and asks in one call, for network efficiency
