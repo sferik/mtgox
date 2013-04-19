@@ -192,7 +192,7 @@ module MtGox
     #
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to purchase
-    # @param price [Numeric] the bid price in US dollars
+    # @param price [Numeric or Symbol] the bid price in US dollars, or :market if placing a market order
     # @return [String] order ID for the buy, can be inspected using order_result
     # @example
     #   # Buy one bitcoin for $0.011
@@ -205,7 +205,7 @@ module MtGox
     #
     # @authenticated true
     # @param amount [Numeric] the number of bitcoins to sell
-    # @param price [Numeric] the ask price in US dollars
+    # @param price [Numeric or Symbol] the ask price in US dollars, or :market if placing a market order
     # @return [String] order ID for the sell, can be inspected using order_result
     # @example
     #   # Sell one bitcoin for $100
@@ -219,13 +219,17 @@ module MtGox
     # @authenticated true
     # @param type [String] the type of order to create, either "buy" or "sell"
     # @param amount [Numberic] the number of bitcoins to buy/sell
-    # @param price [Numeric] the bid/ask price in USD
+    # @param price [Numeric or Symbol] the bid/ask price in USD, or :market if placing a market order
     # @return [String] order ID for the order, can be inspected using order_result
     # @example
     #   # Sell one bitcoin for $123
     #   MtGox.addorder! :sell, 1.0, 123.0
     def addorder!(type, amount, price)
-      post('/api/1/BTCUSD/order/add', {type: order_type(type), amount_int: intify(amount,:btc), price_int: intify(price, :usd)})
+      order = {type: order_type(type), amount_int: intify(amount,:btc)}
+      if price != :market
+          order[:price_int] = intify(price, :usd)
+      end
+      post('/api/1/BTCUSD/order/add', order)
     end
 
     # Cancel an open order
