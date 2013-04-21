@@ -180,6 +180,29 @@ describe MtGox::Client do
     end
   end
 
+  describe '#trades :since' do
+    before do
+      trades = MultiJson.load(fixture('trades.json'))
+      stub_get('/api/1/BTCUSD/trades/fetch?since=1365780002144150').
+        to_return(status: 200,
+                    body: MultiJson.dump({
+                        'result' => 'success',
+                        'return' => trades['return'].select {|t| t['tid'] >= '1365780002144150'}
+                    })
+        )
+    end
+
+    it "should fetch trades since an id" do
+      trades = @client.trades :since => 1365780002144150
+      #puts trades.inspect
+      a_get('/api/1/BTCUSD/trades/fetch?since=1365780002144150').
+        should have_been_made
+      trades.first.price.should == 72.98274
+      trades.first.amount.should == 11.76583944
+      trades.first.id.should == 1365780002144150
+    end
+  end
+
   describe '#balance' do
     before do
       stub_post('/api/1/generic/info').
