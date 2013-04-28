@@ -72,6 +72,9 @@ typing `btc` in your bash shell:
     # Place a limit order to sell one bitcoin for $100
     MtGox.sell! 1.0, 100.0
 
+    # Place a market order to sell one bitcoin
+    MtGox.sell! 1.0, :market
+
     # Cancel order #1234567890
     MtGox.cancel 1234567890
 

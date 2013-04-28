@@ -245,8 +245,13 @@ describe MtGox::Client do
   describe "#buy!" do
     before do
       body = test_body({"type" => "bid", "amount_int" => "88000000", "price_int" => "89000"})
+      body_market = test_body({"type" => "bid", "amount_int" => "88000000"})
+
       stub_post('/api/1/BTCUSD/order/add').
         with(body: body, headers: test_headers(body)).
+        to_return(status: 200, body: fixture('buy.json'))
+      stub_post('/api/1/BTCUSD/order/add').
+        with(body: body_market, headers: test_headers(body_market)).
         to_return(status: 200, body: fixture('buy.json'))
     end
 
@@ -258,13 +263,27 @@ describe MtGox::Client do
         should have_been_made
       buy.should == "490a214f-9a30-449f-acb8-780f9046502f"
     end
+
+    it "should place a market bid" do
+      buy = @client.buy!(0.88, :market)
+      body_market = test_body({"type" => "bid", "amount_int" => "88000000"})
+      a_post("/api/1/BTCUSD/order/add").
+        with(body: body_market, headers: test_headers(body_market)).
+        should have_been_made
+      buy.should == "490a214f-9a30-449f-acb8-780f9046502f"
+    end
   end
 
   describe "#sell!" do
     before do
       body = test_body({"type" => "ask", "amount_int" => "88000000", "price_int" => "8900000"})
+      body_market = test_body({"type" => "ask", "amount_int" => "88000000"})
+
       stub_post('/api/1/BTCUSD/order/add').
         with(body: body, headers: test_headers(body)).
+        to_return(status: 200, body: fixture('sell.json'))
+      stub_post('/api/1/BTCUSD/order/add').
+        with(body: body_market, headers: test_headers(body_market)).
         to_return(status: 200, body: fixture('sell.json'))
     end
 
@@ -273,6 +292,15 @@ describe MtGox::Client do
       sell = @client.sell!(0.88, 89.0)
       a_post("/api/1/BTCUSD/order/add").
         with(body: body, headers: test_headers(body)).
+        should have_been_made
+      sell.should == "a20329fe-c0d5-4378-b204-79a7800d41e7"
+    end
+
+    it "should place a market ask" do
+      body_market = test_body({"type" => "ask", "amount_int" => "88000000"})
+      sell = @client.sell!(0.88, :market)
+      a_post("/api/1/BTCUSD/order/add").
+        with(body: body_market, headers: test_headers(body_market)).
         should have_been_made
       sell.should == "a20329fe-c0d5-4378-b204-79a7800d41e7"
     end
