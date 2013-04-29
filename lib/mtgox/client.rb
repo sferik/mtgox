@@ -52,9 +52,9 @@ module MtGox
       Ticker.instance.price  = value_currency ticker['last_all']
       Ticker.instance.low    = value_currency ticker['low']
       Ticker.instance.sell   = value_currency ticker['sell']
-      Ticker.instance.volume = value_bitcoin ticker['vol']
+      Ticker.instance.volume = value_bitcoin  ticker['vol']
       Ticker.instance.vwap   = value_currency ticker['vwap']
-      Ticker.instance.avg   = value_currency ticker['avg']
+      Ticker.instance.avg    = value_currency ticker['avg']
       Ticker.instance
     end
 
@@ -72,7 +72,7 @@ module MtGox
     # Fetch both bids and asks in one call, for network efficiency
     #
     # @authenticated false
-    # @return [Hash] with keys :asks and :asks, which contain arrays as described in {MtGox::Client#asks} and {MtGox::Clients#bids}
+    # @return [Hash] with keys :asks and :bids, which contain arrays as described in {MtGox::Client#asks} and {MtGox::Clients#bids}
     # @example
     #   MtGox.offers
     def offers
