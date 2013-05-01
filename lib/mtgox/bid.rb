@@ -5,7 +5,8 @@ module MtGox
   class Bid < Offer
     include MtGox::Value
 
-    def initialize(hash = nil)
+    def initialize(client, hash = nil)
+      self.client = client
       if hash
         self.price = value_currency hash, 'price_int'
         self.amount = value_bitcoin hash, 'amount_int'
@@ -14,7 +15,7 @@ module MtGox
     end
 
     def eprice
-      price * (1 - MtGox.commission)
+      price * (1 - self.client.commission)
     end
 
   end
