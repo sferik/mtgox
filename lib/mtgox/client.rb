@@ -142,8 +142,10 @@ module MtGox
     # @return [Array<MtGox::Trade>] an array of trades, sorted in chronological order
     # @example
     #   MtGox.trades
-    def trades
-      get('/api/1/BTCUSD/trades/fetch').sort_by{|trade| trade['date']}.map do |trade|
+    #   MtGox.trades :since => 12341234
+    def trades(opts={})
+      get('/api/1/BTCUSD/trades/fetch', opts).
+        sort_by{|trade| trade['date']}.map do |trade|
         Trade.new(trade)
       end
     end
