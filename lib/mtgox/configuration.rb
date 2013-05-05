@@ -23,13 +23,6 @@ module MtGox
       yield self
     end
 
-    # Create a hash of options and their values
-    def options
-      options = {}
-      VALID_OPTIONS_KEYS.each{|k| options[k] = send(k)}
-      options
-    end
-
     # Reset all configuration options to defaults
     def reset
       self.commission = DEFAULT_COMMISSION
