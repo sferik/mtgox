@@ -33,10 +33,10 @@ module MtGox
     def headers(request)
       signature = Base64.strict_encode64(
         OpenSSL::HMAC.digest 'sha512',
-        Base64.decode64(MtGox.secret),
+        Base64.decode64(secret),
         request
       )
-      {'Rest-Key' => MtGox.key, 'Rest-Sign' => signature}
+      {'Rest-Key' => key, 'Rest-Sign' => signature}
     end
 
     def body_from_options(options)

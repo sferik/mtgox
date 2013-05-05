@@ -12,14 +12,20 @@ require 'mtgox/ticker'
 require 'mtgox/trade'
 require 'mtgox/value'
 require 'mtgox/lag'
+require 'mtgox/configuration'
 
 module MtGox
   class Client
     include MtGox::Connection
     include MtGox::Request
     include MtGox::Value
+    include MtGox::Configuration
 
     ORDER_TYPES = {sell: "ask", buy: "bid"}
+
+    def initialize
+      reset
+    end
 
     # Fetch a deposit address
     # @authenticated true
@@ -80,12 +86,12 @@ module MtGox
       asks = offers['asks'].sort_by do |ask|
         ask['price_int'].to_i
       end.map! do |ask|
-        Ask.new(ask)
+        Ask.new(self, ask)
       end
       bids = offers['bids'].sort_by do |bid|
         -bid['price_int'].to_i
       end.map! do |bid|
-        Bid.new(bid)
+        Bid.new(self, bid)
       end
       {asks: asks, bids: bids}
     end
@@ -117,10 +123,7 @@ module MtGox
     # @example
     #   MtGox.min_ask
     def min_ask
-      min_ask = asks.first
-      MinAsk.instance.price = min_ask.price
-      MinAsk.instance.amount = min_ask.amount
-      MinAsk.instance
+      asks.first
     end
 
     # Fetch the highest priced bid
@@ -130,10 +133,7 @@ module MtGox
     # @example
     #   MtGox.max_bid
     def max_bid
-      max_bid = bids.first
-      MaxBid.instance.price = max_bid.price
-      MaxBid.instance.amount = max_bid.amount
-      MaxBid.instance
+      bids.first
     end
 
     # Fetch recent trades

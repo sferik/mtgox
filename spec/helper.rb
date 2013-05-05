@@ -47,13 +47,13 @@ module MtGox
   end
 end
 
-def test_headers(body=test_body)
+def test_headers(client, body=test_body)
   signature = Base64.strict_encode64(
     OpenSSL::HMAC.digest 'sha512',
-    Base64.decode64(MtGox.secret),
+    Base64.decode64(client.secret),
     body
   )
-  {'Rest-Key' => MtGox.key, 'Rest-Sign' => signature}
+  {'Rest-Key' => client.key, 'Rest-Sign' => signature}
 end
 
 def test_body(options={})
