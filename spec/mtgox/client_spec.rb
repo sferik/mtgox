@@ -12,7 +12,7 @@ describe MtGox::Client do
   describe '#address' do
     before do
       stub_post('/api/1/generic/bitcoin/address').
-        to_return(status: 200, body: fixture('address.json'))
+        to_return(body: fixture('address.json'))
     end
 
     it "should fetch a deposit address" do
@@ -26,7 +26,7 @@ describe MtGox::Client do
   describe '#idkey' do
     before do
       stub_post('/api/1/generic/idkey').
-        to_return(status: 200, body: fixture('idkey.json'))
+        to_return(body: fixture('idkey.json'))
     end
 
     it "should fetch an idkey suitable to WS Api usage" do
@@ -40,7 +40,7 @@ describe MtGox::Client do
   describe '#ticker' do
     before do
       stub_get('/api/1/BTCUSD/ticker').
-        to_return(status: 200, body: fixture('ticker.json'))
+        to_return(body: fixture('ticker.json'))
     end
 
     it "should fetch the ticker" do
@@ -89,7 +89,7 @@ describe MtGox::Client do
   describe 'depth methods' do
     before :each do
       stub_get('/api/1/BTCUSD/depth/fetch').
-        to_return(status: 200, body: fixture('depth.json'))
+        to_return(body: fixture('depth.json'))
     end
 
     describe '#asks' do
@@ -166,7 +166,7 @@ describe MtGox::Client do
   describe '#trades' do
     before do
       stub_get('/api/1/BTCUSD/trades/fetch').
-        to_return(status: 200, body: fixture('trades.json'))
+        to_return(body: fixture('trades.json'))
     end
 
     it "should fetch trades" do
@@ -184,12 +184,7 @@ describe MtGox::Client do
     before do
       trades = MultiJson.load(fixture('trades.json'))
       stub_get('/api/1/BTCUSD/trades/fetch?since=1365780002144150').
-        to_return(status: 200,
-                    body: MultiJson.dump({
-                        'result' => 'success',
-                        'return' => trades['return'].select {|t| t['tid'] >= '1365780002144150'}
-                    })
-        )
+        to_return(body: MultiJson.dump({result: 'success', return: trades['return'].select{|t| t['tid'] >= '1365780002144150'}}))
     end
 
     it "should fetch trades since an id" do
@@ -207,7 +202,7 @@ describe MtGox::Client do
     before do
       stub_post('/api/1/generic/info').
         with(body: test_body, headers: test_headers(@client)).
-        to_return(status: 200, body: fixture('info.json'))
+        to_return(body: fixture('info.json'))
     end
 
     it "should fetch balance" do
@@ -226,7 +221,7 @@ describe MtGox::Client do
     before :each do
       stub_post('/api/1/generic/orders').
         with(body: test_body, headers: test_headers(@client)).
-        to_return(status: 200, body: fixture('orders.json'))
+        to_return(body: fixture('orders.json'))
     end
 
     describe "#buys" do
@@ -272,10 +267,10 @@ describe MtGox::Client do
 
       stub_post('/api/1/BTCUSD/order/add').
         with(body: body, headers: test_headers(@client, body)).
-        to_return(status: 200, body: fixture('buy.json'))
+        to_return(body: fixture('buy.json'))
       stub_post('/api/1/BTCUSD/order/add').
         with(body: body_market, headers: test_headers(@client, body_market)).
-        to_return(status: 200, body: fixture('buy.json'))
+        to_return(body: fixture('buy.json'))
     end
 
     it "should place a bid" do
@@ -304,10 +299,10 @@ describe MtGox::Client do
 
       stub_post('/api/1/BTCUSD/order/add').
         with(body: body, headers: test_headers(@client, body)).
-        to_return(status: 200, body: fixture('sell.json'))
+        to_return(body: fixture('sell.json'))
       stub_post('/api/1/BTCUSD/order/add').
         with(body: body_market, headers: test_headers(@client, body_market)).
-        to_return(status: 200, body: fixture('sell.json'))
+        to_return(body: fixture('sell.json'))
     end
 
     it "should place an ask" do
@@ -334,10 +329,10 @@ describe MtGox::Client do
       cancel_body = test_body({"oid" => "fda8917a-63d3-4415-b827-758408013690"})
       stub_post('/api/1/generic/orders').
         with(body: test_body, headers: test_headers(@client)).
-        to_return(status: 200, body: fixture('orders.json'))
+        to_return(body: fixture('orders.json'))
       stub_post('/api/1/BTCUSD/order/cancel').
         with(body: cancel_body, headers: test_headers(@client, cancel_body)).
-        to_return(status: 200, body: fixture('cancel.json'))
+        to_return(body: fixture('cancel.json'))
     end
 
     context "with a valid oid passed" do
@@ -379,7 +374,7 @@ describe MtGox::Client do
       body = test_body({"amount_int" => "100000000", "address" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"})
       stub_post('/api/1/generic/bitcoin/send_simple').
         with(body: body, headers: test_headers(@client, body)).
-        to_return(status: 200, body: fixture('withdraw.json'))
+        to_return(body: fixture('withdraw.json'))
     end
 
     it "should withdraw funds" do

@@ -10,7 +10,7 @@ module MtGox
       request(:post, path, options)
     end
 
-    private
+  private
 
     def request(method, path, options)
       response = connection.send(method) do |request|

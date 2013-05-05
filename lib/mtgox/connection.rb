@@ -7,7 +7,7 @@ require 'mtgox/version'
 
 module MtGox
   module Connection
-    private
+  private
 
     def connection
       options = {

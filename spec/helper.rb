@@ -40,7 +40,7 @@ end
 
 module MtGox
   module Request
-    private
+  private
     def add_nonce(options)
       options.merge!({nonce: 1321745961249676})
     end

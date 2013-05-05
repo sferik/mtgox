@@ -74,6 +74,8 @@ module MtGox
       lag = get('/api/1/generic/order/lag')
       Lag.new(lag['lag'], lag['lag_secs'], lag['lag_text'], lag['length'])
     end
+    alias order_lag lag
+    alias orderlag lag
 
     # Fetch both bids and asks in one call, for network efficiency
     #
@@ -157,7 +159,7 @@ module MtGox
     # @example
     #   MtGox.balance
     def balance
-      parse_balance(post('/api/1/generic/info', {}))
+      parse_balance(post('/api/1/generic/info'))
     end
 
     # Fetch your open orders, both buys and sells, for network efficiency
@@ -167,7 +169,7 @@ module MtGox
     # @example
     #   MtGox.orders
     def orders
-      parse_orders post('/api/1/generic/orders', {})
+      parse_orders(post('/api/1/generic/orders'))
     end
 
     # Fetch your open buys
@@ -200,7 +202,7 @@ module MtGox
     #   # Buy one bitcoin for $0.011
     #   MtGox.buy! 1.0, 0.011
     def buy!(amount, price)
-      addorder!(:buy, amount, price)
+      add_order!(:buy, amount, price)
     end
 
     # Place a limit order to sell BTC
@@ -213,7 +215,7 @@ module MtGox
     #   # Sell one bitcoin for $100
     #   MtGox.sell! 1.0, 100.0
     def sell!(amount, price)
-      addorder!(:sell, amount, price)
+      add_order!(:sell, amount, price)
     end
 
     # Create a new order
@@ -225,14 +227,16 @@ module MtGox
     # @return [String] order ID for the order, can be inspected using order_result
     # @example
     #   # Sell one bitcoin for $123
-    #   MtGox.addorder! :sell, 1.0, 123.0
-    def addorder!(type, amount, price)
+    #   MtGox.add_order! :sell, 1.0, 123.0
+    def order!(type, amount, price)
       order = {type: order_type(type), amount_int: intify(amount,:btc)}
       if price != :market
           order[:price_int] = intify(price, :usd)
       end
       post('/api/1/BTCUSD/order/add', order)
     end
+    alias add_order! order!
+    alias addorder! order!
 
     # Cancel an open order
     #
@@ -256,16 +260,18 @@ module MtGox
         args = args['oid']
       end
 
-      orders = post('/api/1/generic/orders', {})
+      orders = post('/api/1/generic/orders')
       order = orders.find{|order| order['oid'] == args.to_s}
       if order
-        res = post('/api/1/BTCUSD/order/cancel', {oid: order['oid']})
-        orders.delete_if { |o| o['oid'] == res['oid'] }
+        res = post('/api/1/BTCUSD/order/cancel', oid: order['oid'])
+        orders.delete_if{|o| o['oid'] == res['oid']}
         parse_orders(orders)
       else
         raise Faraday::Error::ResourceNotFound, {status: 404, headers: {}, body: 'Order not found.'}
       end
     end
+    alias cancel_order cancel
+    alias cancelorder cancel
 
     # Transfer bitcoins from your Mt. Gox account into another account
     #
@@ -285,7 +291,7 @@ module MtGox
       end
     end
 
-    private
+  private
 
     def parse_balance(info)
       balances = []
@@ -317,5 +323,6 @@ module MtGox
         type
       end
     end
+
   end
 end
