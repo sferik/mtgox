@@ -42,44 +42,46 @@ typing `btc` in your bash shell:
 [documentation]: http://rdoc.info/gems/mtgox
 
 ## Usage Examples
-    require 'rubygems'
-    require 'mtgox'
+```ruby
+require 'rubygems'
+require 'mtgox'
 
-    # Fetch the latest price for 1 BTC in USD
-    puts MtGox.ticker.sell
+# Fetch the latest price for 1 BTC in USD
+puts MtGox.ticker.sell
 
-    # Fetch open asks
-    puts MtGox.asks
+# Fetch open asks
+puts MtGox.asks
 
-    # Fetch open bids
-    puts MtGox.bids
+# Fetch open bids
+puts MtGox.bids
 
-    # Fetch the last 48 hours worth of trades (takes a minute)
-    puts MtGox.trades
+# Fetch the last 48 hours worth of trades (takes a minute)
+puts MtGox.trades
 
-    # Certain methods require authentication
-    MtGox.configure do |config|
-      config.key = YOUR_MTGOX_KEY
-      config.secret = YOUR_MTGOX_SECRET
-    end
+# Certain methods require authentication
+MtGox.configure do |config|
+  config.key = YOUR_MTGOX_KEY
+  config.secret = YOUR_MTGOX_SECRET
+end
 
-    # Fetch your current balance
-    puts MtGox.balance
+# Fetch your current balance
+puts MtGox.balance
 
-    # Place a limit order to buy one bitcoin for $0.011
-    MtGox.buy! 1.0, 0.011
+# Place a limit order to buy one bitcoin for $0.011
+MtGox.buy! 1.0, 0.011
 
-    # Place a limit order to sell one bitcoin for $100
-    MtGox.sell! 1.0, 100.0
+# Place a limit order to sell one bitcoin for $100
+MtGox.sell! 1.0, 100.0
 
-    # Place a market order to sell one bitcoin
-    MtGox.sell! 1.0, :market
+# Place a market order to sell one bitcoin
+MtGox.sell! 1.0, :market
 
-    # Cancel order #1234567890
-    MtGox.cancel 1234567890
+# Cancel order #1234567890
+MtGox.cancel 1234567890
 
-    # Withdraw 1 BTC from your account
-    MtGox.withdraw! 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"
+# Withdraw 1 BTC from your account
+MtGox.withdraw! 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"
+```
 
 ## Contributing
 In the spirit of [free software][free-sw], **everyone** is encouraged to help
