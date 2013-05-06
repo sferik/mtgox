@@ -232,6 +232,10 @@ describe MtGox::Client do
           should have_been_made
         buys.last.price.should == 7
         buys.last.date.should == Time.utc(2011, 6, 27, 18, 20, 38)
+        buys.last.amount.should == BigDecimal("0.2")
+        buys.last.status.should == "open"
+        buys.last.currency.should == "USD"
+        buys.last.item.should == "BTC"
       end
     end
 
