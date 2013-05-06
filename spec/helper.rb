@@ -7,8 +7,9 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 ]
 SimpleCov.start
 
-require 'base64'
 require 'mtgox'
+require 'base64'
+require 'json'
 require 'rspec'
 require 'webmock/rspec'
 

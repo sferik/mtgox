@@ -1,5 +1,5 @@
 require 'faraday'
-require 'multi_json'
+require 'json'
 
 module MtGox
   module Response
@@ -10,7 +10,7 @@ module MtGox
         when /\A^\s*$\z/, nil
           nil
         else
-          MultiJson.decode(body)
+          JSON.load(body)
         end
       end
 

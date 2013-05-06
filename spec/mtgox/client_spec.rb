@@ -182,9 +182,9 @@ describe MtGox::Client do
 
   describe '#trades :since' do
     before do
-      trades = MultiJson.load(fixture('trades.json'))
+      trades = JSON.load(fixture('trades.json'))
       stub_get('/api/1/BTCUSD/trades/fetch?since=1365780002144150').
-        to_return(body: MultiJson.dump({result: 'success', return: trades['return'].select{|t| t['tid'] >= '1365780002144150'}}))
+        to_return(body: JSON.dump({result: 'success', return: trades['return'].select{|t| t['tid'] >= '1365780002144150'}}))
     end
 
     it "should fetch trades since an id" do
