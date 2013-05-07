@@ -4,7 +4,7 @@ module MtGox
 
     def initialize(lag=nil, lag_secs=nil, lag_text=nil, length=nil)
       self.microseconds = lag.to_i
-      self.seconds = lag_secs.to_f
+      self.seconds = BigDecimal(lag_secs.to_s)
       self.text = lag_text
       self.length = length.to_i
     end

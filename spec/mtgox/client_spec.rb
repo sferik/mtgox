@@ -47,14 +47,14 @@ describe MtGox::Client do
       ticker = @client.ticker
       a_get('/api/1/BTCUSD/ticker').
         should have_been_made
-      ticker.buy.should  == 5.53587
-      ticker.sell.should == 5.56031
-      ticker.high.should == 5.70653
-      ticker.low.should == 5.4145
-      ticker.price.should == 5.5594
-      ticker.volume.should  == 55829.58960346
-      ticker.vwap.should == 5.61048
-      ticker.avg.should == 5.56112
+      ticker.buy.should  == BigDecimal('5.53587')
+      ticker.sell.should == BigDecimal('5.56031')
+      ticker.high.should == BigDecimal('5.70653')
+      ticker.low.should == BigDecimal('5.4145')
+      ticker.price.should == BigDecimal('5.5594')
+      ticker.volume.should  == BigDecimal('55829.58960346')
+      ticker.vwap.should == BigDecimal('5.61048')
+      ticker.avg.should == BigDecimal('5.56112')
     end
 
     it "should fetch the ticker and keep previous price" do
@@ -80,7 +80,7 @@ describe MtGox::Client do
       a_get('/api/1/generic/order/lag').
         should have_been_made
       lag.microseconds.should == 535998
-      lag.seconds.should == 0.535998
+      lag.seconds.should == BigDecimal('0.535998')
       lag.text.should == "0.535998 seconds"
       lag.length.should == 3
     end
@@ -98,8 +98,8 @@ describe MtGox::Client do
         a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made
         asks.first.price.should == 114
-        asks.first.eprice.should == 114.74584801207851
-        asks.first.amount.should == 0.43936758
+        asks.first.eprice.should == BigDecimal('114.745848012')
+        asks.first.amount.should == BigDecimal('0.43936758')
       end
 
       it "should be sorted in price-ascending order" do
@@ -114,9 +114,9 @@ describe MtGox::Client do
         bids = @client.bids
         a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made
-        bids.first.price.should == 113.0
-        bids.first.eprice.should == 112.2655
-        bids.first.amount.should == 124.69802063
+        bids.first.price.should == BigDecimal('113.0')
+        bids.first.eprice.should == BigDecimal('112.2655')
+        bids.first.amount.should == BigDecimal('124.69802063')
       end
 
       it "should be sorted in price-descending order" do
@@ -131,11 +131,11 @@ describe MtGox::Client do
         a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made.once
         offers[:asks].first.price.should == 114
-        offers[:asks].first.eprice.should == 114.74584801207851
-        offers[:asks].first.amount.should == 0.43936758
-        offers[:bids].first.price.should == 113.0
-        offers[:bids].first.eprice.should == 112.2655
-        offers[:bids].first.amount.should == 124.69802063
+        offers[:asks].first.eprice.should == BigDecimal('114.745848012')
+        offers[:asks].first.amount.should == BigDecimal('0.43936758')
+        offers[:bids].first.price.should == BigDecimal('113.0')
+        offers[:bids].first.eprice.should == BigDecimal('112.2655')
+        offers[:bids].first.amount.should == BigDecimal('124.69802063')
       end
     end
 
@@ -145,8 +145,8 @@ describe MtGox::Client do
         a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made.once
         min_ask.price.should == 114
-        min_ask.eprice.should == 114.74584801207851
-        min_ask.amount.should == 0.43936758
+        min_ask.eprice.should == BigDecimal('114.745848012')
+        min_ask.amount.should == BigDecimal('0.43936758')
       end
     end
 
@@ -156,8 +156,8 @@ describe MtGox::Client do
         a_get('/api/1/BTCUSD/depth/fetch').
           should have_been_made.once
         max_bid.price.should == 113
-        max_bid.eprice.should == 112.2655
-        max_bid.amount.should == 124.69802063
+        max_bid.eprice.should == BigDecimal('112.2655')
+        max_bid.amount.should == BigDecimal('124.69802063')
       end
     end
 
@@ -174,8 +174,8 @@ describe MtGox::Client do
       a_get('/api/1/BTCUSD/trades/fetch').
         should have_been_made
       trades.last.date.should == Time.utc(2013, 4, 12, 15, 20, 3)
-      trades.last.price.should == 73.19258
-      trades.last.amount.should == 0.94043572
+      trades.last.price.should == BigDecimal('73.19258')
+      trades.last.amount.should == BigDecimal('0.94043572')
       trades.last.id.should == 1365780003374123
     end
   end
@@ -192,8 +192,8 @@ describe MtGox::Client do
       #puts trades.inspect
       a_get('/api/1/BTCUSD/trades/fetch?since=1365780002144150').
         should have_been_made
-      trades.first.price.should == 72.98274
-      trades.first.amount.should == 11.76583944
+      trades.first.price.should == BigDecimal('72.98274')
+      trades.first.amount.should == BigDecimal('11.76583944')
       trades.first.id.should == 1365780002144150
     end
   end
@@ -211,9 +211,9 @@ describe MtGox::Client do
         with(body: test_body, headers: test_headers(@client)).
         should have_been_made
       balance.first.currency.should == "BTC"
-      balance.first.amount.should == 42.0
+      balance.first.amount.should == BigDecimal('42.0')
       balance.last.currency.should == "EUR"
-      balance.last.amount.should == 23.0
+      balance.last.amount.should == BigDecimal('23.0')
     end
   end
 
@@ -245,7 +245,7 @@ describe MtGox::Client do
         a_post("/api/1/generic/orders").
           with(body: test_body, headers: test_headers(@client)).
           should have_been_made
-        sells.last.price.should == 99.0
+        sells.last.price.should == BigDecimal('99.0')
         sells.last.date.should == Time.utc(2011, 6, 27, 18, 20, 20)
       end
     end
@@ -256,9 +256,9 @@ describe MtGox::Client do
         a_post("/api/1/generic/orders").
           with(body: test_body, headers: test_headers(@client)).
           should have_been_made
-        orders[:buys].last.price.should == 7.0
+        orders[:buys].last.price.should == BigDecimal('7.0')
         orders[:buys].last.date.should == Time.utc(2011, 6, 27, 18, 20, 38)
-        orders[:sells].last.price.should == 99.0
+        orders[:sells].last.price.should == BigDecimal('99.0')
         orders[:sells].last.date.should == Time.utc(2011, 6, 27, 18, 20, 20)
       end
     end
@@ -367,7 +367,7 @@ describe MtGox::Client do
           with(body: body, headers: test_headers(@client, body)).
           should have_been_made
         cancel[:buys].length.should == 0
-        cancel[:sells].last.price.should == 99.0
+        cancel[:sells].last.price.should == BigDecimal('99.0')
         cancel[:sells].last.date.should == Time.utc(2011, 6, 27, 18, 20, 20)
       end
     end

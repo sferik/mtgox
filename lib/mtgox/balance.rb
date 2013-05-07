@@ -4,7 +4,7 @@ module MtGox
 
     def initialize(currency=nil, amount=nil)
       self.currency = currency.to_s.upcase
-      self.amount = amount.to_f
+      self.amount = BigDecimal(amount)
     end
   end
 end

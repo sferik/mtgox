@@ -8,15 +8,15 @@ module MtGox
     end
 
     def up?
-      price.to_f > previous_price.to_f
+      BigDecimal(price) > BigDecimal(previous_price)
     end
 
     def down?
-      price.to_f < previous_price.to_f
+      BigDecimal(price) < BigDecimal(previous_price)
     end
 
     def changed?
-      price.to_f != previous_price.to_f
+      BigDecimal(price) != BigDecimal(previous_price)
     end
 
     def unchanged?
