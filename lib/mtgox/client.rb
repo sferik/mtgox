@@ -267,7 +267,7 @@ module MtGox
         orders.delete_if{|o| o['oid'] == res['oid']}
         parse_orders(orders)
       else
-        raise Faraday::Error::ResourceNotFound, {status: 404, headers: {}, body: 'Order not found.'}
+        raise MtGox::OrderNotFoundError
       end
     end
     alias cancel_order cancel
