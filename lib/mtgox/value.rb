@@ -47,7 +47,7 @@ module MtGox
     # param currency [Symbol] currency conversion rule to use amongst [:btc, :usd, :jpy]
     # return a [BigDecimal]
     def decimalify(int, currency)
-      (BigDecimal(int) / INT_MULTIPLIERS[currency])
+      (BigDecimal(int.to_s) / INT_MULTIPLIERS[currency])
     end
   end
 end
