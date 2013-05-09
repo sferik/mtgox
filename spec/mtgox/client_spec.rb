@@ -351,7 +351,7 @@ describe MtGox::Client do
 
     context "with an invalid oid passed" do
       it "should raise an error" do
-        expect { @client.cancel(1234567890) }.to raise_error(Faraday::Error::ResourceNotFound)
+        expect { @client.cancel(1234567890) }.to raise_error(MtGox::OrderNotFoundError)
       end
     end
 
