@@ -1,3 +1,5 @@
+require 'bigdecimal'
+
 module MtGox
   module PriceTicker
     attr_reader :previous_price, :price
@@ -8,15 +10,15 @@ module MtGox
     end
 
     def up?
-      price.to_f > previous_price.to_f
+      BigDecimal(price.to_s) > BigDecimal(previous_price.to_s)
     end
 
     def down?
-      price.to_f < previous_price.to_f
+      BigDecimal(price.to_s) < BigDecimal(previous_price.to_s)
     end
 
     def changed?
-      price.to_f != previous_price.to_f
+      BigDecimal(price.to_s) != BigDecimal(previous_price.to_s)
     end
 
     def unchanged?

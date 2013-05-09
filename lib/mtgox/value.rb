@@ -1,3 +1,5 @@
+require 'bigdecimal'
+
 # In the "old API", currency- and amount-values (price, volume,...)
 # were given as float. These values are likely being deprecated and
 # replaced by fields of the same name with "_int" as suffix. These are
@@ -18,7 +20,7 @@ module MtGox
     # @authenticated false
     # @return [Float]
     def value_currency(value, key = 'value_int')
-      floatify(value[key].to_i, :usd)
+      decimalify(value[key].to_i, :usd)
     end
 
     # Takes a hash return by the API and convert some value_int to
@@ -29,25 +31,25 @@ module MtGox
     # @authenticated false
     # @return [Float] a float BTC value
     def value_bitcoin(value, key = 'value_int')
-      floatify(value[key], :btc)
+      decimalify(value[key], :btc)
     end
 
-    # Convert a float value to an int using the MtGox conversion rules.
+    # Convert a BigDecimal value to an int using the MtGox conversion rules.
     #
-    # param float [Float] to convert
+    # param decimal [BigDecimal] to convert
     # param currency [Symbol] currency conversion rule to use amongst [:btc, :usd, :jpy]
     # return an int
-    def intify(float, currency)
-      (float * INT_MULTIPLIERS[currency]).to_i
+    def intify(decimal, currency)
+      (decimal * INT_MULTIPLIERS[currency]).to_i
     end
 
-    # Convert an int value to a float using the MtGox conversion rules.
+    # Convert an int value to a decimal using the MtGox conversion rules.
     #
     # param int [Fixnum] to convert
     # param currency [Symbol] currency conversion rule to use amongst [:btc, :usd, :jpy]
-    # return a [Float]
-    def floatify(int, currency)
-      (int.to_f / INT_MULTIPLIERS[currency])
+    # return a [BigDecimal]
+    def decimalify(int, currency)
+      (BigDecimal(int.to_s) / INT_MULTIPLIERS[currency])
     end
   end
 end

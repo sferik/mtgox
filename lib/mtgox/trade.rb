@@ -6,8 +6,8 @@ module MtGox
     def initialize(trade={})
       self.id     = trade['tid'].to_i
       self.date   = Time.at(trade['date'].to_i)
-      self.amount = trade['amount'].to_f
-      self.price  = trade['price'].to_f
+      self.amount = BigDecimal(trade['amount'])
+      self.price  = BigDecimal(trade['price'])
     end
   end
 end

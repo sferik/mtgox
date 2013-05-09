@@ -1,4 +1,5 @@
 require 'mtgox/version'
+require 'bigdecimal'
 
 module MtGox
   module Configuration
@@ -9,7 +10,7 @@ module MtGox
       :secret,
     ]
 
-    DEFAULT_COMMISSION = 0.0065.freeze
+    DEFAULT_COMMISSION = BigDecimal('0.0065').freeze
 
     attr_accessor *VALID_OPTIONS_KEYS
 
