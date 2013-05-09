@@ -1,4 +1,5 @@
 require 'mtgox/offer'
+require 'bigdecimal'
 
 module MtGox
   class Order < Offer

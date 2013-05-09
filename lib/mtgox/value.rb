@@ -1,3 +1,5 @@
+require 'bigdecimal'
+
 # In the "old API", currency- and amount-values (price, volume,...)
 # were given as float. These values are likely being deprecated and
 # replaced by fields of the same name with "_int" as suffix. These are

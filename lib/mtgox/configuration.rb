@@ -1,4 +1,5 @@
 require 'mtgox/version'
+require 'bigdecimal'
 
 module MtGox
   module Configuration

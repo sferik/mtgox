@@ -1,3 +1,5 @@
+require 'bigdecimal'
+
 module MtGox
   class Lag
     attr_accessor :microseconds, :seconds, :text, :length

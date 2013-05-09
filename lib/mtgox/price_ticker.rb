@@ -1,3 +1,5 @@
+require 'bigdecimal'
+
 module MtGox
   module PriceTicker
     attr_reader :previous_price, :price

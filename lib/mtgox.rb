@@ -1,4 +1,3 @@
-require 'bigdecimal'
 require 'mtgox/client'
 require 'mtgox/error'
 

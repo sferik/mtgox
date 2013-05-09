@@ -1,3 +1,5 @@
+require 'bigdecimal'
+
 module MtGox
   class Balance
     attr_accessor :currency, :amount
