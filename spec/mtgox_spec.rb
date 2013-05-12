@@ -2,20 +2,20 @@ require 'helper'
 
 describe MtGox do
   describe ".new" do
-    it "should return a MtGox::Client" do
-      MtGox.new.should be_a MtGox::Client
+    it "returns a MtGox::Client" do
+      expect(MtGox.new).to be_a MtGox::Client
     end
   end
 
   describe ".configure" do
-    it "should set 'key' and 'secret'" do
+    it "sets key and secret" do
       MtGox.configure do |config|
         config.key = "key"
         config.secret = "secret"
       end
 
-      MtGox.key.should == "key"
-      MtGox.secret.should == "secret"
+      expect(MtGox.key).to eq "key"
+      expect(MtGox.secret).to eq "secret"
     end
   end
 

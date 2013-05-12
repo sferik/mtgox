@@ -7,8 +7,10 @@ describe Faraday::Response do
         to_return(status: 200, body: fixture('mysql_error'))
     end
 
-    it "should raise MtGox::MysqlError" do
-      expect { MtGox.trades }.to raise_error(MtGox::MysqlError)
+    it "raises MtGox::MysqlError" do
+      expect {
+        MtGox.trades
+      }.to raise_error(MtGox::MysqlError)
     end
   end
 
@@ -18,8 +20,10 @@ describe Faraday::Response do
         to_return(status: 200, body: fixture('unknown_error.json'))
     end
 
-    it "should raise MtGox::Error" do
-      expect { MtGox.trades }.to raise_error(MtGox::Error)
+    it "raises MtGox::Error" do
+      expect {
+        MtGox.trades
+      }.to raise_error(MtGox::Error)
     end
 
     describe "UnauthorizedError" do
@@ -28,8 +32,10 @@ describe Faraday::Response do
           to_return(status: 403, body: fixture('error.json'))
       end
 
-      it "should raise MtGox::UnauthorizedError" do
-        expect { MtGox.trades }.to raise_error(MtGox::UnauthorizedError)
+      it "raises MtGox::UnauthorizedError" do
+        expect {
+          MtGox.trades
+        }.to raise_error(MtGox::UnauthorizedError)
       end
     end
 
