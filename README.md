@@ -81,6 +81,9 @@ MtGox.cancel 1234567890
 
 # Withdraw 1 BTC from your account
 MtGox.withdraw! 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"
+
+# Switch to sending 'tonce' rather than 'nonce'
+MtGox.nonce_type = :tonce
 ```
 
 ## Contributing

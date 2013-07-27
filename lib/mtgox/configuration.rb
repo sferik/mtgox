@@ -8,9 +8,11 @@ module MtGox
       :commission,
       :key,
       :secret,
+      :nonce_type
     ]
 
     DEFAULT_COMMISSION = BigDecimal('0.0065').freeze
+    DEFAULT_NONCE_TYPE = :nonce
 
     attr_accessor *VALID_OPTIONS_KEYS
 
@@ -27,9 +29,13 @@ module MtGox
     # Reset all configuration options to defaults
     def reset
       self.commission = DEFAULT_COMMISSION
-      self.key   = nil
-      self.secret   = nil
+      self.key = nil
+      self.secret = nil
       self
+    end
+
+    def nonce_type
+      @nonce_type || DEFAULT_NONCE_TYPE
     end
   end
 end

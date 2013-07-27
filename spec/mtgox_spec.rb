@@ -17,6 +17,14 @@ describe MtGox do
       expect(MtGox.key).to eq "key"
       expect(MtGox.secret).to eq "secret"
     end
+
+    it "allows setting nonce type" do
+      expect(MtGox.nonce_type).to eq(:nonce)
+      MtGox.configure do |config|
+        config.nonce_type = :tonce
+      end
+      expect(MtGox.nonce_type).to eq(:tonce)
+    end
   end
 
 end
