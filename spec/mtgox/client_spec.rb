@@ -358,4 +358,21 @@ describe MtGox::Client do
       }.to raise_error(MtGox::FilthyRichError)
     end
   end
+
+  describe "nonce_type" do
+    before do
+      stub_post('/api/1/generic/bitcoin/address').
+        to_return(body: fixture('address.json'))
+    end
+
+    it "uses nonce by default" do
+      address = @client.address
+      expect(a_post('/api/1/generic/bitcoin/address').with(nonce: 1321745961249676)).to have_been_made
+    end
+
+    it "is capable of using tonce" do
+      address = @client.address
+      expect(a_post('/api/1/generic/bitcoin/address').with(tonce: 1321745961249676)).to have_been_made
+    end
+  end
 end
