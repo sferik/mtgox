@@ -371,6 +371,7 @@ describe MtGox::Client do
     end
 
     it "is capable of using tonce" do
+      @client.nonce_type = :tonce
       address = @client.address
       expect(a_post('/api/1/generic/bitcoin/address').with(tonce: 1321745961249676)).to have_been_made
     end
