@@ -376,4 +376,23 @@ describe MtGox::Client do
       expect(a_post('/api/1/generic/bitcoin/address').with(tonce: 1321745961249676)).to have_been_made
     end
   end
+
+  describe "#order_result" do
+    context "for a valid order id" do
+      let(:order_id) { "Zda8917a-63d3-4415-b827-758408013691" }
+      let(:body) { test_body({"type" => "bid", "order" => order_id}) }
+
+      before do
+        stub_post('/api/1/generic/order/result').
+          with(body: body, headers: test_headers(@client, body)).
+          to_return(body: fixture('order_result.json'))
+      end
+
+      it "returns an order result" do
+        order_result = @client.order_result("bid", order_id)
+        expect(a_post("/api/1/generic/order/result").with(body: body, headers: test_headers(@client, body))).to have_been_made
+        expect(order_result.id).to eq order_id
+      end
+    end
+  end
 end
