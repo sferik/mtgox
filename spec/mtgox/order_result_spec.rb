@@ -26,7 +26,7 @@ describe MtGox::OrderResult do
     it "returns an array of Trade objects" do
       trade = subject.trades.first
       expect(trade.id).to eq 1375134017519310
-      expect(trade.date).to eq Time.parse('2013-07-29 21:40:17 -0500')
+      expect(trade.date).to eq Time.parse('2013-07-29 21:40:17 UTC')
       expect(trade.amount).to eq BigDecimal.new("0.10000000")
       expect(trade.price).to eq BigDecimal.new("100.83227")
     end

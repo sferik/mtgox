@@ -40,9 +40,7 @@ module MtGox
     def coerce_trade(hash)
       {
         "tid"    => hash["trade_id"],
-        "date"   => Time.parse(hash["date"]),
-        "amount" => to_decimal("amount", hash),
-        "price"  => to_decimal("price", hash)
+        "date"   => Time.parse(hash["date"] + " UTC"),
       }
     end
   end
