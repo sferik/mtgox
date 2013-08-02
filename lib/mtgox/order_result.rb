@@ -41,6 +41,8 @@ module MtGox
       {
         "tid"    => hash["trade_id"],
         "date"   => Time.parse(hash["date"] + " UTC"),
+        "amount" => to_decimal("amount", hash).to_s,
+        "price"  => to_decimal("price", hash).to_s
       }
     end
   end
