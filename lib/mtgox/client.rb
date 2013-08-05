@@ -13,6 +13,7 @@ require 'mtgox/trade'
 require 'mtgox/value'
 require 'mtgox/lag'
 require 'mtgox/configuration'
+require 'mtgox/order_result'
 
 module MtGox
   class Client
@@ -289,6 +290,16 @@ module MtGox
       else
         post('/api/1/generic/bitcoin/send_simple', {amount_int: intify(amount, :btc), address: address})['trx']
       end
+    end
+
+    # Fetch information about a particular transaction
+    #
+    # @authenticated true
+    # @param offer_type [String] 'bid' or 'ask'
+    # @param order_id [String] the order id
+    # @return [OrderResult]
+    def order_result(offer_type, order_id)
+      OrderResult.new(post('/api/1/generic/order/result', {type: offer_type, order: order_id}))
     end
 
   private

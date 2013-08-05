@@ -1,0 +1,60 @@
+{
+    "result":"success",
+    "return":
+      {
+        "order_id":"Zda8917a-63d3-4415-b827-758408013691",
+        "trades":[
+          {
+            "trade_id":"1375134017519310",
+            "primary":"Y",
+            "currency":"USD",
+            "type":"ask",
+            "properties":"limit",
+            "item":"BTC",
+            "amount":{
+              "value":"0.10000000",
+              "value_int":"10000000",
+              "display":"0.10000000 BTC",
+              "display_short":"0.10 BTC",
+              "currency":"BTC"
+            },
+            "price":{
+              "value":"100.83227",
+              "value_int":"10083227",
+              "display":"$100.83227",
+              "display_short":"$100.83",
+              "currency":"USD"
+            },
+            "spent":{
+              "value":"10.08323",
+              "value_int":"1008323",
+              "display":"$10.08323",
+              "display_short":"$10.08",
+              "currency":"USD"
+            },
+            "date":"2013-07-29 21:40:17"
+          }
+        ],
+        "total_amount":{
+          "value":"0.10000000",
+          "value_int":"10000000",
+          "display":"0.10000000 BTC",
+          "display_short":"0.10 BTC",
+          "currency":"BTC"
+        },
+        "total_spent":{
+          "value":"10.08323",
+          "value_int":"1008323",
+          "display":"$10.08323",
+          "display_short":"$10.08",
+          "currency":"USD"
+        },
+        "avg_cost":{
+          "value":"100.83230",
+          "value_int":"10083230",
+          "display":"$100.83230",
+          "display_short":"$100.83",
+          "currency":"USD"
+        }
+      }
+}
