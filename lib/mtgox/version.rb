@@ -9,7 +9,7 @@ module MtGox
 
       # @return [Integer]
       def minor
-        0
+        1
       end
 
       # @return [Integer]
