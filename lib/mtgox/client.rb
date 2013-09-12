@@ -153,6 +153,16 @@ module MtGox
       end
     end
 
+    # Fetch API rights
+    #
+    # @authenticated true
+    # @return [Array<String>] an array of strings
+    # @example
+    #   MtGox.rights
+    def rights
+      post("/api/1/generic/info")["Rights"]
+    end
+
     # Fetch your current balance
     #
     # @authenticated true

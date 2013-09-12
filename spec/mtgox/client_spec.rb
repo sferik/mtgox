@@ -185,6 +185,20 @@ describe MtGox::Client do
     end
   end
 
+  describe "#rights" do
+    before do
+      stub_post('/api/1/generic/info').
+        with(body: test_body, headers: test_headers(@client)).
+        to_return(body: fixture('info.json'))
+    end
+
+    it "fetches the array of API permissions" do
+      rights = @client.rights
+      expect(a_post("/api/1/generic/info").with(body: test_body, headers: test_headers(@client))).to have_been_made
+      expect(rights).to eq ["deposit", "get_info", "trade", "withdraw"]
+    end
+  end
+
   describe '#balance' do
     before do
       stub_post('/api/1/generic/info').
