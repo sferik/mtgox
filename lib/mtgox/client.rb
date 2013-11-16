@@ -302,6 +302,17 @@ module MtGox
       end
     end
 
+    # Fetch wallet history
+    #
+    # @authenticated true
+    # @param currency [String] 'USD', 'BTC'
+    # @param params [Hash] optional hash with  type, date_start, date_end,
+    # trade_id, page
+    # @see https://en.bitcoin.it/wiki/MtGox/API/HTTP/v1#Your_wallet_history
+    def history(currency, params = {})
+      post('/api/1/generic/wallet/history', params.merge(currency: currency))
+    end
+
     # Fetch information about a particular transaction
     #
     # @authenticated true
