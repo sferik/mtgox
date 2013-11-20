@@ -5,12 +5,14 @@
 [![Dependency Status](https://gemnasium.com/sferik/mtgox.png?travis)][gemnasium]
 [![Code Climate](https://codeclimate.com/github/sferik/mtgox.png)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/sferik/mtgox/badge.png?branch=master)][coveralls]
+[![Gittip](http://img.shields.io/gittip/sferik.png)][gittip]
 
 [gem]: https://rubygems.org/gems/mtgox
 [travis]: http://travis-ci.org/sferik/mtgox
 [gemnasium]: https://gemnasium.com/sferik/mtgox
 [codeclimate]: https://codeclimate.com/github/sferik/mtgox
 [coveralls]: https://coveralls.io/r/sferik/mtgox
+[gittip]: https://www.gittip.com/sferik/
 
 Mt. Gox allows you to trade US Dollars (USD) for Bitcoins (BTC) or Bitcoins for
 US Dollars.
@@ -85,27 +87,6 @@ MtGox.withdraw! 1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"
 # Switch to sending 'tonce' rather than 'nonce'
 MtGox.nonce_type = :tonce
 ```
-
-## Contributing
-In the spirit of [free software][free-sw], **everyone** is encouraged to help
-improve this project.
-
-[free-sw]: http://www.fsf.org/licensing/essays/free-sw.html
-
-Here are some ways *you* can contribute:
-
-* by using alpha, beta, and prerelease versions
-* by reporting bugs
-* by suggesting new features
-* by writing or editing documentation
-* by writing specifications
-* by writing code (**no patch is too small**: fix typos, add comments, clean up
-  inconsistent whitespace)
-* by refactoring code
-* by closing [issues][]
-* by reviewing patches
-
-[issues]: https://github.com/sferik/mtgox/issues
 
 ## Supported Ruby Versions
 This library aims to support and is [tested against][travis] the following Ruby
