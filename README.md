@@ -26,9 +26,9 @@ public key as a trusted certificate (you only need to do this once):
 
     gem cert --add <(curl -Ls https://raw.github.com/sferik/mtgox/master/certs/sferik.pem)
 
-Then, install the gem with the high security trust policy:
+Then, install the gem with the medium security trust policy:
 
-    gem install mtgox -P HighSecurity
+    gem install mtgox -P MediumSecurity
 
 ## Executable
 After installing the gem, you can get the current price for 1 BTC in USD by
