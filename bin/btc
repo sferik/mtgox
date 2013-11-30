@@ -2,4 +2,4 @@
 
 require 'mtgox'
 
-puts MtGox.ticker.sell
+puts MtGox.ticker.sell.to_f
