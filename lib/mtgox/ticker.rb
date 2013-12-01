@@ -5,6 +5,6 @@ module MtGox
   class Ticker
     include Singleton
     include PriceTicker
-    attr_accessor :buy, :sell, :high, :low, :volume, :vwap, :avg
+    attr_accessor :buy, :sell, :high, :low, :volume, :vwap, :avg, :last_local
   end
 end
