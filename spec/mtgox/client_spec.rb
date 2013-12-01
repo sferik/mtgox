@@ -92,7 +92,7 @@ describe MtGox::Client do
         asks = @client.asks
         expect(a_get('/api/1/BTCUSD/depth/fetch')).to have_been_made
         expect(asks.first.price).to eq 114
-        expect(asks.first.eprice).to eq BigDecimal('114.745848012')
+        expect(asks.first.eprice).to be_within(1).of(BigDecimal('114.745848012'))
         expect(asks.first.amount).to eq BigDecimal('0.43936758')
       end
 
@@ -123,7 +123,7 @@ describe MtGox::Client do
         offers = @client.offers
         expect(a_get('/api/1/BTCUSD/depth/fetch')).to have_been_made.once
         expect(offers[:asks].first.price).to eq 114
-        expect(offers[:asks].first.eprice).to eq BigDecimal('114.745848012')
+        expect(offers[:asks].first.eprice).to be_within(1).of(BigDecimal('114.745848012'))
         expect(offers[:asks].first.amount).to eq BigDecimal('0.43936758')
         expect(offers[:bids].first.price).to eq BigDecimal('113.0')
         expect(offers[:bids].first.eprice).to eq BigDecimal('112.2655')
@@ -136,7 +136,7 @@ describe MtGox::Client do
         min_ask = @client.min_ask
         expect(a_get('/api/1/BTCUSD/depth/fetch')).to have_been_made.once
         expect(min_ask.price).to eq 114
-        expect(min_ask.eprice).to eq BigDecimal('114.745848012')
+        expect(min_ask.eprice).to be_within(1).of(BigDecimal('114.745848012'))
         expect(min_ask.amount).to eq BigDecimal('0.43936758')
       end
     end
