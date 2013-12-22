@@ -20,16 +20,6 @@ US Dollars.
 ## Installation
     gem install mtgox
 
-To ensure the code you're installing hasn't been tampered with, it's
-recommended that you verify the signature. To do this, you need to add my
-public key as a trusted certificate (you only need to do this once):
-
-    gem cert --add <(curl -Ls https://raw.github.com/sferik/mtgox/master/certs/sferik.pem)
-
-Then, install the gem with the medium security trust policy:
-
-    gem install mtgox -P MediumSecurity
-
 ## Executable
 After installing the gem, you can get the current price for 1 BTC in USD by
 typing `btc` in your bash shell:
