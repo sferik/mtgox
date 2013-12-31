@@ -25,8 +25,9 @@ group :test do
 end
 
 platforms :rbx do
+  gem 'racc'
   gem 'rubinius-coverage', '~> 2.0'
-  gem 'rubysl'
+  gem 'rubysl', '~> 2.0'
 end
 
 gemspec

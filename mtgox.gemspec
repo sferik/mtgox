@@ -25,5 +25,5 @@ Gem::Specification.new do |spec|
   spec.signing_key = File.expand_path("~/.gem/private_key.pem") if $0 =~ /gem\z/
   spec.summary     = %q{Ruby wrapper for the Mt. Gox Trade API}
   spec.test_files  = Dir.glob("spec/**/*")
-  spec.version     = MtGox::Version.to_s
+  spec.version     = MtGox::VERSION
 end
