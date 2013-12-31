@@ -5,7 +5,11 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
   SimpleCov::Formatter::HTMLFormatter,
   Coveralls::SimpleCov::Formatter
 ]
-SimpleCov.start
+
+SimpleCov.start do
+  add_filter '/spec/'
+  minimum_coverage(98.91)
+end
 
 require 'mtgox'
 require 'base64'
