@@ -16,13 +16,13 @@ require 'mtgox/configuration'
 require 'mtgox/order_result'
 
 module MtGox
-  class Client
+  class Client # rubocop:disable ClassLength
     include MtGox::Connection
     include MtGox::Request
     include MtGox::Value
     include MtGox::Configuration
 
-    ORDER_TYPES = {sell: "ask", buy: "bid"}
+    ORDER_TYPES = {:sell => 'ask', :buy => 'bid'}
 
     def initialize
       reset
@@ -76,8 +76,8 @@ module MtGox
       lag = get('/api/1/generic/order/lag')
       Lag.new(lag['lag'], lag['lag_secs'], lag['lag_text'], lag['length'])
     end
-    alias order_lag lag
-    alias orderlag lag
+    alias_method :order_lag, :lag
+    alias_method :orderlag, :lag
 
     # Fetch both bids and asks in one call, for network efficiency
     #
@@ -87,17 +87,9 @@ module MtGox
     #   MtGox.offers
     def offers
       offers = get('/api/1/BTCUSD/depth/fetch')
-      asks = offers['asks'].sort_by do |ask|
-        ask['price_int'].to_i
-      end.map! do |ask|
-        Ask.new(self, ask)
-      end
-      bids = offers['bids'].sort_by do |bid|
-        -bid['price_int'].to_i
-      end.map! do |bid|
-        Bid.new(self, bid)
-      end
-      {asks: asks, bids: bids}
+      asks = offers['asks'].sort_by { |ask| ask['price_int'].to_i }.map { |ask| Ask.new(self, ask) }
+      bids = offers['bids'].sort_by { |bid| -bid['price_int'].to_i }.map { |bid| Bid.new(self, bid) }
+      {:asks => asks, :bids => bids}
     end
 
     # Fetch open asks
@@ -147,9 +139,9 @@ module MtGox
     # @example
     #   MtGox.trades
     #   MtGox.trades :since => 12341234
-    def trades(opts={})
+    def trades(opts = {})
       get('/api/1/BTCUSD/trades/fetch', opts).
-        sort_by{|trade| trade['date']}.map do |trade|
+        sort_by { |trade| trade['date'] }.map do |trade|
         Trade.new(trade)
       end
     end
@@ -161,7 +153,7 @@ module MtGox
     # @example
     #   MtGox.rights
     def rights
-      post("/api/1/generic/info")["Rights"]
+      post('/api/1/generic/info')['Rights']
     end
 
     # Fetch your current balance
@@ -241,14 +233,12 @@ module MtGox
     #   # Sell one bitcoin for $123
     #   MtGox.add_order! :sell, 1.0, 123.0
     def order!(type, amount, price)
-      order = {type: order_type(type), amount_int: intify(amount,:btc)}
-      if price != :market
-          order[:price_int] = intify(price, :usd)
-      end
+      order = {:type => order_type(type), :amount_int => intify(amount, :btc)}
+      order[:price_int] = intify(price, :usd) if price != :market
       post('/api/1/BTCUSD/order/add', order)
     end
-    alias add_order! order!
-    alias addorder! order!
+    alias_method :add_order!, :order!
+    alias_method :addorder!, :order!
 
     # Cancel an open order
     #
@@ -268,22 +258,19 @@ module MtGox
     #     MtGox.cancel my_order
     #     MtGox.cancel {'oid' => '1234567890'}
     def cancel(args)
-      if args.is_a?(Hash)
-        args = args['oid']
-      end
-
+      args = args['oid'] if args.is_a?(Hash)
       orders = post('/api/1/generic/orders')
-      order = orders.find{|order| order['oid'] == args.to_s}
+      order = orders.detect { |o| o['oid'] == args.to_s }
       if order
-        res = post('/api/1/BTCUSD/order/cancel', oid: order['oid'])
-        orders.delete_if{|o| o['oid'] == res['oid']}
+        res = post('/api/1/BTCUSD/order/cancel', :oid => order['oid'])
+        orders.delete_if { |o| o['oid'] == res['oid'] }
         parse_orders(orders)
       else
-        raise MtGox::OrderNotFoundError
+        fail MtGox::OrderNotFoundError
       end
     end
-    alias cancel_order cancel
-    alias cancelorder cancel
+    alias_method :cancel_order, :cancel
+    alias_method :cancelorder, :cancel
 
     # Transfer bitcoins from your Mt. Gox account into another account
     #
@@ -296,10 +283,10 @@ module MtGox
     #   MtGox.withdraw! 1.0, '1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L'
     def withdraw!(amount, address)
       if amount >= 1000
-        raise FilthyRichError,
-        "#withdraw! take bitcoin amount as parameter (you are trying to withdraw #{amount} BTC"
+        fail FilthyRichError,
+             "#withdraw! take bitcoin amount as parameter (you are trying to withdraw #{amount} BTC"
       else
-        post('/api/1/generic/bitcoin/send_simple', {amount_int: intify(amount, :btc), address: address})['trx']
+        post('/api/1/generic/bitcoin/send_simple', :amount_int => intify(amount, :btc), :address => address)['trx']
       end
     end
 
@@ -311,7 +298,7 @@ module MtGox
     # trade_id, page
     # @see https://en.bitcoin.it/wiki/MtGox/API/HTTP/v1#Your_wallet_history
     def history(currency, params = {})
-      post('/api/1/generic/wallet/history', params.merge(currency: currency))
+      post('/api/1/generic/wallet/history', params.merge(:currency => currency))
     end
 
     # Fetch information about a particular transaction
@@ -321,7 +308,7 @@ module MtGox
     # @param order_id [String] the order id
     # @return [OrderResult]
     def order_result(offer_type, order_id)
-      OrderResult.new(post('/api/1/generic/order/result', {type: offer_type, order: order_id}))
+      OrderResult.new(post('/api/1/generic/order/result', :type => offer_type, :order => order_id))
     end
 
   private
@@ -329,7 +316,7 @@ module MtGox
     def parse_balance(info)
       balances = []
       info['Wallets'].each do |currency, wallet|
-        value = currency == "BTC" ? value_bitcoin(wallet['Balance']) : value_currency(wallet['Balance'])
+        value = currency == 'BTC' ? value_bitcoin(wallet['Balance']) : value_currency(wallet['Balance'])
         balances << Balance.new(currency, value)
       end
       balances
@@ -338,7 +325,7 @@ module MtGox
     def parse_orders(orders)
       buys = []
       sells = []
-      orders.sort_by{|order| order['date']}.each do |order|
+      orders.sort_by { |order| order['date'] }.each do |order|
         case order['type']
         when ORDER_TYPES[:sell]
           sells << Sell.new(order)
@@ -346,16 +333,15 @@ module MtGox
           buys << Buy.new(order)
         end
       end
-      {buys: buys, sells: sells}
+      {:buys => buys, :sells => sells}
     end
 
     def order_type(type)
-      unless ["bid", "ask"].include?(type.to_s)
-        ORDER_TYPES[type.downcase.to_sym]
-      else
+      if %w[bid ask].include?(type.to_s)
         type
+      else
+        ORDER_TYPES[type.downcase.to_sym]
       end
     end
-
   end
 end

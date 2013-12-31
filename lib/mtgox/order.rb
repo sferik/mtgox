@@ -5,7 +5,7 @@ module MtGox
   class Order < Offer
     attr_accessor :id, :date, :item, :status, :currency
 
-    def initialize(order={})
+    def initialize(order = {})
       self.id     = order['oid']
       self.date   = Time.at(order['date'].to_i)
       self.amount = BigDecimal(order['amount']['value'])

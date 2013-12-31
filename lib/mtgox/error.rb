@@ -6,4 +6,3 @@ module MtGox
   class FilthyRichError < Error; end
   class OrderNotFoundError < Error; end
 end
-

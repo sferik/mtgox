@@ -5,18 +5,18 @@ describe MtGox::Client do
   before do
     @client = MtGox::Client.new
     @client.configure do |config|
-      config.key = "key"
-      config.secret = "secret"
+      config.key = 'key'
+      config.secret = 'secret'
     end
   end
 
   describe '#address' do
     before do
       stub_post('/api/1/generic/bitcoin/address').
-        to_return(body: fixture('address.json'))
+        to_return(:body => fixture('address.json'))
     end
 
-    it "fetchs a deposit address" do
+    it 'fetchs a deposit address' do
       address = @client.address
       expect(a_post('/api/1/generic/bitcoin/address')).to have_been_made
       expect(address).to eq '17A1vbzQ39o8cGNnpqx8UvXNrhqwAEP8wY'
@@ -26,10 +26,10 @@ describe MtGox::Client do
   describe '#idkey' do
     before do
       stub_post('/api/1/generic/idkey').
-        to_return(body: fixture('idkey.json'))
+        to_return(:body => fixture('idkey.json'))
     end
 
-    it "fetches an idkey suitable to WS Api usage" do
+    it 'fetches an idkey suitable to WS Api usage' do
       key = @client.idkey
       expect(a_post('/api/1/generic/idkey')).to have_been_made
       expect(key).to eq 'YCKvmyU4QsaHEqM/AvKlqAAAAABRbR5y0vCn1roteQx/Ux/lyLF27X8Em1e4AN/2etPECzIT6dU'
@@ -39,10 +39,10 @@ describe MtGox::Client do
   describe '#ticker' do
     before do
       stub_get('/api/1/BTCUSD/ticker').
-        to_return(body: fixture('ticker.json'))
+        to_return(:body => fixture('ticker.json'))
     end
 
-    it "fetches the ticker" do
+    it 'fetches the ticker' do
       ticker = @client.ticker
       expect(a_get('/api/1/BTCUSD/ticker')).to have_been_made
       expect(ticker.buy).to eq BigDecimal('5.53587')
@@ -55,8 +55,8 @@ describe MtGox::Client do
       expect(ticker.avg).to eq BigDecimal('5.56112')
     end
 
-    it "fetches the ticker and keep previous price" do
-      ticker = @client.ticker
+    it 'fetches the ticker and keep previous price' do
+      ticker = @client.ticker # rubocop:disable UselessAssignment
       ticker = @client.ticker
       expect(a_get('/api/1/BTCUSD/ticker')).to have_been_made.twice
       expect(ticker.up?).to be_false
@@ -69,15 +69,15 @@ describe MtGox::Client do
   describe '#lag' do
     before do
       stub_get('/api/1/generic/order/lag').
-        to_return(status:200, body: fixture('lag.json'))
+        to_return(:status =>  200, :body => fixture('lag.json'))
     end
 
-    it "fetches the lag" do
+    it 'fetches the lag' do
       lag = @client.lag
       expect(a_get('/api/1/generic/order/lag')).to have_been_made
       expect(lag.microseconds).to eq 535998
       expect(lag.seconds).to eq BigDecimal('0.535998')
-      expect(lag.text).to eq "0.535998 seconds"
+      expect(lag.text).to eq '0.535998 seconds'
       expect(lag.length).to eq 3
     end
   end
@@ -85,11 +85,11 @@ describe MtGox::Client do
   describe 'depth methods' do
     before :each do
       stub_get('/api/1/BTCUSD/depth/fetch').
-        to_return(body: fixture('depth.json'))
+        to_return(:body => fixture('depth.json'))
     end
 
     describe '#asks' do
-      it "fetches open asks" do
+      it 'fetches open asks' do
         asks = @client.asks
         expect(a_get('/api/1/BTCUSD/depth/fetch')).to have_been_made
         expect(asks.first.price).to eq 114
@@ -97,15 +97,15 @@ describe MtGox::Client do
         expect(asks.first.amount).to eq BigDecimal('0.43936758')
       end
 
-      it "should be sorted in price-ascending order" do
+      it 'should be sorted in price-ascending order' do
         asks = @client.asks
         expect(asks.sort_by(&:price)).to eq asks
       end
 
     end
 
-    describe "#bids" do
-      it "fetches open bids" do
+    describe '#bids' do
+      it 'fetches open bids' do
         bids = @client.bids
         expect(a_get('/api/1/BTCUSD/depth/fetch')).to have_been_made
         expect(bids.first.price).to eq BigDecimal('113.0')
@@ -113,14 +113,14 @@ describe MtGox::Client do
         expect(bids.first.amount).to eq BigDecimal('124.69802063')
       end
 
-      it "should be sorted in price-descending order" do
+      it 'should be sorted in price-descending order' do
         bids = @client.bids
         expect(bids.sort_by(&:price).reverse).to eq bids
       end
     end
 
-    describe "#offers" do
-      it "fetches both bids and asks, with only one call" do
+    describe '#offers' do
+      it 'fetches both bids and asks, with only one call' do
         offers = @client.offers
         expect(a_get('/api/1/BTCUSD/depth/fetch')).to have_been_made.once
         expect(offers[:asks].first.price).to eq 114
@@ -133,7 +133,7 @@ describe MtGox::Client do
     end
 
     describe '#min_ask' do
-      it "fetches the lowest priced ask" do
+      it 'fetches the lowest priced ask' do
         min_ask = @client.min_ask
         expect(a_get('/api/1/BTCUSD/depth/fetch')).to have_been_made.once
         expect(min_ask.price).to eq 114
@@ -143,7 +143,7 @@ describe MtGox::Client do
     end
 
     describe '#max_bid' do
-      it "fetches the highest priced bid" do
+      it 'fetches the highest priced bid' do
         max_bid = @client.max_bid
         expect(a_get('/api/1/BTCUSD/depth/fetch')).to have_been_made.once
         expect(max_bid.price).to eq 113
@@ -157,10 +157,10 @@ describe MtGox::Client do
   describe '#trades' do
     before do
       stub_get('/api/1/BTCUSD/trades/fetch').
-        to_return(body: fixture('trades.json'))
+        to_return(:body => fixture('trades.json'))
     end
 
-    it "fetches trades" do
+    it 'fetches trades' do
       trades = @client.trades
       expect(a_get('/api/1/BTCUSD/trades/fetch')).to have_been_made
       expect(trades.last.date).to eq Time.utc(2013, 4, 12, 15, 20, 3)
@@ -174,10 +174,10 @@ describe MtGox::Client do
     before do
       trades = JSON.load(fixture('trades.json'))
       stub_get('/api/1/BTCUSD/trades/fetch?since=1365780002144150').
-        to_return(body: JSON.dump({result: 'success', return: trades['return'].select{|t| t['tid'] >= '1365780002144150'}}))
+        to_return(:body => JSON.dump(:result => 'success', :return => trades['return'].select { |t| t['tid'] >= '1365780002144150' }))
     end
 
-    it "fetches trades since an id" do
+    it 'fetches trades since an id' do
       trades = @client.trades :since => 1365780002144150
       expect(a_get('/api/1/BTCUSD/trades/fetch?since=1365780002144150')).to have_been_made
       expect(trades.first.price).to eq BigDecimal('72.98274')
@@ -186,70 +186,70 @@ describe MtGox::Client do
     end
   end
 
-  describe "#rights" do
+  describe '#rights' do
     before do
       stub_post('/api/1/generic/info').
-        with(body: test_body, headers: test_headers(@client)).
-        to_return(body: fixture('info.json'))
+        with(:body => test_body, :headers => test_headers(@client)).
+        to_return(:body => fixture('info.json'))
     end
 
-    it "fetches the array of API permissions" do
+    it 'fetches the array of API permissions' do
       rights = @client.rights
-      expect(a_post("/api/1/generic/info").with(body: test_body, headers: test_headers(@client))).to have_been_made
-      expect(rights).to eq ["deposit", "get_info", "trade", "withdraw"]
+      expect(a_post('/api/1/generic/info').with(:body => test_body, :headers => test_headers(@client))).to have_been_made
+      expect(rights).to eq %w[deposit get_info trade withdraw]
     end
   end
 
   describe '#balance' do
     before do
       stub_post('/api/1/generic/info').
-        with(body: test_body, headers: test_headers(@client)).
-        to_return(body: fixture('info.json'))
+        with(:body => test_body, :headers => test_headers(@client)).
+        to_return(:body => fixture('info.json'))
     end
 
-    it "fetches balance" do
+    it 'fetches balance' do
       balance = @client.balance
-      expect(a_post("/api/1/generic/info").with(body: test_body, headers: test_headers(@client))).to have_been_made
-      expect(balance.first.currency).to eq "BTC"
+      expect(a_post('/api/1/generic/info').with(:body => test_body, :headers => test_headers(@client))).to have_been_made
+      expect(balance.first.currency).to eq 'BTC'
       expect(balance.first.amount).to eq BigDecimal('42.0')
-      expect(balance.last.currency).to eq "EUR"
+      expect(balance.last.currency).to eq 'EUR'
       expect(balance.last.amount).to eq BigDecimal('23.0')
     end
   end
 
-  describe "order methods" do
+  describe 'order methods' do
     before :each do
       stub_post('/api/1/generic/orders').
-        with(body: test_body, headers: test_headers(@client)).
-        to_return(body: fixture('orders.json'))
+        with(:body => test_body, :headers => test_headers(@client)).
+        to_return(:body => fixture('orders.json'))
     end
 
-    describe "#buys" do
-      it "fetches orders" do
+    describe '#buys' do
+      it 'fetches orders' do
         buys = @client.buys
-        expect(a_post("/api/1/generic/orders").with(body: test_body, headers: test_headers(@client))).to have_been_made
+        expect(a_post('/api/1/generic/orders').with(:body => test_body, :headers => test_headers(@client))).to have_been_made
         expect(buys.last.price).to eq 7
         expect(buys.last.date).to eq Time.utc(2011, 6, 27, 18, 20, 38)
-        expect(buys.last.amount).to eq BigDecimal("0.2")
-        expect(buys.last.status).to eq "open"
-        expect(buys.last.currency).to eq "USD"
-        expect(buys.last.item).to eq "BTC"
+        expect(buys.last.amount).to eq BigDecimal('0.2')
+        expect(buys.last.status).to eq 'open'
+        expect(buys.last.currency).to eq 'USD'
+        expect(buys.last.item).to eq 'BTC'
       end
     end
 
-    describe "#sells" do
-      it "fetches sells" do
+    describe '#sells' do
+      it 'fetches sells' do
         sells = @client.sells
-        expect(a_post("/api/1/generic/orders").with(body: test_body, headers: test_headers(@client))).to have_been_made
+        expect(a_post('/api/1/generic/orders').with(:body => test_body, :headers => test_headers(@client))).to have_been_made
         expect(sells.last.price).to eq BigDecimal('99.0')
         expect(sells.last.date).to eq Time.utc(2011, 6, 27, 18, 20, 20)
       end
     end
 
-    describe "#orders" do
-      it "fetches both buys and sells, with only one call" do
+    describe '#orders' do
+      it 'fetches both buys and sells, with only one call' do
         orders = @client.orders
-        expect(a_post("/api/1/generic/orders").with(body: test_body, headers: test_headers(@client))).to have_been_made
+        expect(a_post('/api/1/generic/orders').with(:body => test_body, :headers => test_headers(@client))).to have_been_made
         expect(orders[:buys].last.price).to eq BigDecimal('7.0')
         expect(orders[:buys].last.date).to eq Time.utc(2011, 6, 27, 18, 20, 38)
         expect(orders[:sells].last.price).to eq BigDecimal('99.0')
@@ -258,93 +258,93 @@ describe MtGox::Client do
     end
   end
 
-  describe "#buy!" do
+  describe '#buy!' do
     before do
-      body = test_body({"type" => "bid", "amount_int" => "88000000", "price_int" => "89000"})
-      body_market = test_body({"type" => "bid", "amount_int" => "88000000"})
+      body = test_body('type' => 'bid', 'amount_int' => '88000000', 'price_int' => '89000')
+      body_market = test_body('type' => 'bid', 'amount_int' => '88000000')
       stub_post('/api/1/BTCUSD/order/add').
-        with(body: body, headers: test_headers(@client, body)).
-        to_return(body: fixture('buy.json'))
+        with(:body => body, :headers => test_headers(@client, body)).
+        to_return(:body => fixture('buy.json'))
       stub_post('/api/1/BTCUSD/order/add').
-        with(body: body_market, headers: test_headers(@client, body_market)).
-        to_return(body: fixture('buy.json'))
+        with(:body => body_market, :headers => test_headers(@client, body_market)).
+        to_return(:body => fixture('buy.json'))
     end
 
-    it "should place a bid" do
+    it 'should place a bid' do
       buy = @client.buy!(0.88, 0.89)
-      body = test_body({"type" => "bid", "amount_int" => "88000000", "price_int" => "89000"})
-      expect(a_post("/api/1/BTCUSD/order/add").with(body: body, headers: test_headers(@client, body))).to have_been_made
-      expect(buy).to eq "490a214f-9a30-449f-acb8-780f9046502f"
+      body = test_body('type' => 'bid', 'amount_int' => '88000000', 'price_int' => '89000')
+      expect(a_post('/api/1/BTCUSD/order/add').with(:body => body, :headers => test_headers(@client, body))).to have_been_made
+      expect(buy).to eq '490a214f-9a30-449f-acb8-780f9046502f'
     end
 
-    it "should place a market bid" do
+    it 'should place a market bid' do
       buy = @client.buy!(0.88, :market)
-      body_market = test_body({"type" => "bid", "amount_int" => "88000000"})
-      expect(a_post("/api/1/BTCUSD/order/add").with(body: body_market, headers: test_headers(@client, body_market))).to have_been_made
-      expect(buy).to eq "490a214f-9a30-449f-acb8-780f9046502f"
+      body_market = test_body('type' => 'bid', 'amount_int' => '88000000')
+      expect(a_post('/api/1/BTCUSD/order/add').with(:body => body_market, :headers => test_headers(@client, body_market))).to have_been_made
+      expect(buy).to eq '490a214f-9a30-449f-acb8-780f9046502f'
     end
   end
 
-  describe "#sell!" do
+  describe '#sell!' do
     before do
-      body = test_body({"type" => "ask", "amount_int" => "88000000", "price_int" => "8900000"})
-      body_market = test_body({"type" => "ask", "amount_int" => "88000000"})
+      body = test_body('type' => 'ask', 'amount_int' => '88000000', 'price_int' => '8900000')
+      body_market = test_body('type' => 'ask', 'amount_int' => '88000000')
 
       stub_post('/api/1/BTCUSD/order/add').
-        with(body: body, headers: test_headers(@client, body)).
-        to_return(body: fixture('sell.json'))
+        with(:body => body, :headers => test_headers(@client, body)).
+        to_return(:body => fixture('sell.json'))
       stub_post('/api/1/BTCUSD/order/add').
-        with(body: body_market, headers: test_headers(@client, body_market)).
-        to_return(body: fixture('sell.json'))
+        with(:body => body_market, :headers => test_headers(@client, body_market)).
+        to_return(:body => fixture('sell.json'))
     end
 
-    it "should place an ask" do
-      body = test_body({"type" => "ask", "amount_int" => "88000000", "price_int" => "8900000"})
+    it 'should place an ask' do
+      body = test_body('type' => 'ask', 'amount_int' => '88000000', 'price_int' => '8900000')
       sell = @client.sell!(0.88, 89.0)
-      expect(a_post("/api/1/BTCUSD/order/add").with(body: body, headers: test_headers(@client, body))).to have_been_made
-      expect(sell).to eq "a20329fe-c0d5-4378-b204-79a7800d41e7"
+      expect(a_post('/api/1/BTCUSD/order/add').with(:body => body, :headers => test_headers(@client, body))).to have_been_made
+      expect(sell).to eq 'a20329fe-c0d5-4378-b204-79a7800d41e7'
     end
 
-    it "should place a market ask" do
-      body_market = test_body({"type" => "ask", "amount_int" => "88000000"})
+    it 'should place a market ask' do
+      body_market = test_body('type' => 'ask', 'amount_int' => '88000000')
       sell = @client.sell!(0.88, :market)
-      expect(a_post("/api/1/BTCUSD/order/add").with(body: body_market, headers: test_headers(@client, body_market))).to have_been_made
-      expect(sell).to eq "a20329fe-c0d5-4378-b204-79a7800d41e7"
+      expect(a_post('/api/1/BTCUSD/order/add').with(:body => body_market, :headers => test_headers(@client, body_market))).to have_been_made
+      expect(sell).to eq 'a20329fe-c0d5-4378-b204-79a7800d41e7'
     end
   end
 
-  describe "#cancel" do
+  describe '#cancel' do
     before do
-      cancel_body = test_body({"oid" => "fda8917a-63d3-4415-b827-758408013690"})
+      cancel_body = test_body('oid' => 'fda8917a-63d3-4415-b827-758408013690')
       stub_post('/api/1/generic/orders').
-        with(body: test_body, headers: test_headers(@client)).
-        to_return(body: fixture('orders.json'))
+        with(:body => test_body, :headers => test_headers(@client)).
+        to_return(:body => fixture('orders.json'))
       stub_post('/api/1/BTCUSD/order/cancel').
-        with(body: cancel_body, headers: test_headers(@client, cancel_body)).
-        to_return(body: fixture('cancel.json'))
+        with(:body => cancel_body, :headers => test_headers(@client, cancel_body)).
+        to_return(:body => fixture('cancel.json'))
     end
 
-    context "with a valid oid passed" do
-      it "should cancel an order" do
-        cancel = @client.cancel("fda8917a-63d3-4415-b827-758408013690")
-        cancel_body = test_body({"oid" => "fda8917a-63d3-4415-b827-758408013690"})
-        expect(a_post("/api/1/generic/orders").with(body: test_body, headers: test_headers(@client))).to have_been_made.once
-        expect(a_post('/api/1/BTCUSD/order/cancel').with(body: cancel_body, headers: test_headers(@client, cancel_body))).to have_been_made
+    context 'with a valid oid passed' do
+      it 'should cancel an order' do
+        cancel = @client.cancel('fda8917a-63d3-4415-b827-758408013690')
+        cancel_body = test_body('oid' => 'fda8917a-63d3-4415-b827-758408013690')
+        expect(a_post('/api/1/generic/orders').with(:body => test_body, :headers => test_headers(@client))).to have_been_made.once
+        expect(a_post('/api/1/BTCUSD/order/cancel').with(:body => cancel_body, :headers => test_headers(@client, cancel_body))).to have_been_made
         expect(cancel[:buys].length).to eq 0
       end
     end
 
-    context "with an invalid oid passed" do
-      it "should raise an error" do
+    context 'with an invalid oid passed' do
+      it 'should raise an error' do
         expect { @client.cancel(1234567890) }.to raise_error(MtGox::OrderNotFoundError)
       end
     end
 
-    context "with an order passed" do
-      it "should cancel an order" do
-        cancel = @client.cancel({'oid' => "fda8917a-63d3-4415-b827-758408013690", 'type' => 2})
-        body = test_body({"oid" => "fda8917a-63d3-4415-b827-758408013690"})
-        expect(a_post('/api/1/BTCUSD/order/cancel').with(body: body, headers: test_headers(@client, body))).to have_been_made
+    context 'with an order passed' do
+      it 'should cancel an order' do
+        cancel = @client.cancel('oid' => 'fda8917a-63d3-4415-b827-758408013690', 'type' => 2)
+        body = test_body('oid' => 'fda8917a-63d3-4415-b827-758408013690')
+        expect(a_post('/api/1/BTCUSD/order/cancel').with(:body => body, :headers => test_headers(@client, body))).to have_been_made
         expect(cancel[:buys].length).to eq 0
         expect(cancel[:sells].last.price).to eq BigDecimal('99.0')
         expect(cancel[:sells].last.date).to eq Time.utc(2011, 6, 27, 18, 20, 20)
@@ -352,110 +352,110 @@ describe MtGox::Client do
     end
   end
 
-  describe "#withdraw!" do
+  describe '#withdraw!' do
     before do
-      body = test_body({"amount_int" => "100000000", "address" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"})
+      body = test_body('amount_int' => '100000000', 'address' => '1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L')
       stub_post('/api/1/generic/bitcoin/send_simple').
-        with(body: body, headers: test_headers(@client, body)).
-        to_return(body: fixture('withdraw.json'))
+        with(:body => body, :headers => test_headers(@client, body)).
+        to_return(:body => fixture('withdraw.json'))
     end
 
-    it "should withdraw funds" do
-      withdraw = @client.withdraw!(1.0, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L")
-      body = test_body({"amount_int" => "100000000", "address" => "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L"})
-      expect(a_post("/api/1/generic/bitcoin/send_simple").with(body: body, headers: test_headers(@client, body))).to have_been_made
-      expect(withdraw).to eq "311295deadbeef390a13c038e2b8ba77feebdaed2c1a59e6e0bdf001656e1314"
+    it 'should withdraw funds' do
+      withdraw = @client.withdraw!(1.0, '1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L')
+      body = test_body('amount_int' => '100000000', 'address' => '1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L')
+      expect(a_post('/api/1/generic/bitcoin/send_simple').with(:body => body, :headers => test_headers(@client, body))).to have_been_made
+      expect(withdraw).to eq '311295deadbeef390a13c038e2b8ba77feebdaed2c1a59e6e0bdf001656e1314'
     end
 
-    it "pays attention to too big withdrawals" do
-      expect {
-        @client.withdraw!(10000, "1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L")
-      }.to raise_error(MtGox::FilthyRichError)
+    it 'pays attention to too big withdrawals' do
+      expect do
+        @client.withdraw!(10000, '1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L')
+      end.to raise_error(MtGox::FilthyRichError)
     end
   end
 
-  describe "#history" do
+  describe '#history' do
     before do
-      body = test_body({"currency" => "BTC"})
+      body = test_body('currency' => 'BTC')
       stub_post('/api/1/generic/wallet/history').
-        with(body: body, headers: test_headers(@client, body)).
-        to_return(body: fixture('history.json'))
+        with(:body => body, :headers => test_headers(@client, body)).
+        to_return(:body => fixture('history.json'))
     end
 
-    it "fetches history" do
-      history = @client.history("BTC")
-      body = test_body({"currency" => "BTC"})
-      expect(a_post("/api/1/generic/wallet/history")
-              .with(body: body, headers: test_headers(@client, body)))
+    it 'fetches history' do
+      history = @client.history('BTC')
+      body = test_body('currency' => 'BTC')
+      expect(a_post('/api/1/generic/wallet/history')
+              .with(:body => body, :headers => test_headers(@client, body)))
               .to have_been_made
       expect(history).to eq(
-        "records"=>"1",
-        "result"=>[
+        'records' => '1',
+        'result' => [
           {
-            "Index"=>"1",
-            "Date"=>1384536197,
-            "Type"=>"deposit",
-            "Value"=>{
-              "value"=>"1.00000000",
-              "value_int"=>"100000000",
-              "display"=>"1.00000000 BTC",
-              "display_short"=>"1.00 BTC",
-              "currency"=>"BTC"
+            'Index' => '1',
+            'Date' => 1384536197,
+            'Type' => 'deposit',
+            'Value' => {
+              'value' => '1.00000000',
+              'value_int' => '100000000',
+              'display' => '1.00000000 BTC',
+              'display_short' => '1.00 BTC',
+              'currency' => 'BTC'
             },
-            "Balance"=>{
-              "value"=>"1.00000000",
-              "value_int"=>"100000000",
-              "display"=>"1.00000000 BTC",
-              "display_short"=>"1.00 BTC",
-              "currency"=>"BTC"
+            'Balance' => {
+              'value' => '1.00000000',
+              'value_int' => '100000000',
+              'display' => '1.00000000 BTC',
+              'display_short' => '1.00 BTC',
+              'currency' => 'BTC'
             },
-            "Info"=>"1AAXCcSjgsgoTnQLqUfPh7qRsUyvbYSbGW",
-            "Link"=>[
-              "3cdb1d0b-9d70-45cb-b1dc-3fb44045af6e",
-              "Money_Bitcoin_Block_Tx_Out",
-              "24f23af8-f1e7-44c3-aa82-a97878385479:!"
+            'Info' => '1AAXCcSjgsgoTnQLqUfPh7qRsUyvbYSbGW',
+            'Link' => [
+              '3cdb1d0b-9d70-45cb-b1dc-3fb44045af6e',
+              'Money_Bitcoin_Block_Tx_Out',
+              '24f23af8-f1e7-44c3-aa82-a97878385479:!'
             ]
           }
         ],
-        "current_page"=>1,
-        "max_page"=>1,
-        "max_results"=>50
+        'current_page' => 1,
+        'max_page' => 1,
+        'max_results' => 50
       )
     end
   end
 
-  describe "nonce_type" do
+  describe 'nonce_type' do
     before do
       stub_post('/api/1/generic/bitcoin/address').
-        to_return(body: fixture('address.json'))
+        to_return(:body => fixture('address.json'))
     end
 
-    it "uses nonce by default" do
-      address = @client.address
-      expect(a_post('/api/1/generic/bitcoin/address').with(nonce: 1321745961249676)).to have_been_made
+    it 'uses nonce by default' do
+      @client.address
+      expect(a_post('/api/1/generic/bitcoin/address').with(:nonce => 1321745961249676)).to have_been_made
     end
 
-    it "is capable of using tonce" do
+    it 'is capable of using tonce' do
       @client.nonce_type = :tonce
-      address = @client.address
-      expect(a_post('/api/1/generic/bitcoin/address').with(tonce: 1321745961249676)).to have_been_made
+      @client.address
+      expect(a_post('/api/1/generic/bitcoin/address').with(:tonce => 1321745961249676)).to have_been_made
     end
   end
 
-  describe "#order_result" do
-    context "for a valid order id" do
-      let(:order_id) { "Zda8917a-63d3-4415-b827-758408013691" }
-      let(:body) { test_body({"type" => "bid", "order" => order_id}) }
+  describe '#order_result' do
+    context 'for a valid order id' do
+      let(:order_id) { 'Zda8917a-63d3-4415-b827-758408013691' }
+      let(:body) { test_body('type' => 'bid', 'order' => order_id) }
 
       before do
         stub_post('/api/1/generic/order/result').
-          with(body: body, headers: test_headers(@client, body)).
-          to_return(body: fixture('order_result.json'))
+          with(:body => body, :headers => test_headers(@client, body)).
+          to_return(:body => fixture('order_result.json'))
       end
 
-      it "returns an order result" do
-        order_result = @client.order_result("bid", order_id)
-        expect(a_post("/api/1/generic/order/result").with(body: body, headers: test_headers(@client, body))).to have_been_made
+      it 'returns an order result' do
+        order_result = @client.order_result('bid', order_id)
+        expect(a_post('/api/1/generic/order/result').with(:body => body, :headers => test_headers(@client, body))).to have_been_made
         expect(order_result.id).to eq order_id
       end
     end

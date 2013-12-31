@@ -15,8 +15,7 @@ module MtGox
     end
 
     def eprice
-      price * (1 - self.client.commission)
+      price * (1 - client.commission)
     end
-
   end
 end

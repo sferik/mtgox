@@ -2,11 +2,11 @@ require 'base64'
 
 module MtGox
   module Request
-    def get(path, options={})
+    def get(path, options = {})
       request(:get, path, options)
     end
 
-    def post(path, options={})
+    def post(path, options = {})
       request(:post, path, options)
     end
 
@@ -33,18 +33,18 @@ module MtGox
     def headers(request)
       signature = Base64.strict_encode64(
         OpenSSL::HMAC.digest 'sha512',
-        Base64.decode64(secret),
-        request
+                             Base64.decode64(secret),
+                             request
       )
       {'Rest-Key' => key, 'Rest-Sign' => signature}
     end
 
     def body_from_options(options)
-      add_nonce(options).collect{|k, v| "#{k}=#{v}"} * '&'
+      add_nonce(options).map { |k, v| "#{k}=#{v}" } * '&'
     end
 
     def add_nonce(options)
-      options.merge!({self.nonce_type => (Time.now.to_f * 1000000).to_i})
+      options.merge!(nonce_type => (Time.now.to_f * 1000000).to_i)
     end
   end
 end

@@ -11,11 +11,11 @@ module MtGox
 
     def connection
       options = {
-        headers:  {
-          accept: 'application/json',
-          user_agent: "mtgox gem #{MtGox::Version}",
+        :headers => {
+          :accept => 'application/json',
+          :user_agent => "mtgox gem #{MtGox::Version}",
         },
-        url: 'https://data.mtgox.com',
+        :url => 'https://data.mtgox.com',
       }
 
       Faraday.new(options) do |connection|

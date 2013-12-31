@@ -14,7 +14,7 @@ module MtGox
     DEFAULT_COMMISSION = BigDecimal('0.0065').freeze
     DEFAULT_NONCE_TYPE = :nonce
 
-    attr_accessor *VALID_OPTIONS_KEYS
+    attr_accessor(*VALID_OPTIONS_KEYS)
 
     # When this module is extended, set all configuration options to their default values
     def self.extended(base)

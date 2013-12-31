@@ -24,6 +24,6 @@ module MtGox
     def unchanged?
       !changed?
     end
-    alias :unch? :unchanged?
+    alias_method :unch?, :unchanged?
   end
 end

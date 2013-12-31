@@ -8,7 +8,7 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
 
 SimpleCov.start do
   add_filter '/spec/'
-  minimum_coverage(98.91)
+  minimum_coverage(98.90)
 end
 
 require 'mtgox'
@@ -52,21 +52,22 @@ end
 module MtGox
   module Request
   private
+
     def add_nonce(options)
-      options.merge!({self.nonce_type => 1321745961249676})
+      options.merge!(nonce_type => 1321745961249676)
     end
   end
 end
 
-def test_headers(client, body=test_body)
+def test_headers(client, body = test_body)
   signature = Base64.strict_encode64(
     OpenSSL::HMAC.digest 'sha512',
-    Base64.decode64(client.secret),
-    body
+                         Base64.decode64(client.secret),
+                         body
   )
   {'Rest-Key' => client.key, 'Rest-Sign' => signature}
 end
 
-def test_body(options={})
-  options.merge!({nonce: 1321745961249676}).collect{|k, v| "#{k}=#{v}"} * '&'
+def test_body(options = {})
+  options.merge!(:nonce => 1321745961249676).map { |k, v| "#{k}=#{v}" } * '&'
 end
