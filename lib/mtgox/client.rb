@@ -337,7 +337,7 @@ module MtGox
     end
 
     def order_type(type)
-      if %w[bid ask].include?(type.to_s)
+      if ORDER_TYPES.values.include?(type.to_s)
         type
       else
         ORDER_TYPES[type.downcase.to_sym]

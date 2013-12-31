@@ -5,12 +5,7 @@ module MtGox
   module Response
     class ParseJson < Faraday::Response::Middleware
       def parse(body)
-        case body
-        when /\A^\s*$\z/, nil
-          nil
-        else
-          JSON.load(body)
-        end
+        JSON.load(body) unless body =~ /\A^\s*$\z/
       end
 
       def on_complete(env)
