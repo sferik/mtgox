@@ -40,11 +40,11 @@ module MtGox
     end
 
     def body_from_options(options)
-      add_nonce(options).map { |k, v| "#{k}=#{v}" } * '&'
+      add_nonce(options).collect { |k, v| "#{k}=#{v}" } * '&'
     end
 
     def add_nonce(options)
-      options.merge!(nonce_type => (Time.now.to_f * 1000000).to_i)
+      options.merge!(nonce_type => (Time.now.to_f * 1_000_000).to_i)
     end
   end
 end

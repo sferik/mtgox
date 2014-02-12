@@ -75,7 +75,7 @@ describe MtGox::Client do
     it 'fetches the lag' do
       lag = @client.lag
       expect(a_get('/api/1/generic/order/lag')).to have_been_made
-      expect(lag.microseconds).to eq 535998
+      expect(lag.microseconds).to eq 535_998
       expect(lag.seconds).to eq BigDecimal('0.535998')
       expect(lag.text).to eq '0.535998 seconds'
       expect(lag.length).to eq 3
@@ -166,7 +166,7 @@ describe MtGox::Client do
       expect(trades.last.date).to eq Time.utc(2013, 4, 12, 15, 20, 3)
       expect(trades.last.price).to eq BigDecimal('73.19258')
       expect(trades.last.amount).to eq BigDecimal('0.94043572')
-      expect(trades.last.id).to eq 1365780003374123
+      expect(trades.last.id).to eq 1_365_780_003_374_123
     end
   end
 
@@ -178,11 +178,11 @@ describe MtGox::Client do
     end
 
     it 'fetches trades since an id' do
-      trades = @client.trades :since => 1365780002144150
+      trades = @client.trades :since => 1_365_780_002_144_150
       expect(a_get('/api/1/BTCUSD/trades/fetch?since=1365780002144150')).to have_been_made
       expect(trades.first.price).to eq BigDecimal('72.98274')
       expect(trades.first.amount).to eq BigDecimal('11.76583944')
-      expect(trades.first.id).to eq 1365780002144150
+      expect(trades.first.id).to eq 1_365_780_002_144_150
     end
   end
 
@@ -336,7 +336,7 @@ describe MtGox::Client do
 
     context 'with an invalid oid passed' do
       it 'should raise an error' do
-        expect { @client.cancel(1234567890) }.to raise_error(MtGox::OrderNotFoundError)
+        expect { @client.cancel(1_234_567_890) }.to raise_error(MtGox::OrderNotFoundError)
       end
     end
 
@@ -369,7 +369,7 @@ describe MtGox::Client do
 
     it 'pays attention to too big withdrawals' do
       expect do
-        @client.withdraw!(10000, '1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L')
+        @client.withdraw!(10_000, '1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L')
       end.to raise_error(MtGox::FilthyRichError)
     end
   end
@@ -393,7 +393,7 @@ describe MtGox::Client do
         'result' => [
           {
             'Index' => '1',
-            'Date' => 1384536197,
+            'Date' => 1_384_536_197,
             'Type' => 'deposit',
             'Value' => {
               'value' => '1.00000000',
@@ -432,13 +432,13 @@ describe MtGox::Client do
 
     it 'uses nonce by default' do
       @client.address
-      expect(a_post('/api/1/generic/bitcoin/address').with(:nonce => 1321745961249676)).to have_been_made
+      expect(a_post('/api/1/generic/bitcoin/address').with(:nonce => 1_321_745_961_249_676)).to have_been_made
     end
 
     it 'is capable of using tonce' do
       @client.nonce_type = :tonce
       @client.address
-      expect(a_post('/api/1/generic/bitcoin/address').with(:tonce => 1321745961249676)).to have_been_made
+      expect(a_post('/api/1/generic/bitcoin/address').with(:tonce => 1_321_745_961_249_676)).to have_been_made
     end
   end
 

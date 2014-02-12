@@ -87,8 +87,8 @@ module MtGox
     #   MtGox.offers
     def offers
       offers = get('/api/1/BTCUSD/depth/fetch')
-      asks = offers['asks'].sort_by { |ask| ask['price_int'].to_i }.map { |ask| Ask.new(self, ask) }
-      bids = offers['bids'].sort_by { |bid| -bid['price_int'].to_i }.map { |bid| Bid.new(self, bid) }
+      asks = offers['asks'].sort_by { |ask| ask['price_int'].to_i }.collect { |ask| Ask.new(self, ask) }
+      bids = offers['bids'].sort_by { |bid| -bid['price_int'].to_i }.collect { |bid| Bid.new(self, bid) }
       {:asks => asks, :bids => bids}
     end
 
@@ -141,7 +141,7 @@ module MtGox
     #   MtGox.trades :since => 12341234
     def trades(opts = {})
       get('/api/1/BTCUSD/trades/fetch', opts).
-        sort_by { |trade| trade['date'] }.map do |trade|
+        sort_by { |trade| trade['date'] }.collect do |trade|
         Trade.new(trade)
       end
     end
@@ -266,7 +266,7 @@ module MtGox
         orders.delete_if { |o| o['oid'] == res['oid'] }
         parse_orders(orders)
       else
-        fail MtGox::OrderNotFoundError
+        fail(MtGox::OrderNotFoundError)
       end
     end
     alias_method :cancel_order, :cancel
@@ -283,8 +283,7 @@ module MtGox
     #   MtGox.withdraw! 1.0, '1KxSo9bGBfPVFEtWNLpnUK1bfLNNT4q31L'
     def withdraw!(amount, address)
       if amount >= 1000
-        fail FilthyRichError,
-             "#withdraw! take bitcoin amount as parameter (you are trying to withdraw #{amount} BTC"
+        fail(FilthyRichError.new("#withdraw! take bitcoin amount as parameter (you are trying to withdraw #{amount} BTC"))
       else
         post('/api/1/generic/bitcoin/send_simple', :amount_int => intify(amount, :btc), :address => address)['trx']
       end

@@ -11,7 +11,7 @@ module MtGox
     end
 
     def trades
-      @json['trades'].map { |t| Trade.new(coerce_trade(t)) }
+      @json['trades'].collect { |t| Trade.new(coerce_trade(t)) }
     end
 
     def total_spent

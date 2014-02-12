@@ -9,7 +9,7 @@ require 'bigdecimal'
 module MtGox
   module Value
     # We assume here that any other currency than :jpy uses :usd
-    INT_MULTIPLIERS = {:btc => 100000000, :usd => 100000, :jpy => 1000}
+    INT_MULTIPLIERS = {:btc => 100_000_000, :usd => 100_000, :jpy => 1000}
 
     # Takes a hash return by the API and convert some value_int to a
     # currency value using USD conversion rule. You can specify which
