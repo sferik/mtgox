@@ -1,11 +1,11 @@
 # Ruby wrapper for the Mt. Gox Trade API
 
-[![Gem Version](https://badge.fury.io/rb/mtgox.png)][gem]
-[![Build Status](https://secure.travis-ci.org/sferik/mtgox.png?branch=master)][travis]
-[![Dependency Status](https://gemnasium.com/sferik/mtgox.png?travis)][gemnasium]
-[![Code Climate](https://codeclimate.com/github/sferik/mtgox.png)][codeclimate]
-[![Coverage Status](https://coveralls.io/repos/sferik/mtgox/badge.png?branch=master)][coveralls]
-[![Gittip](http://img.shields.io/gittip/gems.png)][gittip]
+[![Gem Version](http://img.shields.io/gem/v/mtgox.svg)][gem]
+[![Build Status](http://img.shields.io/travis/sferik/mtgox.svg)][travis]
+[![Dependency Status](http://img.shields.io/gemnasium/sferik/mtgox.svg)][gemnasium]
+[![Code Climate](http://img.shields.io/codeclimate/github/sferik/mtgox.svg)][codeclimate]
+[![Coverage Status](http://img.shields.io/coveralls/sferik/mtgox.svg)][coveralls]
+[![Gittip](http://img.shields.io/gittip/gems.svg)][gittip]
 
 [gem]: https://rubygems.org/gems/mtgox
 [travis]: http://travis-ci.org/sferik/mtgox
