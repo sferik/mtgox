@@ -9,11 +9,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.0'
   spec.author      = 'Erik Michaels-Ober'
   spec.bindir      = 'bin'
-  spec.description = %q{Ruby wrapper for the Mt. Gox Trade API. Mt. Gox allows you to trade US Dollars (USD) for Bitcoins (BTC) or Bitcoins for US Dollars.}
+  spec.description = %q(Ruby wrapper for the Mt. Gox Trade API. Mt. Gox allows you to trade US Dollars (USD) for Bitcoins (BTC) or Bitcoins for US Dollars.)
   spec.email       = 'sferik@gmail.com'
   spec.executable  = 'btc'
   spec.files       = `git ls-files`.split("\n")
-  spec.files       = %w(.yardopts CONTRIBUTING.md LICENSE.md README.md Rakefile mtgox.gemspec)
+  spec.files       = %w[.yardopts CONTRIBUTING.md LICENSE.md README.md Rakefile mtgox.gemspec]
   spec.files      += Dir.glob('lib/**/*.rb')
   spec.files      += Dir.glob('spec/**/*')
   spec.homepage    = 'https://github.com/sferik/mtgox'
@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
   spec.required_ruby_version = '>= 1.9.2'
   spec.required_rubygems_version = '>= 1.3.6'
-  spec.summary     = %q{Ruby wrapper for the Mt. Gox Trade API}
+  spec.summary     = %q(Ruby wrapper for the Mt. Gox Trade API)
   spec.test_files  = Dir.glob('spec/**/*')
   spec.version     = MtGox::VERSION
 end
