@@ -59,7 +59,7 @@ module MtGox
       Ticker.instance.price       = value_currency ticker['last_all']
       Ticker.instance.low         = value_currency ticker['low']
       Ticker.instance.sell        = value_currency ticker['sell']
-      Ticker.instance.volume      = value_bitcoin  ticker['vol']
+      Ticker.instance.volume      = value_bitcoin ticker['vol']
       Ticker.instance.vwap        = value_currency ticker['vwap']
       Ticker.instance.avg         = value_currency ticker['avg']
       Ticker.instance.last_local  = value_currency ticker['last_local']

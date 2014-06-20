@@ -4,8 +4,8 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'mtgox/version'
 
 Gem::Specification.new do |spec|
-  spec.add_dependency  'faraday', ['~> 0.8', '< 0.10']
-  spec.add_dependency  'json', ['~> 1.7', '>= 1.7.7']
+  spec.add_dependency 'faraday', ['~> 0.8', '< 0.10']
+  spec.add_dependency 'json', ['~> 1.7', '>= 1.7.7']
   spec.add_development_dependency 'bundler', '~> 1.0'
   spec.author        = 'Erik Michaels-Ober'
   spec.bindir        = 'bin'

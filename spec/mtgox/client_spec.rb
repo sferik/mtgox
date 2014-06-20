@@ -59,10 +59,10 @@ describe MtGox::Client do
       ticker = @client.ticker # rubocop:disable UselessAssignment
       ticker = @client.ticker
       expect(a_get('/api/1/BTCUSD/ticker')).to have_been_made.twice
-      expect(ticker.up?).to be_false
-      expect(ticker.down?).to be_false
-      expect(ticker.changed?).to be_false
-      expect(ticker.unchanged?).to be_true
+      expect(ticker.up?).to be false
+      expect(ticker.down?).to be false
+      expect(ticker.changed?).to be false
+      expect(ticker.unchanged?).to be true
     end
   end
 

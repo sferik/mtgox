@@ -7,11 +7,10 @@ module MtGox
 
     def initialize(client, hash = nil)
       self.client = client
-      if hash
-        self.price = value_currency hash, 'price_int'
-        self.amount = value_bitcoin hash, 'amount_int'
-        self.timestamp = hash['stamp']
-      end
+      return if hash.nil?
+      self.price = value_currency hash, 'price_int'
+      self.amount = value_bitcoin hash, 'amount_int'
+      self.timestamp = hash['stamp']
     end
 
     def eprice
