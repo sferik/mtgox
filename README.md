@@ -5,14 +5,12 @@
 [![Dependency Status](http://img.shields.io/gemnasium/sferik/mtgox.svg)][gemnasium]
 [![Code Climate](http://img.shields.io/codeclimate/github/sferik/mtgox.svg)][codeclimate]
 [![Coverage Status](http://img.shields.io/coveralls/sferik/mtgox.svg)][coveralls]
-[![Gittip](http://img.shields.io/gittip/gems.svg)][gittip]
 
 [gem]: https://rubygems.org/gems/mtgox
 [travis]: http://travis-ci.org/sferik/mtgox
 [gemnasium]: https://gemnasium.com/sferik/mtgox
 [codeclimate]: https://codeclimate.com/github/sferik/mtgox
 [coveralls]: https://coveralls.io/r/sferik/mtgox
-[gittip]: https://www.gittip.com/gems/
 
 Mt. Gox allows you to trade US Dollars (USD) for Bitcoins (BTC) or Bitcoins for
 US Dollars.
