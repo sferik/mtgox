@@ -4,7 +4,7 @@ require 'json'
 module Faraday
   class Response
     class RaiseMtGoxError < Response::Middleware
-      def on_complete(env) # rubocop:disable CyclomaticComplexity
+      def on_complete(env) # rubocop:disable CyclomaticComplexity, PerceivedComplexity
         if 200 == env[:status] && 'MySQL error, please retry later' == env[:body]
           fail(MtGox::MysqlError.new(env[:body]))
         elsif 403 == env[:status] && JSON.load(env[:body])['result'] == 'error'
