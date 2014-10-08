@@ -13,9 +13,7 @@ Gem::Specification.new do |spec|
   spec.email         = 'sferik@gmail.com'
   spec.executable    = 'btc'
   spec.files         = `git ls-files`.split("\n")
-  spec.files         = %w[.yardopts CONTRIBUTING.md LICENSE.md README.md Rakefile mtgox.gemspec]
-  spec.files        += Dir.glob('lib/**/*.rb')
-  spec.files        += Dir.glob('spec/**/*')
+  spec.files         = %w[.yardopts CONTRIBUTING.md LICENSE.md README.md mtgox.gemspec] + Dir['lib/**/*.rb']
   spec.licenses      = %w[MIT]
   spec.homepage      = 'https://github.com/sferik/mtgox'
   spec.name          = 'mtgox'
@@ -23,6 +21,5 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 1.9.3'
   spec.required_rubygems_version = '>= 1.3.6'
   spec.summary       = 'Ruby wrapper for the Mt. Gox Trade API'
-  spec.test_files    = Dir.glob('spec/**/*')
   spec.version       = MtGox::VERSION
 end
